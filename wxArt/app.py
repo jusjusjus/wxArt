@@ -10,7 +10,7 @@ class App(wx.App):
 
 
     def OnInit(self):
-        self.frame = frame(None, size=wx.Size(800, 600))
+        self.frame = frame(None, size=wx.Size(1500, 800))
         menuBar = wx.MenuBar()
         fileMenu = wx.Menu()
         self.Bind(wx.EVT_MENU, self.OnExitApp,  fileMenu.Append(wx.ID_EXIT, "&Quit Hypnox\tCtrl-Q"))
