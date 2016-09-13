@@ -1,8 +1,18 @@
-
-
+#!/usr/env python
+# ==============================================================================
+# image.py
+#
+# Purpose:
+# define the Image class, a class for wx.BitmapButtons
+# with simple image change
+#
+# ==============================================================================
+#
 import wx
 
-
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# % Image class
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 class Image(wx.BitmapButton):
 
     def __init__(self, defaultImage_path, picture_size, *args, **kwargs):
