@@ -6,16 +6,18 @@ from email.mime.application import MIMEApplication
 from email.mime.text        import MIMEText
 from email.mime.multipart   import MIMEMultipart
 
+from .PasswordQuery import PasswordQuery
 
 
 
 class EmailCtrl(wx.TextCtrl):
 
-    server_name = "smtp.gmx.ch"
-    port        = 587
-    sender      = "kevin.clever@gmx.ch"
-    subject     = "Neural artistic style"
-    body        = "Here comes some descriptive text."
+    server_name       = "smtp.gmx.ch"
+    port              = 587
+    sender            = "kevin.clever@gmx.ch"
+    default_recipient = "jschwabedal@gmail.com"
+    subject           = "Neural artistic style"
+    body              = "Here comes some descriptive text."
 
     def __init__(self, *args, **kwargs):
         kwargs["style"] = wx.TE_PROCESS_ENTER               # Style allows the text field to intercept pressing <Enter>
@@ -23,11 +25,13 @@ class EmailCtrl(wx.TextCtrl):
         
         # Set the password dynamically when the program starts. (TO DO)
         self.password = ""
+        #self.query_password()
 
 
-    def send_email(self, attachments): # attachments is a list of filenames.
+    def send_email(self, attachments=[], recipient=None): # attachments is a list of filenames.
         #read out the recipient email address
-        recipient = self.GetValue()
+        if recipient == None:
+            recipient = self.GetValue()
 
         # construct the email
         message = MIMEMultipart()
@@ -56,7 +60,21 @@ class EmailCtrl(wx.TextCtrl):
             server.login(self.sender, self.password)
             server.sendmail(self.sender, recipient, message.as_string())
             server.close()
-            wx.MessageBox('successfully sent the mail')
+            wx.MessageBox('Successfully sent the mail.')
+            return True
 
         except:
-            wx.MessageBox("failed to send mail")
+            wx.MessageBox("Failed to send mail")
+            return False
+
+
+    def query_password(self):
+        
+        while False:
+            dialog = PasswordQuery(None, size=wx.Size(200, 50))
+            dialog.ShowModal()
+
+            self.password = dialog.password
+            
+            if self.send_email(recipient=self.default_recipient):   # Returns true if email successfully sent.
+                return

@@ -28,6 +28,7 @@ class App(wx.App):
         '''
         self.frame = frame(None, size=wx.Size(1500, 800), title='wxArt')
         self.frame.Show()
+        self.frame.email_field.query_password()
         return True
 
     def OnExitApp(self, evt):
