@@ -26,5 +26,5 @@ class Image(wx.BitmapButton):
 
 
     def load_image(self, image_path):
-        png = wx.Image(image_path, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-        self.SetBitmap(png)
+        bitmap = wx.Image(image_path, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        self.SetBitmap(bitmap)

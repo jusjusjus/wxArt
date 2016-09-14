@@ -76,8 +76,6 @@ class CameraButton(wx.BitmapButton):
             self.video_on = True
 
 
-
-
     def FitBitmap(self):
         '''
         TODO
