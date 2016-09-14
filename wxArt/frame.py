@@ -121,9 +121,9 @@ class frame(wx.Frame):
         #
         # ~~~~~ bind events to functions ~~~~~
         # main panel
-        self.Bind(wx.EVT_BUTTON, self.load_style, style_image)
-        self.Bind(wx.EVT_BUTTON, self.load_content, content_image)
-        self.Bind(wx.EVT_BUTTON, self.self_as_email, email_button)
+        self.Bind(wx.EVT_BUTTON,     self.load_style,    style_image)
+        self.Bind(wx.EVT_BUTTON,     self.load_content,  content_image)
+        self.Bind(wx.EVT_BUTTON,     self.send_as_email, email_button)
         self.Bind(wx.EVT_TEXT_ENTER, self.send_as_email, email_field)
         # network panel
         network_panel.Bind(wx.EVT_ENTER_WINDOW, self.hide_show_pane)
