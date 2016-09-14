@@ -26,32 +26,18 @@ class CameraButton(wx.BitmapButton):
         cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
 
         # make bitmap from buffer
-        height, width = cam_frame.shape[:2]
-        self.bmp = wx.BitmapFromBuffer(width, height, cam_frame) # buffer for bitmap
-
-        # link bitmap with image on buffer
-        self.SetBitmap(self.bmp)
+        self.InitBitmapBuffer( cam_frame )
 
         # start timer to control redraw
         self.timer = wx.Timer(self)
         self.timer.Start(1000./fps)
 
         # bindings to redraw
-        # self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_TIMER, self.NextCam_Frame)
-        self.video_on = True
+        self.video_on = True                        # Flag indicate video state.
 
         self.Bind(wx.EVT_BUTTON, self.halt_start_video, self)
 
-    # def OnPaint(self, evt):
-    #     '''
-    #     when frame is painted, repaint button
-    #     necessary???
-    #     I thought repaint is controlled from outside
-    #     does work without this method
-    #     '''
-    #     dc = wx.BufferedPaintDC(self)
-    #     dc.DrawBitmap(self.bmp, 0, 0)
 
     def NextCam_Frame(self, event):
         '''
@@ -61,8 +47,28 @@ class CameraButton(wx.BitmapButton):
         ret, cam_frame = self.capture.read()
         if ret:
             cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
-            self.bmp.CopyFromBuffer(cam_frame)
+            self.CopyFromBuffer(cam_frame)
             self.Refresh()
+
+
+    def InitBitmapBuffer(self, cam_frame):
+        # Creates cam2bmp - bitmap buffer, that can quickly read out the camera.
+        # To make full use of this one needs to find a better mechanism for plotting
+        # later, because self.bmp is re-created every time.  However, I don't know
+        # how to real with the raw bitmaps.
+        height, width = cam_frame.shape[:2]
+        self.cam2bmp = wx.BitmapFromBuffer(width, height, cam_frame) # buffer for bitmap
+
+
+    def CopyFromBuffer(self, cam_frame):
+        # The rescaling (2 lines down) is kind of funky:  it only increases in
+        # size and it doesn't keep the aspect ratio intact.
+        self.cam2bmp.CopyFromBuffer(cam_frame)
+        mirror_image = self.cam2bmp.ConvertToImage().Mirror()
+        #width, height = self.GetClientSize()                   # defunkt
+        #mirror_image = mirror_image.Scale(width, height)       # defunkt
+        self.bmp = wx.BitmapFromImage( mirror_image )
+        self.SetBitmap(self.bmp)
 
 
     def halt_start_video(self, event):
@@ -74,17 +80,5 @@ class CameraButton(wx.BitmapButton):
         else:
             self.timer.Start()
             self.video_on = True
-
-
-    def FitBitmap(self):
-        '''
-        TODO
-        does not work properly...
-        '''
-        image = wx.ImageFromBitmap(self.bmp_dummy)
-        Bwidth, Bheight = self.GetClientSize()
-        print Bwidth, Bheight
-        image = image.Scale(Bwidth, Bheight)
-        return wx.BitmapFromImage(image)
 
 
