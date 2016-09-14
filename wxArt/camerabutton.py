@@ -39,6 +39,9 @@ class CameraButton(wx.BitmapButton):
         # bindings to redraw
         # self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_TIMER, self.NextCam_Frame)
+        self.video_on = True
+
+        self.Bind(wx.EVT_BUTTON, self.halt_start_video, self)
 
     # def OnPaint(self, evt):
     #     '''
@@ -60,6 +63,20 @@ class CameraButton(wx.BitmapButton):
             cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
             self.bmp.CopyFromBuffer(cam_frame)
             self.Refresh()
+
+
+    def halt_start_video(self, event):
+
+        if self.video_on == True:
+            self.timer.Stop()
+            self.video_on = False
+
+        else:
+            self.timer.Start()
+            self.video_on = True
+
+
+
 
     def FitBitmap(self):
         '''
