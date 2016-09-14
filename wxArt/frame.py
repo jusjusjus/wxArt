@@ -12,7 +12,7 @@
 import wx
 import wx.lib.agw.aui as aui
 import os
-from .image import Image
+from .imagebutton import ImageButton
 from .EmailCtrl import EmailCtrl
 from .camerabutton import CameraButton
 
@@ -25,9 +25,6 @@ from .camerabutton import CameraButton
 class frame(wx.Frame):
     #
     # ~~~~~ constant members ~~~~~
-    _default_stylefile   = os.path.dirname(__file__) + "/../resources/default_artist.png"
-    _default_contentfile = os.path.dirname(__file__) + "/../resources/default_avatar.png"
-    _default_picturefile = os.path.dirname(__file__) + "/../resources/default_picture.jpg"
     _max_pane = 200
     _min_pane = 0
 
@@ -75,12 +72,12 @@ class frame(wx.Frame):
         # top: content (camera button)
         # bottom: style (image button)
         content_image = self.content_image = CameraButton(15, main_panel,-1)
-        style_image   = self.style_image   = Image(self._default_stylefile,   wx.Size(0,0), main_panel, -1)
-        button = self.button = wx.Button(main_panel, -1, "Jetzt malen!")
+        style_image   = self.style_image   = ImageButton(main_panel, -1)
+        paint_button = self.paint_button   = wx.Button(main_panel, -1, "Jetzt malen!")
 
         input_vsizer.Add(content_image, 1, wx.EXPAND | wx.ALL, 10)
         input_vsizer.Add(style_image, 1, wx.EXPAND | wx.ALL, 10)
-        input_vsizer.Add(button, 0, wx.ALIGN_CENTER | wx.ALL, 10)
+        input_vsizer.Add(paint_button, 0, wx.ALIGN_CENTER | wx.ALL, 10)
 
         #
         # ~~~~~ output sizer (right) ~~~~~
@@ -88,7 +85,7 @@ class frame(wx.Frame):
         # top: output image
         # middle: slider to change alpha value
         # bottom: email line, input email address and button to send mail
-        picture_image = self.picture_image = Image(self._default_picturefile, wx.Size(0,0), main_panel, -1)
+        picture_image = self.picture_image = ImageButton(main_panel, -1)
 
         # slider
         slider_vsizer=wx.BoxSizer(wx.VERTICAL)
@@ -126,6 +123,7 @@ class frame(wx.Frame):
         self.Bind(wx.EVT_BUTTON,     self.load_style,    style_image)
         self.Bind(wx.EVT_BUTTON,     self.load_content,  content_image)
         self.Bind(wx.EVT_BUTTON,     self.send_as_email, email_button)
+        self.Bind(wx.EVT_BUTTON,     self.issue_paint,   paint_button)
         self.Bind(wx.EVT_TEXT_ENTER, self.send_as_email, email_field)
         # network panel
         network_panel.Bind(wx.EVT_ENTER_WINDOW, self.hide_show_pane)
@@ -194,4 +192,7 @@ class frame(wx.Frame):
         self.email_field.send_email(attachments)
 
 
-
+    def issue_paint(self, event):
+        # gether information
+        content_path = self.content_image.GetPath()
+        style_path   = self.style_image.GetPath()

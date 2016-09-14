@@ -8,12 +8,13 @@
 # ==============================================================================
 #
 import wx
+from .imagebutton import ImageButton
 import cv, cv2
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # % CameraButton class
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-class CameraButton(wx.BitmapButton):
+class CameraButton(ImageButton):
 
     def __init__(self, fps, *args, **kwargs):
         super(CameraButton, self).__init__(*args, **kwargs)

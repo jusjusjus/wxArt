@@ -3,26 +3,28 @@
 # image.py
 #
 # Purpose:
-# define the Image class, a class for wx.BitmapButtons
+# define the ImageButton class, a class for wx.BitmapButtons
 # with simple image change
 #
 # ==============================================================================
 #
+import os
 import wx
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# % Image class
+# % ImageButton class
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-class Image(wx.BitmapButton):
+class ImageButton(wx.BitmapButton):
 
-    def __init__(self, defaultImage_path, picture_size, *args, **kwargs):
-        super(Image, self).__init__(*args, size=picture_size, **kwargs)
+    _defaultImage_path = os.path.dirname(__file__) + "/../resources/default_picture.jpg"
 
-        self.defaultImage_path = defaultImage_path
-        self.picture_size = defaultImage_path
+    def __init__(self, *args, **kwargs):
+        super(ImageButton, self).__init__(*args, **kwargs)
+
+        self.picture_size = self._defaultImage_path
 
         # initial load
-        self.load_image(self.defaultImage_path)
+        self.load_image(self._defaultImage_path)
 
 
     def load_image(self, image_path):
