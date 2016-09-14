@@ -13,8 +13,6 @@ import scipy as sp
 import matplotlib
 import pylab as pl
 import sys
-sys.path.insert(0, './')
-
 import wx
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,6 +23,7 @@ import wx
 class ImageButton(wx.BitmapButton):
 
     def __init__(self, image_path, *args, **kwargs):
+        super(ImageButton, self).__init__(*args, **kwargs)  # parent-class needs to be initialized
         # overwrite __init__ of BitmapButton
 
         # define image as an inner bitmap (redundant)
@@ -43,4 +42,14 @@ class ImageButton(wx.BitmapButton):
 
 if __name__=="__main__":
     app=wx.App()
-    test=ImageButton('./resources/default_artist.png')
+    frame = wx.Frame(None)  # A frame is needed to show something.
+    test=ImageButton('../resources/default_artist.png', frame)
+    
+    sizer = wx.BoxSizer(wx.VERTICAL) # The frame needs a sizer to organize the size of its items.
+    frame.SetSizer(sizer)       # Set the sizer for the frame
+
+    sizer.Add(test, wx.EXPAND)   # Add the Imagebutton to the sizer.
+
+    frame.Show()                # show the frame
+
+    app.MainLoop()              # start the control loop.
