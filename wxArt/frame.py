@@ -108,7 +108,7 @@ class frame(wx.Frame):
 
         # email line
         email_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        email_field = EmailCtrl(main_panel, -1)
+        email_field = self.email_field = EmailCtrl(main_panel, -1)
         email_field.SetHint(u'Für Erhalt des Bilder, bitte E-Mail-Adresse angeben.')
         email_button = wx.Button(main_panel,-1,"Senden")
         email_sizer.Add(email_field, 1, wx.EXPAND | wx.ALL, 10)
@@ -123,7 +123,8 @@ class frame(wx.Frame):
         # main panel
         self.Bind(wx.EVT_BUTTON, self.load_style, style_image)
         self.Bind(wx.EVT_BUTTON, self.load_content, content_image)
-        self.Bind(wx.EVT_BUTTON, self.save_picture, picture_image)
+        self.Bind(wx.EVT_BUTTON, self.self_as_email, email_button)
+        self.Bind(wx.EVT_TEXT_ENTER, self.send_as_email, email_field)
         # network panel
         network_panel.Bind(wx.EVT_ENTER_WINDOW, self.hide_show_pane)
         network_panel.Bind(wx.EVT_LEAVE_WINDOW, self.hide_show_pane)
@@ -177,3 +178,18 @@ class frame(wx.Frame):
 
         if dialog.ShowModal() == wx.ID_OK:
             self.content_image.save_image(dialog.GetPath())
+
+
+    def send_as_email(self, event):
+        # To Do
+        # Load attachments. Here dummy
+        attachments = []
+        attachments.append(self._default_stylefile)
+        attachments.append(self._default_contentfile)
+        attachments.append(self._default_picturefile)
+
+        # Send as email.
+        self.email_field.send_email(attachments)
+
+
+
