@@ -121,13 +121,12 @@ class frame(wx.Frame):
         # ~~~~~ bind events to functions ~~~~~
         # main panel
         self.Bind(wx.EVT_BUTTON,     self.load_style,    style_image)
-        self.Bind(wx.EVT_BUTTON,     self.load_content,  content_image)
-        self.Bind(wx.EVT_BUTTON,     self.send_as_email, email_button)
         self.Bind(wx.EVT_BUTTON,     self.issue_paint,   paint_button)
-        self.Bind(wx.EVT_TEXT_ENTER, self.send_as_email, email_field)
+        self.Bind(wx.EVT_BUTTON,     self.send_as_email, email_button)  #
+        self.Bind(wx.EVT_TEXT_ENTER, self.send_as_email, email_field)   # Redundancy.
         # network panel
-        network_panel.Bind(wx.EVT_ENTER_WINDOW, self.hide_show_pane)
-        network_panel.Bind(wx.EVT_LEAVE_WINDOW, self.hide_show_pane)
+        network_panel.Bind(wx.EVT_ENTER_WINDOW, self.hide_show_pane)    # Enter
+        network_panel.Bind(wx.EVT_LEAVE_WINDOW, self.hide_show_pane)    # Leave
 
     #
     # ~~~~~ functions bound to events ~~~~~
@@ -145,6 +144,7 @@ class frame(wx.Frame):
 
 
     def load_style(self, event):
+        # This should work as a dropdown menu, if needed.
         dialog = wx.FileDialog(self,
                                "Stilschema laden...",
                                "",
@@ -156,43 +156,26 @@ class frame(wx.Frame):
             self.style_image.load_image(dialog.GetPath())
 
 
-    def load_content(self, event):
-        dialog = wx.FileDialog(self,
-                               "Inhalt laden...",
-                               "",
-                               "",
-                               "Image files (*.png)|*.png",
-                               wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
-
-        if dialog.ShowModal() == wx.ID_OK:
-            self.content_image.load_image(dialog.GetPath())
-
-
-    def save_picture(self, event):
-        dialog = wx.FileDialog(self,
-                               "Resultat speichern...",
-                               "",
-                               "",
-                               "Image files (*.png)|*.png",
-                               wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
-
-        if dialog.ShowModal() == wx.ID_OK:
-            self.content_image.save_image(dialog.GetPath())
-
-
     def send_as_email(self, event):
-        # To Do
-        # Load attachments. Here dummy
-        attachments = []
-        attachments.append(self._default_stylefile)
-        attachments.append(self._default_contentfile)
-        attachments.append(self._default_picturefile)
+        # Gather attachment info.
+        content_path = self.content_image.get_path_to_image()
+        style_path   = self.style_image.get_path_to_image()
+        picture_path = self.picture_image.get_path_to_image()
 
-        # Send as email.
+        attachments = []
+        attachments.append(content_path)        # add path to content.
+        attachments.append(style_path)          # add path to style.
+        attachments.append(picture_path)        # add path to picture.
+
+        # Issue e-mail-send command.
         self.email_field.send_email(attachments)
 
 
     def issue_paint(self, event):
         # gether information
-        content_path = self.content_image.GetPath()
-        style_path   = self.style_image.GetPath()
+        content_path = self.content_image.get_path_to_image()   # Get path to content.
+        style_path   = self.style_image.get_path_to_image()     # Get path to style.
+        network_info = None                                     # Get Network information.
+
+        # Send the information
+
