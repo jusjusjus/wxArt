@@ -14,6 +14,8 @@ import wx.lib.agw.aui as aui
 import os
 from .image import Image
 from .EmailCtrl import EmailCtrl
+from .camerabutton import CameraButton
+
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # % frame class
@@ -72,12 +74,12 @@ class frame(wx.Frame):
         # mange the user input
         # top: content (camera button)
         # bottom: style (image button)
+        content_image = self.content_image = CameraButton(15, main_panel,-1)
         style_image   = self.style_image   = Image(self._default_stylefile,   wx.Size(0,0), main_panel, -1)
-        content_image = self.content_image = Image(self._default_contentfile, wx.Size(0,0), main_panel, -1)
         button = self.button = wx.Button(main_panel, -1, "Jetzt malen!")
 
-        input_vsizer.Add(style_image, 1, wx.EXPAND | wx.ALL, 10)
         input_vsizer.Add(content_image, 1, wx.EXPAND | wx.ALL, 10)
+        input_vsizer.Add(style_image, 1, wx.EXPAND | wx.ALL, 10)
         input_vsizer.Add(button, 0, wx.ALIGN_CENTER | wx.ALL, 10)
 
         #
