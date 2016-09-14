@@ -13,6 +13,7 @@ import wx
 import wx.lib.agw.aui as aui
 import os
 from .image import Image
+from .EmailCtrl import EmailCtrl
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # % frame class
@@ -107,7 +108,7 @@ class frame(wx.Frame):
 
         # email line
         email_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        email_field = wx.TextCtrl(main_panel, -1)
+        email_field = EmailCtrl(main_panel, -1)
         email_field.SetHint(u'Für Erhalt des Bilder, bitte E-Mail-Adresse angeben.')
         email_button = wx.Button(main_panel,-1,"Senden")
         email_sizer.Add(email_field, 1, wx.EXPAND | wx.ALL, 10)
