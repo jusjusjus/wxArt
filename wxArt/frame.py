@@ -109,7 +109,7 @@ class frame(wx.Frame):
         # email line
         email_sizer = wx.BoxSizer(wx.HORIZONTAL)
         email_field = self.email_field = EmailCtrl(main_panel, -1)
-        email_field.SetHint(u'Für Erhalt des Bilder, bitte E-Mail-Adresse angeben.')
+        email_field.SetHint(u'Zum Verschicken des Bildes bitte eine E-Mail-Adresse angeben.')
         email_button = wx.Button(main_panel,-1,"Senden")
         email_sizer.Add(email_field, 1, wx.EXPAND | wx.ALL, 10)
         email_sizer.Add(email_button, 0, wx.ALL, 10)
