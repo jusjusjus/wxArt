@@ -4,15 +4,16 @@ import pysftp
 import os
 import threading
 from .PasswordQuery import PasswordQuery
+import wxArt_server
 
 
 class ArtistManager(object):
-
 
     _sftp_server   = 'newton'
     _sftp_username = 'jschwab'
     _sftp_args     = (_sftp_server,)
     _sftp_kwargs   = dict(username=_sftp_username, password='')
+    _server_path   = wxArt_server.__file__
 
     _remote_filenames = ['dummy']
 
@@ -32,15 +33,24 @@ class ArtistManager(object):
         self.network_path = network_path
 
 
-    def upload_files(self):
+    def upload_files(self, files):
 
-        self.connection = pysftp.Connection(*self._sftp_args, **self._sftp_kwargs)
+        uploaded_files = 0
 
-        for filename in [self.content_path, self.style_path, self.network_path]:
-            if os.path.exists(filename):
-                self.connection.put( filename )
+        try:
+            self.connection = pysftp.Connection(*self._sftp_args, **self._sftp_kwargs)
+    
+            for filename in files:
+                if os.path.exists(filename):
+                    self.connection.put( filename )
+                    uploaded_files += 1
+    
+            self.connection.close()
 
-        self.connection.close()
+        except:
+            pass
+        
+        return uploaded_files
 
 
     def download_files(self):   # files are self._remote_filenames
@@ -71,7 +81,7 @@ class ArtistManager(object):
 
         self.worker    = threading.Thread(name='worker', target=self.issue_command, args=(command,))
 
-        self.upload_files() # Upload the files to newton.
+        self.upload_files([self.content_path, self.style_path, self.network_path]) # Upload the files to newton.
         self.worker.start() # self.issue_command(command)
 
         dialog = wx.ProgressDialog("Berechnungsfortschritt", "Noch zu verbleibende Zeit", self._pb_max, style=self._pb_style)
@@ -92,23 +102,17 @@ class ArtistManager(object):
 
 
     def query_password(self):
-        
-        while False:
-            dialog = PasswordQuery(None, size=wx.Size(300, 50), title=self._pwd_title)
-            dialog.ShowModal()
 
-            self.password = dialog.password
-            
-            if self.send_email(recipient=self.default_recipient):   # Returns true if email successfully sent.
-                return
-
-    def query_password(self):
+        if not os.path.exists(self._server_path):
+            wx.MessageBox("Something went terribly wrong.")
+            return
         
         while True:
             dialog = PasswordQuery(None, size=wx.Size(300, 50), title=self._pwd_title)
             dialog.ShowModal()
 
-            self.password = dialog.password
+            self._sftp_kwargs["password"] = dialog.password
             
-            #if self.send_email(recipient=self.default_recipient):   # Returns true if email successfully sent.
-            return
+            # The server file has to be uploaded anyway.
+            if self.upload_files([self._server_path]) > 0:   # Returns number of successfully uploaded files.
+                return

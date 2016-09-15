@@ -74,7 +74,7 @@ class frame(wx.Frame):
         # mange the user input
         # top: content (camera button)
         # bottom: style (image button)
-        content_image = self.content_image = CameraButton(15, main_panel,-1)
+        content_image = self.content_image = CameraButton(7, main_panel,-1)
         style_image   = self.style_image   = ImageButton(main_panel, -1)
         paint_button = self.paint_button   = wx.Button(main_panel, -1, "Jetzt malen!")
 
