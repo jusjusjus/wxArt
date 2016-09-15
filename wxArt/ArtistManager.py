@@ -26,7 +26,7 @@ class ArtistManager(object):
         self.query_password()
 
 
-    def set_paths(self, content_path, style_path, network_path)
+    def set_paths(self, content_path, style_path, network_path):
         self.content_path = content_path
         self.style_path   = style_path
         self.network_path = network_path
