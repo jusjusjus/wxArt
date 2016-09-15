@@ -15,6 +15,7 @@ import os
 from .imagebutton import ImageButton
 from .EmailCtrl import EmailCtrl
 from .camerabutton import CameraButton
+from .ArtistManager import ArtistManager
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -175,7 +176,8 @@ class frame(wx.Frame):
         # gether information
         content_path = self.content_image.get_path_to_image()   # Get path to content.
         style_path   = self.style_image.get_path_to_image()     # Get path to style.
-        network_info = None                                     # Get Network information.
+        network_path = ''                                       # Get Network information.
 
         # Send the information
-
+        arts_manager = ArtistManager(self, content_path, style_path, network_path)
+        arts_manager.run()
