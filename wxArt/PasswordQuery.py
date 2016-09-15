@@ -26,4 +26,4 @@ class PasswordQuery(wx.Dialog):
     
     def set_password(self, evt):
         self.password = self.user.GetValue()
-        self.Destroy()
+        self.Show(False)
