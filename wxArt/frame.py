@@ -32,6 +32,8 @@ class frame(wx.Frame):
     def __init__(self, *args, **kwargs):
         super(frame, self).__init__(*args, **kwargs)
         self.Maximize(True)
+        
+        self.arts_manager = ArtistManager(self)
 
         #
         # ~~~~~ auiManager ~~~~~
@@ -179,5 +181,5 @@ class frame(wx.Frame):
         network_path = ''                                       # Get Network information.
 
         # Send the information
-        arts_manager = ArtistManager(self, content_path, style_path, network_path)
-        arts_manager.run()
+        self.arts_manager.set_paths(content_path, style_path, network_path)
+        self.arts_manager.run()
