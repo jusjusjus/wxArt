@@ -8,12 +8,13 @@
 # ==============================================================================
 #
 import wx
+from .imagebutton import ImageButton
 import cv, cv2
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # % CameraButton class
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-class CameraButton(wx.BitmapButton):
+class CameraButton(ImageButton):
 
     def __init__(self, fps, *args, **kwargs):
         super(CameraButton, self).__init__(*args, **kwargs)
@@ -37,6 +38,9 @@ class CameraButton(wx.BitmapButton):
         self.video_on = True                        # Flag indicate video state.
 
         self.Bind(wx.EVT_BUTTON, self.halt_start_video, self)
+
+        # set value for path_to_image 
+        self.path_to_image = "./snapshot.jpg"
 
 
     def NextCam_Frame(self, event):
@@ -74,7 +78,7 @@ class CameraButton(wx.BitmapButton):
     def halt_start_video(self, event):
 
         if self.video_on == True:
-            self.timer.Stop()
+            self.take_snapshot()
             self.video_on = False
 
         else:
@@ -82,3 +86,15 @@ class CameraButton(wx.BitmapButton):
             self.video_on = True
 
 
+    def take_snapshot(self):
+        self.timer.Stop()   # Stop timer.  Remember: last snapshot is still in cam2bmp.
+        image = self.cam2bmp.ConvertToImage() #.Mirror()    : Don't mirror!
+        image.SaveFile(self.path_to_image, wx.BITMAP_TYPE_JPEG)
+       
+
+    def get_path_to_image(self): # overwrite
+
+        if self.video_on == True:           # forgot to turn it off.  Let's do it:
+            self.halt_start_video( None )   # Trigger halt event.  Halting takes a snapshot.
+        
+        return super(CameraButton, self).get_path_to_image()   # Call mother function.
