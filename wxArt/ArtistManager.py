@@ -21,11 +21,12 @@ class ArtistManager(object):
 
     _pwd_title = "Password for %s on %s" % (_sftp_username, _sftp_server)
 
-    def __init__(self, parent, content_path, style_path, network_path):
-
+    def __init__(self, parent):
+        self.parent = parent
         self.query_password()
 
-        self.parent       = parent
+
+    def set_paths(self, content_path, style_path, network_path)
         self.content_path = content_path
         self.style_path   = style_path
         self.network_path = network_path
