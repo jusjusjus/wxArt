@@ -53,7 +53,7 @@ class CameraButton(ImageButton):
         if ret:
             cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
             self.CopyFromBuffer(cam_frame)
-            self.Refresh()
+            # self.Refresh() # unnecessary
 
 
     def InitBitmapBuffer(self, cam_frame):
@@ -91,11 +91,10 @@ class CameraButton(ImageButton):
         self.timer.Stop()   # Stop timer.  Remember: last snapshot is still in cam2bmp.
         image = self.cam2bmp.ConvertToImage() #.Mirror()    : Don't mirror!
         image.SaveFile(self.path_to_image, wx.BITMAP_TYPE_JPEG)
-       
 
     def get_path_to_image(self): # overwrite
 
         if self.video_on == True:           # forgot to turn it off.  Let's do it:
             self.halt_start_video( None )   # Trigger halt event.  Halting takes a snapshot.
-        
+
         return super(CameraButton, self).get_path_to_image()   # Call mother function.

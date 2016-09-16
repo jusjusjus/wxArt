@@ -16,6 +16,7 @@ from .imagebutton import ImageButton
 from .EmailCtrl import EmailCtrl
 from .camerabutton import CameraButton
 from .ArtistManager import ArtistManager
+from .styledialog import StyleDialog
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -93,7 +94,7 @@ class frame(wx.Frame):
         # slider
         slider_vsizer=wx.BoxSizer(wx.VERTICAL)
         # actual slider
-        slider = self.slider = wx.Slider(main_panel, -1, 4, 0, 4, wx.DefaultPosition, (250,-1), style=wx.SL_AUTOTICKS)
+        slider = self.slider = wx.Slider(main_panel, -1, 2, 0, 4, wx.DefaultPosition, (250,-1), style=wx.SL_AUTOTICKS)
         # slider labels
         slider_label_sizer = wx.BoxSizer(wx.HORIZONTAL)
         slider_min_label = wx.StaticText(main_panel,-1,"Style")
@@ -119,6 +120,11 @@ class frame(wx.Frame):
         output_vsizer.Add(picture_image, 1, wx.EXPAND | wx.ALL, 10)
         output_vsizer.Add(slider_vsizer, 0, wx.EXPAND | wx.ALL , 10)
         output_vsizer.Add(email_sizer, 0, wx.EXPAND | wx.ALL, 10)
+
+        #
+        # ~~~~~ initialize style dialog ~~~~~
+        self.styledlg = StyleDialog(self,-1)
+        self.styledlg.current_path = self.style_image.get_path_to_image()
 
         #
         # ~~~~~ bind events to functions ~~~~~
@@ -147,16 +153,9 @@ class frame(wx.Frame):
 
 
     def load_style(self, event):
-        # This should work as a dropdown menu, if needed.
-        dialog = wx.FileDialog(self,
-                               "Stilschema laden...",
-                               "",
-                               "",
-                               "Image files (*.png)|*.png",
-                               wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
-
-        if dialog.ShowModal() == wx.ID_OK:
-            self.style_image.load_image(dialog.GetPath())
+        self.styledlg.ShowModal()
+        self.style_image.load_image(self.styledlg.current_path)
+        self.style_image.image_fit()
 
 
     def send_as_email(self, event):
