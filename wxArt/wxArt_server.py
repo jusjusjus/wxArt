@@ -66,7 +66,7 @@ class wxArt_server(object):
 
     def execute(self, worker, input, output, alpha):
 
-        style_weight   = 1e2
+        style_weight   = 1e2 * alpha
         content_weight = 1e0
 
         command = ['ssh',             'jschwab@%s' % (worker),
