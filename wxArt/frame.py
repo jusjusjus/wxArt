@@ -12,6 +12,7 @@
 import wx
 import wx.lib.agw.aui as aui
 import os
+from .image import Image
 from .imagebutton import ImageButton
 from .EmailCtrl import EmailCtrl
 from .camerabutton import CameraButton
@@ -89,25 +90,7 @@ class frame(wx.Frame):
         # top: output image
         # middle: slider to change alpha value
         # bottom: email line, input email address and button to send mail
-        picture_image = self.picture_image = ImageButton(main_panel, -1)
-
-        # slider
-        slider_vsizer=wx.BoxSizer(wx.VERTICAL)
-        # actual slider
-        slider = self.slider = wx.Slider(main_panel, -1, 2, 0, 4, wx.DefaultPosition, (250,-1), style=wx.SL_AUTOTICKS)
-        # slider labels
-        slider_label_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        slider_min_label = wx.StaticText(main_panel,-1,"Style")
-        slider_mid_label = wx.StaticText(main_panel,-1,"<===>")
-        slider_max_label = wx.StaticText(main_panel,-1,"Content")
-        slider_label_sizer.Add(slider_min_label, 0, wx.EXPAND, 0)
-        slider_label_sizer.Add(wx.StaticText(main_panel, -1, ""), 1, wx.EXPAND, 0)
-        slider_label_sizer.Add(slider_mid_label, 0, wx.EXPAND, 0)
-        slider_label_sizer.Add(wx.StaticText(main_panel, -1, ""), 1, wx.EXPAND, 0)
-        slider_label_sizer.Add(slider_max_label, 0, wx.EXPAND, 0)
-        # add actual slider and slider labels to slider
-        slider_vsizer.Add(slider,0,wx.EXPAND,0)
-        slider_vsizer.Add(slider_label_sizer,0,wx.EXPAND,0)
+        picture_image = self.picture_image = Image(main_panel, -1)  # Image.slider_vsizer has to be set later!
 
         # email line
         email_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -118,7 +101,7 @@ class frame(wx.Frame):
         email_sizer.Add(email_button, 0, wx.ALL, 10)
 
         output_vsizer.Add(picture_image, 1, wx.EXPAND | wx.ALL, 10)
-        output_vsizer.Add(slider_vsizer, 0, wx.EXPAND | wx.ALL , 10)
+        output_vsizer.Add(picture_image.slider_vsizer, 0, wx.EXPAND | wx.ALL , 10)
         output_vsizer.Add(email_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         #
