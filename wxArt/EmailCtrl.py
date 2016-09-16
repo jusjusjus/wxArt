@@ -26,7 +26,7 @@ class EmailCtrl(wx.TextCtrl):
         super(EmailCtrl, self).__init__(*args, **kwargs)
         
         # Set the password dynamically when the program starts. (TO DO)
-        self.password = ""
+        self.password = ""  # XXX
         self.query_password()
 
 
@@ -72,7 +72,7 @@ class EmailCtrl(wx.TextCtrl):
 
     def query_password(self):
         
-        while False:
+        while False:    # XXX
             dialog = PasswordQuery(None, size=wx.Size(300, 50), title=self._pwd_title)
             dialog.ShowModal()
 

@@ -178,7 +178,7 @@ class frame(wx.Frame):
         # gether information
         content_path = self.content_image.get_path_to_image()   # Get path to content.
         style_path   = self.style_image.get_path_to_image()     # Get path to style.
-        network_path = ''                                       # Get Network information.
+        network_path = './dummy'                                # Get Network information.
 
         # Send the information
         self.arts_manager.set_paths(content_path, style_path, network_path)

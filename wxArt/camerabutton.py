@@ -10,6 +10,7 @@
 import wx
 from .imagebutton import ImageButton
 import cv, cv2
+import tempfile
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # % CameraButton class
@@ -40,7 +41,7 @@ class CameraButton(ImageButton):
         self.Bind(wx.EVT_BUTTON, self.halt_start_video, self)
 
         # set value for path_to_image 
-        self.path_to_image = "./snapshot.jpg"
+        self.path_to_image = "./content.jpg"
 
 
     def NextCam_Frame(self, event):

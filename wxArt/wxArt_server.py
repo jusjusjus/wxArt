@@ -3,9 +3,8 @@
 import os
 import argparse
 import shutil
-
-
-
+import numpy as np
+import subprocess
 
 
 
@@ -26,6 +25,7 @@ MAINDIR = 'wxArt_files/'
 STYLEDIR    = MAINDIR + 'styles/'
 CONTENTDIR  = MAINDIR + 'content/'
 FIGUREDIR   = MAINDIR + 'figures/'
+NETWORKDIR  = MAINDIR + 'network/'
 
 CONTENTNAME = 'content.jpg'
 CONTENTPATH = CONTENTDIR + CONTENTNAME
@@ -35,11 +35,14 @@ NUM_FIGURES = 6
 FIGUREPATHS = ["%s%s%i.jpg" % (FIGUREDIR, FIGUREBASE, i) for i in range(NUM_FIGURES)]
 
 
+
+
 class wxArt_server(object):
 
-    _iterations = 200
-    _size       = 256
-    _program = 'neural_style.lua' # dummy name
+    _iterations = 10
+    _size       = 128
+    _program    = 'Code/deepart/neural-style/neural_style.lua' # dummy name
+    _workers    = ['algol01', 'algol02']
 
     def __init__(self, style):
         assert os.path.exists(style), "Artistic style '%s' non-existent." % style
@@ -54,33 +57,39 @@ class wxArt_server(object):
 
     def run(self):
 
+        self.alpha = np.arange(10.)/float(10)
+
         for i in xrange(NUM_FIGURES-1):
-            self.execute(FIGUREPATHS[i], FIGUREPATHS[i+1], self.alpha[i])
+            self.execute('algol01', FIGUREPATHS[i], FIGUREPATHS[i+1], self.alpha[i])
+            #            worker     Input           Output            style_weight/content_weight
 
 
-    def execute(self, input, output, alpha):
+    def execute(self, worker, input, output, alpha):
 
-        style_weight   = 1e3
-        content_weight = 5e0
+        style_weight   = 1e2
+        content_weight = 1e0
 
-        command = ['th',              self._program,
+        command = ['ssh',             'jschwab@%s' % (worker),
+                   'th',              self._program,
                    '-style_image',    self.style,
                    '-content_image',  input,
-                   '-style_weight',   style_weight,
-                   '-content_weight', content_weight,
+                   '-style_weight',   str(style_weight),
+                   '-content_weight', str(content_weight),
                    '-style_layers',   self.style_layers,
                    '-content_layers', self.content_layers,
                    '-output_image',   output,
-                   '-num_iterations', self._iterations,
-                   '-image_size',     self._size,
+                   '-num_iterations', str(self._iterations),
+                   '-save_iter',      str(self._iterations),    # save only final picture
+                   '-image_size',     str(self._size),
                    '-init',           'image']  # Initialize with input image.
 
+        #print ' '.join(command)
         subprocess.call(command)
 
 
     @staticmethod
     def make_directory_structure():
-        for DIR in [ MAINDIR, STYLEDIR, CONTENTDIR, FIGUREDIR ]:
+        for DIR in [ MAINDIR, STYLEDIR, CONTENTDIR, FIGUREDIR, NETWORKDIR ]:
             if not os.path.exists(DIR):
                 os.mkdir( DIR )
 
@@ -88,7 +97,8 @@ class wxArt_server(object):
     @staticmethod
     def cleanup_figures():
         for figure in FIGUREPATHS:
-            os.remove(figure)
+            if os.path.exists(figure):
+                os.remove(figure)
 
 
 
