@@ -159,7 +159,7 @@ class ArtistManager(object):
             wx.MessageBox("Something went terribly wrong.")
             return
         
-        while True: # XXX
+        while False: # XXX
             dialog = PasswordQuery(None, size=wx.Size(300, 50), title=self._pwd_title)
             dialog.ShowModal()
 
@@ -170,6 +170,6 @@ class ArtistManager(object):
 
         #self.upload_files([self._server_path])   # XXX
         # initialize the server
-        connection = pysftp.Connection(*self._sftp_args, **self._sftp_kwargs)
-        connection.execute("python wxArt_server.py --init")
-        connection.close()
+        #connection = pysftp.Connection(*self._sftp_args, **self._sftp_kwargs)
+        #connection.execute("python wxArt_server.py --init")
+        #connection.close()
