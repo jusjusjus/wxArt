@@ -9,14 +9,9 @@
 # ==============================================================================
 #
 import wx
-import numpy as np
 import wx.lib.agw.aui as aui
 import os
-
-if __name__=='__main__':
-    from imagebutton import ImageButton
-else:
-    from .imagebutton import ImageButton
+from .imagebutton import ImageButton
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,6 +20,7 @@ else:
 class StyleDialog(wx.Dialog):
     _styledir = os.path.dirname(__file__) + '/../resources/styles'
     _buttonSize = (250,250)
+    _ncolumns = 5
     def __init__(self,*args,**kwargs):
         super(StyleDialog,self).__init__(*args, **kwargs)
 
@@ -41,25 +37,16 @@ class StyleDialog(wx.Dialog):
         # ~~~~~ panel and sizer ~~~~~
         # styles make centered dialog of three styles per row
         # manager = aui.AuiManager(self)
-
         panel = wx.Panel(self, -1, size=wx.Size(-1, -1), style = wx.NO_BORDER)
         panel.SetBackgroundColour(wx.WHITE)
 
-        # self.Add(panel)
-        # manager.AddPane(panel, pane)
-        # manager.Update()
-
-        ncols = len(self.file_dict)/3
-        if len(self.file_dict)%3:
-            ncols+=1
-        grid = wx.GridBagSizer(hgap=1,vgap=1)
-        panel.SetSizer(grid)
-
         #
-        # ~~~~~ fill grid sizer ~~~~~
+        # ~~~~~ construct and fill grid sizer ~~~~~
         # add buttons and info into vertical sizer
         # add vertical sizer into grid, rows=3
-        for i in np.arange(len(self.file_dict))[::-1]:
+        grid = wx.GridBagSizer(hgap=1,vgap=1)
+        panel.SetSizer(grid)
+        for i in range(len(self.file_dict)):
             # generate sizer and image button
             vsizer = wx.BoxSizer(wx.VERTICAL)
             ibutton = ImageButton(panel,-1,size=self._buttonSize)
@@ -72,7 +59,7 @@ class StyleDialog(wx.Dialog):
             for info in self.file_dict[i]['info']:
                 vsizer.Add(wx.StaticText(panel,-1,info),0,wx.ALIGN_CENTER_HORIZONTAL | wx.ALIGN_TOP,0)
             # add to grid
-            pos = (i%3,i/3)
+            pos = (i/self._ncolumns,i%self._ncolumns)
             grid.Add(vsizer, pos=pos)
             # BIND BUTTON
             # needs to be done here!!
@@ -80,22 +67,26 @@ class StyleDialog(wx.Dialog):
         # fit dialog around grid
         grid.Fit(self)
 
-
     def OnClick(self, event, string):
+        '''
+        change current path to path of clicked image path
+        '''
         self.current_path = string
         self.Close()
 
     def load_files(self):
-        #
-        # ~~~~~ load list of files and images ~~~~~
-        # files list of dicts:
-        # name (name of file)
-        # info (each info extracted from file)
-        #     '-' separates info
-        #     '_' translates to white space
-        # image
-        # generate file name list
+        '''
+        load list of files and images
+        files list of dicts:
+        name (name of file)
+        info (each info extracted from file)
+            '-' separates info
+            '_' translates to white space
+        image
+        generate file name list
+        '''
         file_names = os.listdir(self._styledir) # file name list
+        file_names.sort()
         # generate file info list
         file_info = list() # translate file names into infos
         for name in file_names:
@@ -117,24 +108,3 @@ class StyleDialog(wx.Dialog):
             for i in range(3):
                 dictionary[keys[i]]=values[i]
             self.file_dict.append(dictionary)
-
-if __name__=='__main__':
-    def OnClick(event, dialog):
-        dialog.ShowModal()
-
-    app=wx.App()
-    frame = wx.Frame(None)
-    sizer=wx.BoxSizer(wx.VERTICAL)
-    button = wx.Button(frame,-1,label='Open Dialog')
-    dialog=StyleDialog(frame)
-
-    frame.SetSizer(sizer)
-    sizer.Add(button, 0, wx.ALL | wx.ALIGN_CENTER, 10)
-
-    sizer.Fit(frame)
-
-    button.Bind(wx.EVT_BUTTON,lambda event: OnClick(event, dialog))
-
-    frame.Show()
-
-    app.MainLoop() # start the control loop.

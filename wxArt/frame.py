@@ -91,7 +91,7 @@ class frame(wx.Frame):
         # slider
         slider_vsizer=wx.BoxSizer(wx.VERTICAL)
         # actual slider
-        slider = self.slider = wx.Slider(main_panel, -1, 4, 0, 4, wx.DefaultPosition, (250,-1), style=wx.SL_AUTOTICKS)
+        slider = self.slider = wx.Slider(main_panel, -1, 2, 0, 4, wx.DefaultPosition, (250,-1), style=wx.SL_AUTOTICKS)
         # slider labels
         slider_label_sizer = wx.BoxSizer(wx.HORIZONTAL)
         slider_min_label = wx.StaticText(main_panel,-1,"Style")
