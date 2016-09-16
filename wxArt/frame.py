@@ -155,7 +155,6 @@ class frame(wx.Frame):
         self.style_image.image_fit()
 
 
-
     def send_as_email(self, event):
         # Gather attachment info.
         content_path = self.content_image.get_path_to_image()
