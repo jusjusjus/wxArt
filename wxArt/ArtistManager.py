@@ -10,10 +10,7 @@ import numpy as np
 
 class ArtistManager(object):
 
-    _sftp_server   = 'newton'
-    _sftp_username = 'jschwab'
-    _sftp_args     = (_sftp_server,)
-    _sftp_kwargs   = dict(username=_sftp_username, password='') # XXX
+    _sftp_kwargs   = dict(host='newton', username='jschwab', password='') # XXX
     _server_path   = wxArt_server.__file__.strip('c')   # because of the .pyc files
 
     _remote_filenames = wxArt_server.FIGUREPATHS
@@ -23,10 +20,10 @@ class ArtistManager(object):
     _pb_max = len(_remote_filenames)
     _pb_style = wx.PD_CAN_ABORT | wx.PD_ELAPSED_TIME | wx.PD_REMAINING_TIME
 
-    _pwd_title = "Password for %s on %s" % (_sftp_username, _sftp_server)
 
     def __init__(self, parent):
         self.parent = parent
+        self.sftp_kwargs = self._sftp_kwargs
         self.query_password()
 
 
@@ -45,7 +42,7 @@ class ArtistManager(object):
         uploaded_files = 0
 
         try:
-            connection = pysftp.Connection(*self._sftp_args, **self._sftp_kwargs)
+            connection = pysftp.Connection(**self.sftp_kwargs)
      
             for filename, remote_dir in zip(files, remote_dirs):
                 self.put( connection, filename, remote_dir )
@@ -77,7 +74,7 @@ class ArtistManager(object):
             except: continue
 
         # Download ..
-        connection = pysftp.Connection(*self._sftp_args, **self._sftp_kwargs)
+        connection = pysftp.Connection(**self.sftp_kwargs)
         connection.get_d( wxArt_server.FIGUREDIR, '.' )
         connection.close()
 
@@ -87,7 +84,7 @@ class ArtistManager(object):
 
 
     def issue_command(self, command):
-        connection = pysftp.Connection(*self._sftp_args, **self._sftp_kwargs)
+        connection = pysftp.Connection(**self.sftp_kwargs)
         response = connection.execute(' '.join(command))  # command should return a list of files.
         print "####################"
         print "Message from remote:"
@@ -99,7 +96,7 @@ class ArtistManager(object):
 
 
     def is_remote_style_present(self): # check if the style-file is present remotely.
-        connection = pysftp.Connection(*self._sftp_args, **self._sftp_kwargs)
+        connection = pysftp.Connection(**self.sftp_kwargs)
         present = connection.exists( self.remote_style_path )
         connection.close()
         return present
@@ -111,7 +108,7 @@ class ArtistManager(object):
 
 
     def count_remote_files(self):
-        connection = pysftp.Connection(*self._sftp_args, **self._sftp_kwargs)
+        connection = pysftp.Connection(**self.sftp_kwargs)
         are_present = [connection.exists( filename ) for filename in self._remote_filenames]
         connection.close()
         return np.sum( are_present )
@@ -160,16 +157,22 @@ class ArtistManager(object):
             return
         
         while False: # XXX
-            dialog = PasswordQuery(None, size=wx.Size(300, 50), title=self._pwd_title)
+            query_fields = [('host',   self.sftp_kwargs['host']),
+                            ('username', self.sftp_kwargs['username']),
+                            ('password', self.sftp_kwargs['password'])]
+
+            pwd_title = "Compute with.."
+
+            dialog = PasswordQuery(query_fields, None, size=wx.Size(200, 100), title=pwd_title)
             dialog.ShowModal()
 
-            self._sftp_kwargs["password"] = dialog.password
-            
+            self.sftp_kwargs.update(dialog.input)
+
             if self.upload_files([self._server_path]) > 0:   # Returns number of successfully uploaded files.
                 break                                        # The server file has to be uploaded anyway.
 
-        #self.upload_files([self._server_path])   # XXX
+        #self.upload_files([self._server_path])                                 # XXX
         # initialize the server
-        #connection = pysftp.Connection(*self._sftp_args, **self._sftp_kwargs)
-        #connection.execute("python wxArt_server.py --init")
-        #connection.close()
+        #connection = pysftp.Connection(*self._sftp_args, **self._sftp_kwargs)  # XXX
+        #connection.execute("python wxArt_server.py --init")                    # XXX
+        #connection.close()                                                     # XXX

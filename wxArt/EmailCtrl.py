@@ -73,10 +73,17 @@ class EmailCtrl(wx.TextCtrl):
     def query_password(self):
         
         while False:    # XXX
-            dialog = PasswordQuery(None, size=wx.Size(300, 50), title=self._pwd_title)
+            query_fields = [('server_name', self.server_name),
+                            ('sender',      self.sender),
+                            ('port',        self.port),
+                            ('password',    '')               ]
+
+            dialog = PasswordQuery(query_fields, None, size=wx.Size(400, 150), title=self._pwd_title)
             dialog.ShowModal()
 
-            self.password = dialog.password
+            for key in dialog.input:
+                if key == 'port':   setattr(self, key, int(dialog.input[key]))      # this has to be an integer.
+                else:               setattr(self, key, dialog.input[key])           # these should be strings.
             
             if self.send_email(recipient=self.default_recipient):   # Returns true if email successfully sent.
                 return

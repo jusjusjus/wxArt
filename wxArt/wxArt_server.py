@@ -43,6 +43,7 @@ class wxArt_server(object):
     _size       = 128
     _program    = 'Code/deepart/neural-style/neural_style.lua' # dummy name
     _workers    = ['algol01', 'algol02']
+    _user       = 'jschwab'
 
     def __init__(self, style):
         assert os.path.exists(style), "Artistic style '%s' non-existent." % style
@@ -69,7 +70,7 @@ class wxArt_server(object):
         style_weight   = 1e2 * alpha
         content_weight = 1e0
 
-        command = ['ssh',             'jschwab@%s' % (worker),
+        command = ['ssh',             '%s@%s' % (self._user, worker),
                    'th',              self._program,
                    '-style_image',    self.style,
                    '-content_image',  input,
