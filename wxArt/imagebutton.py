@@ -36,6 +36,7 @@ class ImageButton(wx.BitmapButton):
     def get_path_to_image(self):
         return self.path_to_image
 
+
     def image_fit(self):
         # get size
         width, height = self.GetSize()
