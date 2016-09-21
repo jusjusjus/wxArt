@@ -39,8 +39,8 @@ FIGUREPATHS = ["%s%s%i.jpg" % (FIGUREDIR, FIGUREBASE, i) for i in range(NUM_FIGU
 
 class wxArt_server(object):
 
-    _iterations = 10
-    _size       = 128
+    _iterations = 800
+    _size       = 512
     _program    = 'Code/deepart/neural-style/neural_style.lua' # dummy name
     _workers    = ['algol01', 'algol02']
     _user       = 'jschwab'
@@ -68,7 +68,7 @@ class wxArt_server(object):
     def execute(self, worker, input, output, alpha):
 
         style_weight   = 1e2 * alpha
-        content_weight = 1e0
+        content_weight = 5e0
 
         command = ['ssh',             '%s@%s' % (self._user, worker),
                    'th',              self._program,
@@ -81,8 +81,8 @@ class wxArt_server(object):
                    '-output_image',   output,
                    '-num_iterations', str(self._iterations),
                    '-save_iter',      str(self._iterations),    # save only final picture
-                   '-image_size',     str(self._size),
-                   '-init',           'image']  # Initialize with input image.
+                   '-image_size',     str(self._size)]#
+                   #'-init',           'image']  # Initialize with input image.
 
         #print ' '.join(command)
         subprocess.call(command)
