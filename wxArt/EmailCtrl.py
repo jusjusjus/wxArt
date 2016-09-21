@@ -27,6 +27,7 @@ class EmailCtrl(wx.TextCtrl):
         
         # Set the password dynamically when the program starts. (TO DO)
         self.password = ""  # XXX
+        self.SetEditable(False)
         self.query_password()
 
 
@@ -71,8 +72,11 @@ class EmailCtrl(wx.TextCtrl):
 
 
     def query_password(self):
+
+        if self.IsEditable():
+            return
         
-        while False:    # XXX
+        while True:    # XXX
             query_fields = [('server_name', self.server_name),
                             ('sender',      self.sender),
                             ('port',        self.port),
@@ -81,9 +85,15 @@ class EmailCtrl(wx.TextCtrl):
             dialog = PasswordQuery(query_fields, None, size=wx.Size(400, 150), title=self._pwd_title)
             dialog.ShowModal()
 
-            for key in dialog.input:
-                if key == 'port':   setattr(self, key, int(dialog.input[key]))      # this has to be an integer.
-                else:               setattr(self, key, dialog.input[key])           # these should be strings.
+            if dialog.OK == True:
+                for key in dialog.input:
+                    if key == 'port':   setattr(self, key, int(dialog.input[key]))      # this has to be an integer.
+                    else:               setattr(self, key, dialog.input[key])           # these should be strings.
             
-            if self.send_email(recipient=self.default_recipient):   # Returns true if email successfully sent.
+                if self.send_email(recipient=self.default_recipient):   # Returns true if email successfully sent.
+                    self.SetEditable(True)
+                    return
+
+            else:   # dialog not ok:  Disable the ability to enter stuff into the text field.
+                self.SetEditable(False)
                 return

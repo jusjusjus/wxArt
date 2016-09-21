@@ -16,7 +16,7 @@ from .artwork import Artwork
 from .stylebutton import StyleButton
 from .EmailCtrl import EmailCtrl
 from .camerabutton import CameraButton
-from .ArtistManager import ArtistManager
+#from .ArtistManager import ArtistManager
 from .styledialog import StyleDialog
 
 
@@ -35,7 +35,7 @@ class frame(wx.Frame):
         super(frame, self).__init__(*args, **kwargs)
         self.Maximize(True)
         
-        self.arts_manager = ArtistManager(self)
+        #self.arts_manager = ArtistManager(self)
 
         #
         # ~~~~~ auiManager ~~~~~
@@ -121,6 +121,11 @@ class frame(wx.Frame):
 
 
     def send_as_email(self, event):
+
+        if not self.email_field.IsEditable():
+            wx.MessageBox("Unable to send as e-mail.")
+            return
+
         # Gather attachment info.
         content_path = self.content_image.get_path_to_image()
         style_path   = self.style_image.get_path_to_image()

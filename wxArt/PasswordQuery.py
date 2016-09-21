@@ -29,9 +29,12 @@ class PasswordQuery(wx.Dialog):
             sizer.Add(input_widget, 0,  wx.ALL | wx.CENTER | wx.EXPAND, 1)
 
             self.Bind(wx.EVT_TEXT_ENTER, self.get_input, input_widget)
+            self.Bind(wx.EVT_CHAR_HOOK, self.OnKey)
 
 
         self.SetSizer(sizer)
+
+        self.OK = False
 
     
     
@@ -40,4 +43,13 @@ class PasswordQuery(wx.Dialog):
         for key in self.user:
             self.input[key] = self.user[key].GetValue()
 
+        self.OK = True
         self.Show(False)
+
+
+    def OnKey(self, evt):
+        evt.Skip()
+        if evt.GetKeyCode() == 27:
+            self.Show(False)
+
+
