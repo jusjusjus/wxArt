@@ -12,8 +12,8 @@
 import wx
 import wx.lib.agw.aui as aui
 import os
-from .image import Image
-from .imagebutton import ImageButton
+from .artwork import Artwork
+from .stylebutton import StyleButton
 from .EmailCtrl import EmailCtrl
 from .camerabutton import CameraButton
 from .ArtistManager import ArtistManager
@@ -46,16 +46,12 @@ class frame(wx.Frame):
 
         # panes
         main_pane    = self.main_pane    = aui.AuiPaneInfo().CloseButton(False).PaneBorder(False).CaptionVisible(False).Center().Resizable()
-        network_pane = self.network_pane = aui.AuiPaneInfo().CloseButton(False).PaneBorder(False).CaptionVisible(True).Left().Caption("Netzwerk Struktur").Resizable()
 
         # panels
         main_panel    = self.main_panel    = wx.Panel(self, -1, size=wx.Size(-1, -1), style=wx.NO_BORDER)
-        network_panel = self.network_panel = wx.Panel(self, -1, size=wx.Size(self._min_pane, -1), style=wx.NO_BORDER)   # todo
-        network_panel.SetBackgroundColour(wx.WHITE)
 
         # add panels to manager
         manager.AddPane(main_panel,    main_pane)
-        manager.AddPane(network_panel, network_pane)
         manager.Update()
 
         #
@@ -77,7 +73,7 @@ class frame(wx.Frame):
         # top: content (camera button)
         # bottom: style (image button)
         content_image = self.content_image = CameraButton(7, main_panel,-1)
-        style_image   = self.style_image   = ImageButton(main_panel, -1)
+        style_image   = self.style_image   = StyleButton(main_panel, -1)
         paint_button = self.paint_button   = wx.Button(main_panel, -1, "Jetzt malen!")
 
         input_vsizer.Add(content_image, 1, wx.EXPAND | wx.ALL, 10)
@@ -90,7 +86,7 @@ class frame(wx.Frame):
         # top: output image
         # middle: slider to change alpha value
         # bottom: email line, input email address and button to send mail
-        picture_image = self.picture_image = Image(main_panel, -1)  # Image.slider_vsizer has to be set later!
+        picture_image = self.picture_image = Artwork(main_panel, -1)  # Image.slider_vsizer has to be set later!
 
         # email line
         email_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -101,7 +97,6 @@ class frame(wx.Frame):
         email_sizer.Add(email_button, 0, wx.ALL, 10)
 
         output_vsizer.Add(picture_image, 1, wx.EXPAND | wx.ALL, 10)
-        output_vsizer.Add(picture_image.slider_vsizer, 0, wx.EXPAND | wx.ALL , 10)
         output_vsizer.Add(email_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         #
@@ -116,25 +111,9 @@ class frame(wx.Frame):
         self.Bind(wx.EVT_BUTTON,     self.issue_paint,   paint_button)
         self.Bind(wx.EVT_BUTTON,     self.send_as_email, email_button)  #
         self.Bind(wx.EVT_TEXT_ENTER, self.send_as_email, email_field)   # Redundancy.
-        # network panel
-        network_panel.Bind(wx.EVT_ENTER_WINDOW, self.hide_show_pane)    # Enter
-        network_panel.Bind(wx.EVT_LEAVE_WINDOW, self.hide_show_pane)    # Leave
 
     #
     # ~~~~~ functions bound to events ~~~~~
-    def hide_show_pane(self, event):
-        '''
-        hide and show panel depending on whether focused of not
-        '''
-        if event.GetEventType() == wx.EVT_ENTER_WINDOW.typeId:
-            new_size = self._max_pane
-        else:
-            new_size = self._min_pane
-
-        self.network_pane.MinSize(wx.Size(new_size, -1)).Fixed()
-        self.manager.Update()
-
-
     def load_style(self, event):
         self.styledlg.ShowModal()
         self.style_image.load_image(self.styledlg.current_path)
@@ -160,8 +139,12 @@ class frame(wx.Frame):
         # gether information
         content_path = self.content_image.get_path_to_image()   # Get path to content.
         style_path   = self.style_image.get_path_to_image()     # Get path to style.
-        network_path = './dummy'                                # Get Network information.
+
+        style_model_path = self.style_image.get_style_model()
+
+        self.picture_image.set_style(style_model_path)
+        self.picture_image.load_image(content_path)
 
         # Send the information
-        self.arts_manager.set_paths(content_path, style_path, network_path)
-        self.arts_manager.run()
+        #self.arts_manager.set_paths(content_path, style_path)
+        #self.arts_manager.run()
