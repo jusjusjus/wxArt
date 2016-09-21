@@ -10,7 +10,6 @@
 #
 import os
 import wx
-from .ArtistManager import ArtistManager
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # % Image class
@@ -18,8 +17,6 @@ from .ArtistManager import ArtistManager
 class Image(wx.StaticBitmap):
 
     _defaultImage_path = os.path.dirname(__file__) + "/../resources/default_picture.jpg"
-
-    _max  = ArtistManager._pb_max-1    # = len(_remote_filenames)-1
 
     def __init__(self, parent, *args, **kwargs):
         super(Image, self).__init__(parent, *args, **kwargs)

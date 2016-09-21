@@ -16,7 +16,6 @@ from .artwork import Artwork
 from .stylebutton import StyleButton
 from .EmailCtrl import EmailCtrl
 from .camerabutton import CameraButton
-#from .ArtistManager import ArtistManager
 from .styledialog import StyleDialog
 
 
@@ -34,7 +33,7 @@ class frame(wx.Frame):
     def __init__(self, *args, **kwargs):
         super(frame, self).__init__(*args, **kwargs)
         self.Maximize(True)
-        
+
         #self.arts_manager = ArtistManager(self)
 
         #
