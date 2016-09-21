@@ -12,9 +12,11 @@
 import wx
 import wx.lib.agw.aui as aui
 import os
+from .image import Image
 from .imagebutton import ImageButton
 from .EmailCtrl import EmailCtrl
 from .camerabutton import CameraButton
+from .ArtistManager import ArtistManager
 from .styledialog import StyleDialog
 
 
@@ -32,6 +34,8 @@ class frame(wx.Frame):
     def __init__(self, *args, **kwargs):
         super(frame, self).__init__(*args, **kwargs)
         self.Maximize(True)
+        
+        self.arts_manager = ArtistManager(self)
 
         #
         # ~~~~~ auiManager ~~~~~
@@ -72,7 +76,7 @@ class frame(wx.Frame):
         # mange the user input
         # top: content (camera button)
         # bottom: style (image button)
-        content_image = self.content_image = CameraButton(15, main_panel,-1)
+        content_image = self.content_image = CameraButton(7, main_panel,-1)
         style_image   = self.style_image   = ImageButton(main_panel, -1)
         paint_button = self.paint_button   = wx.Button(main_panel, -1, "Jetzt malen!")
 
@@ -86,25 +90,7 @@ class frame(wx.Frame):
         # top: output image
         # middle: slider to change alpha value
         # bottom: email line, input email address and button to send mail
-        picture_image = self.picture_image = ImageButton(main_panel, -1)
-
-        # slider
-        slider_vsizer=wx.BoxSizer(wx.VERTICAL)
-        # actual slider
-        slider = self.slider = wx.Slider(main_panel, -1, 2, 0, 4, wx.DefaultPosition, (250,-1), style=wx.SL_AUTOTICKS)
-        # slider labels
-        slider_label_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        slider_min_label = wx.StaticText(main_panel,-1,"Style")
-        slider_mid_label = wx.StaticText(main_panel,-1,"<===>")
-        slider_max_label = wx.StaticText(main_panel,-1,"Content")
-        slider_label_sizer.Add(slider_min_label, 0, wx.EXPAND, 0)
-        slider_label_sizer.Add(wx.StaticText(main_panel, -1, ""), 1, wx.EXPAND, 0)
-        slider_label_sizer.Add(slider_mid_label, 0, wx.EXPAND, 0)
-        slider_label_sizer.Add(wx.StaticText(main_panel, -1, ""), 1, wx.EXPAND, 0)
-        slider_label_sizer.Add(slider_max_label, 0, wx.EXPAND, 0)
-        # add actual slider and slider labels to slider
-        slider_vsizer.Add(slider,0,wx.EXPAND,0)
-        slider_vsizer.Add(slider_label_sizer,0,wx.EXPAND,0)
+        picture_image = self.picture_image = Image(main_panel, -1)  # Image.slider_vsizer has to be set later!
 
         # email line
         email_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -115,7 +101,7 @@ class frame(wx.Frame):
         email_sizer.Add(email_button, 0, wx.ALL, 10)
 
         output_vsizer.Add(picture_image, 1, wx.EXPAND | wx.ALL, 10)
-        output_vsizer.Add(slider_vsizer, 0, wx.EXPAND | wx.ALL , 10)
+        output_vsizer.Add(picture_image.slider_vsizer, 0, wx.EXPAND | wx.ALL , 10)
         output_vsizer.Add(email_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         #
@@ -174,7 +160,8 @@ class frame(wx.Frame):
         # gether information
         content_path = self.content_image.get_path_to_image()   # Get path to content.
         style_path   = self.style_image.get_path_to_image()     # Get path to style.
-        network_info = None                                     # Get Network information.
+        network_path = './dummy'                                # Get Network information.
 
         # Send the information
-
+        self.arts_manager.set_paths(content_path, style_path, network_path)
+        self.arts_manager.run()

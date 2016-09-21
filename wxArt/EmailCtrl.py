@@ -18,14 +18,16 @@ class EmailCtrl(wx.TextCtrl):
     default_recipient = "jschwabedal@gmail.com"
     subject           = "Neural artistic style"
     body              = "Here comes some descriptive text."
+    
+    _pwd_title        = "Password for %s" % (sender)
 
     def __init__(self, *args, **kwargs):
         kwargs["style"] = wx.TE_PROCESS_ENTER               # Style allows the text field to intercept pressing <Enter>
         super(EmailCtrl, self).__init__(*args, **kwargs)
         
         # Set the password dynamically when the program starts. (TO DO)
-        self.password = ""
-        #self.query_password()
+        self.password = ""  # XXX
+        self.query_password()
 
 
     def send_email(self, attachments=[], recipient=None): # attachments is a list of filenames.
@@ -70,11 +72,18 @@ class EmailCtrl(wx.TextCtrl):
 
     def query_password(self):
         
-        while False:
-            dialog = PasswordQuery(None, size=wx.Size(200, 50))
+        while False:    # XXX
+            query_fields = [('server_name', self.server_name),
+                            ('sender',      self.sender),
+                            ('port',        self.port),
+                            ('password',    '')               ]
+
+            dialog = PasswordQuery(query_fields, None, size=wx.Size(400, 150), title=self._pwd_title)
             dialog.ShowModal()
 
-            self.password = dialog.password
+            for key in dialog.input:
+                if key == 'port':   setattr(self, key, int(dialog.input[key]))      # this has to be an integer.
+                else:               setattr(self, key, dialog.input[key])           # these should be strings.
             
             if self.send_email(recipient=self.default_recipient):   # Returns true if email successfully sent.
                 return

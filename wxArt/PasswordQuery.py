@@ -4,26 +4,40 @@ import wx
 
 class PasswordQuery(wx.Dialog):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, fields, *args, **kwargs):
         super(PasswordQuery, self).__init__(*args, **kwargs)
 
-        self.password = ""
+        self.input = dict()
 
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer = wx.GridSizer(cols=2)
 
-        label = wx.StaticText(self, label="Enter Password")
+        self.user = dict()
 
-        sizer.Add(label, 0, wx.ALL | wx.CENTER, 5)
+        for (field, default) in fields:
+            label = wx.StaticText(self, label=field, size=wx.Size(200, -1))
 
-        self.user = wx.TextCtrl(self, style=wx.TE_PASSWORD | wx.TE_PROCESS_ENTER)
+            if field == 'password':
+                input_widget = wx.TextCtrl(self, size=wx.Size(200, -1), style=wx.TE_PASSWORD | wx.TE_PROCESS_ENTER)
 
-        sizer.Add(self.user, 0, wx.ALL | wx.CENTER, 5)
+            else:
+                input_widget = wx.TextCtrl(self, size=wx.Size(200, -1), style=wx.TE_PROCESS_ENTER)
+
+            input_widget.SetValue(str(default))
+            self.user[field] = input_widget
+
+            sizer.Add(label, 0,         wx.ALL | wx.CENTER | wx.EXPAND, 1)
+            sizer.Add(input_widget, 0,  wx.ALL | wx.CENTER | wx.EXPAND, 1)
+
+            self.Bind(wx.EVT_TEXT_ENTER, self.get_input, input_widget)
+
 
         self.SetSizer(sizer)
 
-        self.Bind(wx.EVT_TEXT_ENTER, self.set_password, self.user)
     
     
-    def set_password(self, evt):
-        self.password = self.user.GetValue()
-        self.Destroy()
+    def get_input(self, evt):
+
+        for key in self.user:
+            self.input[key] = self.user[key].GetValue()
+
+        self.Show(False)
