@@ -12,6 +12,18 @@ from .imagebutton import ImageButton
 import cv, cv2
 import tempfile
 
+
+def capture_stub():
+    """Stub to give images without camera.
+
+    :return:
+    """
+    from skimage import io
+    import os
+    image = io.imread(os.path.abspath(os.path.dirname(__file__) + "/../resources/selfie.jpg"))
+    return 0, image[:, :, [2, 1, 0]]
+
+
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # % CameraButton class
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,6 +37,9 @@ class CameraButton(ImageButton):
         # generate capture object and start reading camera buffer
         self.capture = cv2.VideoCapture(0)
         ret, cam_frame = self.capture.read()
+        if cam_frame is None:
+            ret, cam_frame = capture_stub()
+        print cam_frame.shape
         cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
 
         # make bitmap from buffer
@@ -50,6 +65,8 @@ class CameraButton(ImageButton):
         and update the bitmap
         '''
         ret, cam_frame = self.capture.read()
+        if cam_frame is None:
+            ret, cam_frame = capture_stub()
         if ret:
             cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
             self.CopyFromBuffer(cam_frame)
