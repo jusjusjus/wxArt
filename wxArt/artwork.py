@@ -25,3 +25,6 @@ class Artwork(Image):
         super(Artwork, self).load_image(self._output_path)
 
 
+
+    def load_video(self, video_path): # video_path zeigt auf nen gif
+        pass

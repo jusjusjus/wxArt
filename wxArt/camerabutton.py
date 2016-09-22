@@ -98,3 +98,7 @@ class CameraButton(ImageButton):
             self.halt_start_video( None )   # Trigger halt event.  Halting takes a snapshot.
 
         return super(CameraButton, self).get_path_to_image()   # Call mother function.
+
+
+    def snapchat(self, duration=2., frame_rate=7):    # duration in seconds
+        pass
