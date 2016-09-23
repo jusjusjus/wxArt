@@ -20,15 +20,20 @@ class App(wx.App):
         steal constructor from parent class
         necessary???
         '''
+        if kwargs.has_key('debug'):
+            self.debug = kwargs.pop('debug')
+        else:
+            self.debug = False
+
         super(App, self).__init__(*args, **kwargs)
+
 
     def OnInit(self):
         '''
         makes frame, gets called on init
         '''
-        self.frame = frame(None, size=wx.Size(1500, 800), title='wxArt')
+        self.frame = frame(None, size=wx.Size(1500, 800), title='wxArt', debug=self.debug)
         self.frame.Show()
-        self.frame.email_field.query_password()
         return True
 
     def OnExitApp(self, evt):

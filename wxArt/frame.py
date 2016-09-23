@@ -31,6 +31,12 @@ class frame(wx.Frame):
     _min_pane = 0
 
     def __init__(self, *args, **kwargs):
+
+        if kwargs.has_key('debug'):
+            self.debug = kwargs.pop('debug')
+        else:
+            self.debug = False
+
         super(frame, self).__init__(*args, **kwargs)
         self.Maximize(True)
 
@@ -104,7 +110,7 @@ class frame(wx.Frame):
 
         #
         # ~~~~~ initialize style dialog ~~~~~
-        self.styledlg = StyleDialog(self,-1)
+        self.styledlg = StyleDialog(self, -1, debug=self.debug)
         self.styledlg.current_path = self.style_image.get_path_to_image()
 
         #
