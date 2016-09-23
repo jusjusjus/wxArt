@@ -30,12 +30,16 @@ class frame(wx.Frame):
     _max_pane = 200
     _min_pane = 0
 
+    default_kwargs = dict(debug = False,
+                          fps   = 20)
+
     def __init__(self, *args, **kwargs):
 
-        if kwargs.has_key('debug'):
-            self.debug = kwargs.pop('debug')
-        else:
-            self.debug = False
+        for att in self.default_kwargs.keys():
+            if kwargs.has_key(att):
+                setattr(self, att, kwargs.pop(att))
+            else:
+                setattr(self, att, self.default_kwargs[att])
 
         super(frame, self).__init__(*args, **kwargs)
         self.Maximize(True)
@@ -78,7 +82,7 @@ class frame(wx.Frame):
         # mange the user input
         # top: content (camera button)
         # bottom: style (image button)
-        content_image = self.content_image = CameraButton(7, main_panel,-1)
+        content_image = self.content_image = CameraButton(main_panel,-1, debug=self.debug, fps=self.fps)
         style_image   = self.style_image   = StyleButton(main_panel, -1)
         paint_button = self.paint_button   = wx.Button(main_panel, -1, "Jetzt malen!")
         video_button = self.video_button   = wx.Button(main_panel, -1, "Jetzt video!")

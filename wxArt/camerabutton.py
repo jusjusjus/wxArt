@@ -12,14 +12,16 @@ from .imagebutton import ImageButton
 import cv, cv2
 import tempfile
 
+from skimage import io
+import os
+
+
 
 def capture_stub():
     """Stub to give images without camera.
 
     :return:
     """
-    from skimage import io
-    import os
     image = io.imread(os.path.abspath(os.path.dirname(__file__) + "/../resources/selfie.jpg"))
     return 0, image[:, :, [2, 1, 0]]
 
@@ -29,17 +31,30 @@ def capture_stub():
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 class CameraButton(ImageButton):
 
-    def __init__(self, fps, *args, **kwargs):
+    default_kwargs = dict(debug = False,
+                          fps   = 20)
+
+    def __init__(self, *args, **kwargs):
+
+        for att in self.default_kwargs.keys():
+            if kwargs.has_key(att):
+                setattr(self, att, kwargs.pop(att))
+            else:
+                setattr(self, att, self.default_kwargs[att])
+
         super(CameraButton, self).__init__(*args, **kwargs)
 
-        assert fps<=30, 'CameraButton: frame rate too high, too high...'
+        #assert self.fps < 30, 'CameraButton: frame rate too high, too high...'
 
         # generate capture object and start reading camera buffer
         self.capture = cv2.VideoCapture(0)
         ret, cam_frame = self.capture.read()
         if cam_frame is None:
             ret, cam_frame = capture_stub()
-        print cam_frame.shape
+
+        if self.debug:
+            print cam_frame
+
         cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
 
         # make bitmap from buffer
@@ -47,7 +62,7 @@ class CameraButton(ImageButton):
 
         # start timer to control redraw
         self.timer = wx.Timer(self)
-        self.timer.Start(1000./fps)
+        self.timer.Start(1000./self.fps)
 
         # bindings to redraw
         self.Bind(wx.EVT_TIMER, self.NextCam_Frame)
@@ -80,17 +95,14 @@ class CameraButton(ImageButton):
         # how to real with the raw bitmaps.
         height, width = cam_frame.shape[:2]
         self.cam2bmp = wx.BitmapFromBuffer(width, height, cam_frame) # buffer for bitmap
+        self.SetBitmap(self.cam2bmp)
 
 
     def CopyFromBuffer(self, cam_frame):
         # The rescaling (2 lines down) is kind of funky:  it only increases in
         # size and it doesn't keep the aspect ratio intact.
-        self.cam2bmp.CopyFromBuffer(cam_frame)
-        mirror_image = self.cam2bmp.ConvertToImage().Mirror()
-        #width, height = self.GetClientSize()                   # defunkt
-        #mirror_image = mirror_image.Scale(width, height)       # defunkt
-        self.bmp = wx.BitmapFromImage( mirror_image )
-        self.SetBitmap(self.bmp)
+        self.cam2bmp.CopyFromBuffer(cam_frame[:, ::-1, :].flatten())
+        self.Refresh()
 
 
     def halt_start_video(self, event):
@@ -106,7 +118,7 @@ class CameraButton(ImageButton):
 
     def take_snapshot(self):
         self.timer.Stop()   # Stop timer.  Remember: last snapshot is still in cam2bmp.
-        image = self.cam2bmp.ConvertToImage() #.Mirror()    : Don't mirror!
+        image = self.cam2bmp.ConvertToImage().Mirror()    # Don't mirror!
         image.SaveFile(self.path_to_image, wx.BITMAP_TYPE_JPEG)
 
     def get_path_to_image(self): # overwrite
