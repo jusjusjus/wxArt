@@ -122,9 +122,12 @@ class frame(wx.Frame):
         # main panel
         self.Bind(wx.EVT_BUTTON,     self.load_style,    style_image)
         self.Bind(wx.EVT_BUTTON,     self.issue_paint,   paint_button)
-        self.Bind(wx.EVT_BUTTON,     self.issue_video,   video_button)
         self.Bind(wx.EVT_BUTTON,     self.send_as_email, email_button)  #
         self.Bind(wx.EVT_TEXT_ENTER, self.send_as_email, email_field)   # Redundancy.
+
+
+        self.Bind(wx.EVT_BUTTON,          content_image.take_snapchat, video_button)
+        content_image.Bind(wx.EVT_TIMER,  self.issue_video,            content_image.rectimer)
 
     #
     # ~~~~~ functions bound to events ~~~~~
@@ -170,4 +173,4 @@ class frame(wx.Frame):
 
 
     def issue_video(self, event):
-        pass
+        wx.MessageBox("Video done!")

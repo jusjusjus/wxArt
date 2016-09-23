@@ -64,9 +64,15 @@ class CameraButton(ImageButton):
         self.timer = wx.Timer(self)
         self.timer.Start(1000./self.fps)
 
+        # Timer that does recording.
+        self.rectimer = wx.Timer(self)
+
         # bindings to redraw
-        self.Bind(wx.EVT_TIMER, self.NextCam_Frame)
+        self.Bind(wx.EVT_TIMER, self.NextCam_Frame, self.timer)
         self.video_on = True                        # Flag indicate video state.
+
+        self.Bind(wx.EVT_TIMER, self.video_off, self.rectimer)
+        self.recording = False
 
         self.Bind(wx.EVT_BUTTON, self.halt_start_video, self)
 
@@ -85,7 +91,22 @@ class CameraButton(ImageButton):
         if ret:
             cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
             self.CopyFromBuffer(cam_frame)
-            # self.Refresh() # unnecessary
+
+
+    def record_next_frame(self, event):
+        '''
+        when time is right get new snapshot from camera
+        and update the bitmap
+        '''
+        ret, cam_frame = self.capture.read()
+        if cam_frame is None:
+            ret, cam_frame = capture_stub()
+        if ret:
+            cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
+            self.CopyFromBuffer(cam_frame)
+
+            self.record_image(filename="frame_{:03d}.jpg".format(self.i_rec))
+            self.i_rec += 1
 
 
     def InitBitmapBuffer(self, cam_frame):
@@ -107,7 +128,7 @@ class CameraButton(ImageButton):
 
     def halt_start_video(self, event):
 
-        if self.video_on == True:
+        if self.video_on == True and not self.recording:
             self.take_snapshot()
             self.video_on = False
 
@@ -118,8 +139,29 @@ class CameraButton(ImageButton):
 
     def take_snapshot(self):
         self.timer.Stop()   # Stop timer.  Remember: last snapshot is still in cam2bmp.
+        self.record_image(self.path_to_image)
+
+
+    def record_image(self, filename):
         image = self.cam2bmp.ConvertToImage().Mirror()    # Don't mirror!
-        image.SaveFile(self.path_to_image, wx.BITMAP_TYPE_JPEG)
+        image.SaveFile(filename, wx.BITMAP_TYPE_JPEG)
+    
+
+    def take_snapchat(self, evt):
+        wx.MessageBox("SNAPCHAT!")
+        self.i_rec = 0  # frame index for the recording
+        self.Unbind(wx.EVT_TIMER, self.timer)
+        self.Bind(wx.EVT_TIMER, self.record_next_frame, self.timer)
+        self.rectimer.Start(1000. * 2.) # Record 2 seconds of video.
+
+
+    def video_off(self, evt):
+        evt.Skip()
+
+        self.rectimer.Stop()
+        self.Unbind(wx.EVT_TIMER, self.timer)
+        self.Bind(wx.EVT_TIMER, self.NextCam_Frame, self.timer)
+
 
     def get_path_to_image(self): # overwrite
 
