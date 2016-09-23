@@ -31,7 +31,7 @@ class Artwork(Image):
 
         for i in xrange(1000):
             frame = 'frame_%03i.jpg' % (i)
-            conv_frame = 'convframe_%03i.jpg' % (i)
+            conv_frame = 'conv_frame_%03i.jpg' % (i)
 
             if os.path.exists(frame):
                 print 'Processing ..', frame
@@ -41,10 +41,7 @@ class Artwork(Image):
                 break
 
         subprocess.call(['rm', self._gif_path])
-        subprocess.call(['ffmpeg', '-f', 'image2', '-framerate', str(fps), '-i', 'convframe_%03d.jpg', self._gif_path])
+        subprocess.call(['ffmpeg', '-f', 'image2', '-framerate', str(fps), '-i', 'conv_frame_%03d.jpg', self._gif_path])
         self.LoadFile(self._gif_path)
         self.Play()
 
-
-    def load_video(self, video_path): # video_path zeigt auf nen gif
-        pass
