@@ -11,12 +11,14 @@
 #
 import wx
 import wx.lib.agw.aui as aui
+import wx.animate
 import os
 from .artwork import Artwork
 from .stylebutton import StyleButton
 from .EmailCtrl import EmailCtrl
 from .camerabutton import CameraButton
 from .styledialog import StyleDialog
+import subprocess
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -99,7 +101,10 @@ class frame(wx.Frame):
         # top: output image
         # middle: slider to change alpha value
         # bottom: email line, input email address and button to send mail
-        picture_image = self.picture_image = Artwork(main_panel, -1)  # Image.slider_vsizer has to be set later!
+        artwork_image = self.artwork_image = Artwork(main_panel, -1)  # Image.slider_vsizer has to be set later!
+
+        #artwork_gif = self.artwork_gif = wx.animate.GIFAnimationCtrl(main_panel, -1, "")  # Image.slider_vsizer has to be set later!
+        #artwork_gif.Show(False)
 
         # email line
         email_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -109,7 +114,8 @@ class frame(wx.Frame):
         email_sizer.Add(email_field, 1, wx.EXPAND | wx.ALL, 10)
         email_sizer.Add(email_button, 0, wx.ALL, 10)
 
-        output_vsizer.Add(picture_image, 1, wx.EXPAND | wx.ALL, 10)
+        output_vsizer.Add(artwork_image, 1, wx.EXPAND | wx.ALL, 10)
+        #output_vsizer.Add(artwork_gif, 1, wx.EXPAND | wx.ALL, 10)
         output_vsizer.Add(email_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         #
@@ -146,7 +152,7 @@ class frame(wx.Frame):
         # Gather attachment info.
         content_path = self.content_image.get_path_to_image()
         style_path   = self.style_image.get_path_to_image()
-        picture_path = self.picture_image.get_path_to_image()
+        picture_path = self.artwork_image.get_path_to_image()
 
         attachments = []
         attachments.append(content_path)        # add path to content.
@@ -164,13 +170,19 @@ class frame(wx.Frame):
 
         style_model_path = self.style_image.get_style_model()
 
-        self.picture_image.set_style(style_model_path)
-        self.picture_image.load_image(content_path)
+        self.artwork_image.set_style(style_model_path)
+        self.artwork_image.load_image(content_path)
+
+
+    def issue_video(self, event):
+        self.content_image.video_off(None)
+
+        style_path       = self.style_image.get_path_to_image()     # Get path to style.
+        style_model_path = self.style_image.get_style_model()
+
+        self.artwork_image.set_style(style_model_path)
+        self.artwork_image.load_images(fps=self.fps)
 
         # Send the information
         #self.arts_manager.set_paths(content_path, style_path)
         #self.arts_manager.run()
-
-
-    def issue_video(self, event):
-        wx.MessageBox("Video done!")

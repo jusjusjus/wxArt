@@ -68,10 +68,8 @@ class CameraButton(ImageButton):
         self.rectimer = wx.Timer(self)
 
         # bindings to redraw
-        self.Bind(wx.EVT_TIMER, self.NextCam_Frame, self.timer)
-        self.video_on = True                        # Flag indicate video state.
-
-        self.Bind(wx.EVT_TIMER, self.video_off, self.rectimer)
+        self.Bind(wx.EVT_TIMER, self.show_next_frame, self.timer)
+        self.video_on  = True                        # Flag indicate video state.
         self.recording = False
 
         self.Bind(wx.EVT_BUTTON, self.halt_start_video, self)
@@ -80,7 +78,7 @@ class CameraButton(ImageButton):
         self.path_to_image = "./content.jpg"
 
 
-    def NextCam_Frame(self, event):
+    def show_next_frame(self, event):
         '''
         when time is right get new snapshot from camera
         and update the bitmap
@@ -148,7 +146,7 @@ class CameraButton(ImageButton):
     
 
     def take_snapchat(self, evt):
-        wx.MessageBox("SNAPCHAT!")
+        self.recording = True
         self.i_rec = 0  # frame index for the recording
         self.Unbind(wx.EVT_TIMER, self.timer)
         self.Bind(wx.EVT_TIMER, self.record_next_frame, self.timer)
@@ -156,11 +154,11 @@ class CameraButton(ImageButton):
 
 
     def video_off(self, evt):
-        evt.Skip()
-
+        self.recording = False
         self.rectimer.Stop()
         self.Unbind(wx.EVT_TIMER, self.timer)
-        self.Bind(wx.EVT_TIMER, self.NextCam_Frame, self.timer)
+        self.Bind(wx.EVT_TIMER, self.show_next_frame, self.timer)
+        if not evt == None: evt.Skip()
 
 
     def get_path_to_image(self): # overwrite
