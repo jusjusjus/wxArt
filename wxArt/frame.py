@@ -11,12 +11,14 @@
 #
 import wx
 import wx.lib.agw.aui as aui
+import wx.animate
 import os
 from .artwork import Artwork
 from .stylebutton import StyleButton
 from .EmailCtrl import EmailCtrl
 from .camerabutton import CameraButton
 from .styledialog import StyleDialog
+import subprocess
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,7 +32,17 @@ class frame(wx.Frame):
     _max_pane = 200
     _min_pane = 0
 
+    default_kwargs = dict(debug = False,
+                          fps   = 20)
+
     def __init__(self, *args, **kwargs):
+
+        for att in self.default_kwargs.keys():
+            if kwargs.has_key(att):
+                setattr(self, att, kwargs.pop(att))
+            else:
+                setattr(self, att, self.default_kwargs[att])
+
         super(frame, self).__init__(*args, **kwargs)
         self.Maximize(True)
 
@@ -61,6 +73,7 @@ class frame(wx.Frame):
         main_hsizer = wx.BoxSizer(wx.HORIZONTAL)
         input_vsizer = wx.BoxSizer(wx.VERTICAL)
         output_vsizer = wx.BoxSizer(wx.VERTICAL)
+        button_hsizer = wx.BoxSizer(wx.HORIZONTAL)
 
         main_panel.SetSizer(main_hsizer)
         main_hsizer.Add(input_vsizer, 1, wx.EXPAND | wx.ALL, 10)
@@ -71,13 +84,16 @@ class frame(wx.Frame):
         # mange the user input
         # top: content (camera button)
         # bottom: style (image button)
-        content_image = self.content_image = CameraButton(7, main_panel,-1)
+        content_image = self.content_image = CameraButton(main_panel,-1, debug=self.debug, fps=self.fps)
         style_image   = self.style_image   = StyleButton(main_panel, -1)
         paint_button = self.paint_button   = wx.Button(main_panel, -1, "Jetzt malen!")
+        video_button = self.video_button   = wx.Button(main_panel, -1, "Jetzt video!")
 
         input_vsizer.Add(content_image, 1, wx.EXPAND | wx.ALL, 10)
         input_vsizer.Add(style_image, 1, wx.EXPAND | wx.ALL, 10)
-        input_vsizer.Add(paint_button, 0, wx.ALIGN_CENTER | wx.ALL, 10)
+        input_vsizer.Add(button_hsizer, 1, wx.EXPAND | wx.ALL, 10)
+        button_hsizer.Add(paint_button, 1, wx.EXPAND | wx.ALL, 10)
+        button_hsizer.Add(video_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
 
         #
         # ~~~~~ output sizer (right) ~~~~~
@@ -85,7 +101,10 @@ class frame(wx.Frame):
         # top: output image
         # middle: slider to change alpha value
         # bottom: email line, input email address and button to send mail
-        picture_image = self.picture_image = Artwork(main_panel, -1)  # Image.slider_vsizer has to be set later!
+        artwork_image = self.artwork_image = Artwork(main_panel, -1)  # Image.slider_vsizer has to be set later!
+
+        #artwork_gif = self.artwork_gif = wx.animate.GIFAnimationCtrl(main_panel, -1, "")  # Image.slider_vsizer has to be set later!
+        #artwork_gif.Show(False)
 
         # email line
         email_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -95,12 +114,13 @@ class frame(wx.Frame):
         email_sizer.Add(email_field, 1, wx.EXPAND | wx.ALL, 10)
         email_sizer.Add(email_button, 0, wx.ALL, 10)
 
-        output_vsizer.Add(picture_image, 1, wx.EXPAND | wx.ALL, 10)
+        output_vsizer.Add(artwork_image, 1, wx.EXPAND | wx.ALL, 10)
+        #output_vsizer.Add(artwork_gif, 1, wx.EXPAND | wx.ALL, 10)
         output_vsizer.Add(email_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         #
         # ~~~~~ initialize style dialog ~~~~~
-        self.styledlg = StyleDialog(self,-1)
+        self.styledlg = StyleDialog(self, -1, debug=self.debug)
         self.styledlg.current_path = self.style_image.get_path_to_image()
 
         #
@@ -110,6 +130,10 @@ class frame(wx.Frame):
         self.Bind(wx.EVT_BUTTON,     self.issue_paint,   paint_button)
         self.Bind(wx.EVT_BUTTON,     self.send_as_email, email_button)  #
         self.Bind(wx.EVT_TEXT_ENTER, self.send_as_email, email_field)   # Redundancy.
+
+
+        self.Bind(wx.EVT_BUTTON,          content_image.take_snapchat, video_button)
+        content_image.Bind(wx.EVT_TIMER,  self.issue_video,            content_image.rectimer)
 
     #
     # ~~~~~ functions bound to events ~~~~~
@@ -128,7 +152,7 @@ class frame(wx.Frame):
         # Gather attachment info.
         content_path = self.content_image.get_path_to_image()
         style_path   = self.style_image.get_path_to_image()
-        picture_path = self.picture_image.get_path_to_image()
+        picture_path = self.artwork_image.get_path_to_image()
 
         attachments = []
         attachments.append(content_path)        # add path to content.
@@ -146,8 +170,18 @@ class frame(wx.Frame):
 
         style_model_path = self.style_image.get_style_model()
 
-        self.picture_image.set_style(style_model_path)
-        self.picture_image.load_image(content_path)
+        self.artwork_image.set_style(style_model_path)
+        self.artwork_image.load_image(content_path)
+
+
+    def issue_video(self, event):
+        self.content_image.video_off(None)
+
+        style_path       = self.style_image.get_path_to_image()     # Get path to style.
+        style_model_path = self.style_image.get_style_model()
+
+        self.artwork_image.set_style(style_model_path)
+        self.artwork_image.load_images(fps=self.fps)
 
         # Send the information
         #self.arts_manager.set_paths(content_path, style_path)

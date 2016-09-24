@@ -22,6 +22,12 @@ class StyleDialog(wx.Dialog):
     _buttonSize = (250,250)
     _ncolumns = 5
     def __init__(self,*args,**kwargs):
+        
+        if kwargs.has_key('debug'):
+            self.debug = kwargs.pop('debug')
+        else:
+            self.debug = False
+
         super(StyleDialog,self).__init__(*args, **kwargs)
 
         self.SetTitle('Select Style')
@@ -64,6 +70,9 @@ class StyleDialog(wx.Dialog):
             # BIND BUTTON
             # needs to be done here!!
             ibutton.Bind(wx.EVT_BUTTON, lambda evt, string=ibutton.get_path_to_image() : self.OnClick(evt, string))
+
+            if self.debug == True: break
+
         # fit dialog around grid
         grid.Fit(self)
 

@@ -10,11 +10,12 @@
 #
 import os
 import wx
+import wx.animate
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # % Image class
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-class Image(wx.StaticBitmap):
+class Image(wx.animate.GIFAnimationCtrl):
 
     _defaultImage_path = os.path.dirname(__file__) + "/../resources/default_picture.jpg"
 
@@ -51,7 +52,7 @@ class Image(wx.StaticBitmap):
         else:
             image = image.Rescale(dummy_width, height, wx.IMAGE_QUALITY_HIGH)
         bitmap = image.ConvertToBitmap()
-        self.SetBitmap(bitmap)
+        self.SetInactiveBitmap(bitmap)
         self.Refresh()
 
 
@@ -60,4 +61,8 @@ class Image(wx.StaticBitmap):
         bitmap = wx.Image(image_path, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
         self.SetBitmap(bitmap)
 
+
+    def SetBitmap(self, bitmap):
+        self.SetInactiveBitmap(bitmap)
+        self.Stop()
 
