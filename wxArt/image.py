@@ -59,6 +59,10 @@ class Image(wx.animate.GIFAnimationCtrl):
     def load_image(self, image_path):
         self.path_to_image = image_path
         bitmap = wx.Image(image_path, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-        self.SetInactiveBitmap(bitmap)
+        self.SetBitmap(bitmap)
 
+
+    def SetBitmap(self, bitmap):
+        self.SetInactiveBitmap(bitmap)
+        self.Stop()
 
