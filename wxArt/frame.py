@@ -12,12 +12,12 @@
 import wx
 import wx.lib.agw.aui as aui
 import wx.animate
-import os
 from .artwork import Artwork
 from .stylebutton import StyleButton
 from .EmailCtrl import EmailCtrl
 from .camerabutton import CameraButton
 from .styledialog import StyleDialog
+from .postcard import Postcard
 import subprocess
 
 
@@ -86,14 +86,16 @@ class frame(wx.Frame):
         # bottom: style (image button)
         content_image = self.content_image = CameraButton(main_panel,-1, debug=self.debug, fps=self.fps)
         style_image   = self.style_image   = StyleButton(main_panel, -1)
-        paint_button = self.paint_button   = wx.Button(main_panel, -1, "Jetzt malen!")
-        video_button = self.video_button   = wx.Button(main_panel, -1, "Jetzt video!")
+        paint_button = self.paint_button   = wx.Button(main_panel, -1, "Photo")
+        video_button = self.video_button   = wx.Button(main_panel, -1, "Video")
+        pcard_button = self.pcard_button   = wx.Button(main_panel, -1, "Postkarte")
 
         input_vsizer.Add(content_image, 1, wx.EXPAND | wx.ALL, 10)
         input_vsizer.Add(style_image, 1, wx.EXPAND | wx.ALL, 10)
         input_vsizer.Add(button_hsizer, 1, wx.EXPAND | wx.ALL, 10)
-        button_hsizer.Add(paint_button, 1, wx.EXPAND | wx.ALL, 10)
+        button_hsizer.Add(paint_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
         button_hsizer.Add(video_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
+        button_hsizer.Add(pcard_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
 
         #
         # ~~~~~ output sizer (right) ~~~~~
@@ -128,6 +130,7 @@ class frame(wx.Frame):
         # main panel
         self.Bind(wx.EVT_BUTTON,     self.load_style,    style_image)
         self.Bind(wx.EVT_BUTTON,     self.issue_paint,   paint_button)
+        self.Bind(wx.EVT_BUTTON,     self.issue_postcard,   pcard_button)
         self.Bind(wx.EVT_BUTTON,     self.send_as_email, email_button)  #
         self.Bind(wx.EVT_TEXT_ENTER, self.send_as_email, email_field)   # Redundancy.
 
@@ -186,3 +189,8 @@ class frame(wx.Frame):
         # Send the information
         #self.arts_manager.set_paths(content_path, style_path)
         #self.arts_manager.run()
+
+
+    def issue_postcard(self, event):
+        pcard_operator = Postcard(self)
+        pcard_operator.create()
