@@ -42,7 +42,7 @@ class ImageButton(wx.BitmapButton):
         width, height = self.GetSize()
 
         # load image and get aspect ratio
-        image_path = self.get_path_to_image()
+        image_path = ImageButton.get_path_to_image(self)
         image = wx.Image(image_path,wx.BITMAP_TYPE_ANY)
         Iwidth, Iheight = image.GetSize()
         aspect_ratio = float(Iwidth)/Iheight
