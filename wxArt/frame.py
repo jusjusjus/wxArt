@@ -54,10 +54,10 @@ class frame(wx.Frame):
         manager = self.manager = aui.AuiManager(self)
 
         # panes
-        main_pane    = self.main_pane    = aui.AuiPaneInfo().CloseButton(False).PaneBorder(False).CaptionVisible(False).Center().Resizable()
+        main_pane  = self.main_pane  = aui.AuiPaneInfo().CloseButton(False).PaneBorder(False).CaptionVisible(False).Center().Resizable()
 
         # panels
-        main_panel    = self.main_panel    = wx.Panel(self, -1, size=wx.Size(-1, -1), style=wx.NO_BORDER)
+        main_panel = self.main_panel = wx.Panel(self, -1, size=wx.Size(-1, -1), style=wx.NO_BORDER)
 
         # add panels to manager
         manager.AddPane(main_panel,    main_pane)
@@ -109,8 +109,6 @@ class frame(wx.Frame):
         # bottom: email line, input email address and button to send mail
         artwork_image = self.artwork_image = Artwork(main_panel, -1)  # Image.slider_vsizer has to be set later!
 
-        #artwork_gif = self.artwork_gif = wx.animate.GIFAnimationCtrl(main_panel, -1, "")  # Image.slider_vsizer has to be set later!
-        #artwork_gif.Show(False)
 
         # email line
         email_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -121,8 +119,10 @@ class frame(wx.Frame):
         email_sizer.Add(email_button, 0, wx.ALL, 10)
 
         output_vsizer.Add(artwork_image, 1, wx.EXPAND | wx.ALL, 10)
-        #output_vsizer.Add(artwork_gif, 1, wx.EXPAND | wx.ALL, 10)
-        output_vsizer.Add(email_sizer, 0, wx.EXPAND | wx.ALL, 10)
+
+        # At the e-mail stuff only if available.
+        if email_field.IsEditable():
+            output_vsizer.Add(email_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         #
         # ~~~~~ initialize style dialog ~~~~~
