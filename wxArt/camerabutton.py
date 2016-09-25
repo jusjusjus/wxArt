@@ -161,6 +161,14 @@ class CameraButton(ImageButton):
         if not evt == None: evt.Skip()
 
 
+    def load_image(self, filename):
+
+        if self.video_on == True:
+            self.halt_start_video( None )   # Trigger halt event.  Halting takes a snapshot.
+
+        super(CameraButton, self).load_image(filename)
+
+
     def get_path_to_image(self): # overwrite
 
         if self.video_on == True:           # forgot to turn it off.  Let's do it:

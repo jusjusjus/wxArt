@@ -63,6 +63,12 @@ class frame(wx.Frame):
         manager.AddPane(main_panel,    main_pane)
         manager.Update()
 
+        menuBar = wx.MenuBar()
+        fileMenu = wx.Menu()
+        menu_open = fileMenu.Append(wx.ID_OPEN, "Open File")
+        menuBar.Append(fileMenu, "&File")
+        self.SetMenuBar(menuBar)
+
         #
         # ~~~~~ main panel (right) ~~~~~
         # hosts two sizer
@@ -132,6 +138,7 @@ class frame(wx.Frame):
         self.Bind(wx.EVT_BUTTON,     self.send_as_email, email_button)  #
         self.Bind(wx.EVT_TEXT_ENTER, self.send_as_email, email_field)   # Redundancy.
 
+        self.Bind(wx.EVT_MENU, self.OnOpenFile, menu_open)
 
         self.Bind(wx.EVT_BUTTON,          content_image.take_snapchat, video_button)
         content_image.Bind(wx.EVT_TIMER,  self.issue_video,            content_image.rectimer)
@@ -152,6 +159,7 @@ class frame(wx.Frame):
         if answer == wx.ID_YES:
             self.artwork_image.arxiv()
             
+        dialog.Destroy()
         #dialog should destroy right away, but doesn't.
 
     def send_as_email(self, event):
@@ -199,3 +207,19 @@ class frame(wx.Frame):
     def issue_postcard(self, event):
         pcard_operator = Postcard(self)
         pcard_operator.create()
+        
+
+    def OnOpenFile(self, event):
+
+        dialog = wx.FileDialog(self,
+                               message="",
+                               style=wx.FD_OPEN)
+
+        if dialog.ShowModal() == wx.ID_OK:
+            paths = dialog.GetPaths()
+            for file in paths:
+                self.content_image.load_image(file)
+                break
+
+        dialog.Destroy()
+

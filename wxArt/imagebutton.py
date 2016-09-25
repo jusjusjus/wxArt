@@ -24,7 +24,7 @@ class ImageButton(wx.BitmapButton):
         # Initial load.  In here, self.path_to_image is set, which is used later
         # to send the pictures to the server for processing.  One should take
         # care that this path is always set correctly.
-        self.load_image(self._defaultImage_path)
+        ImageButton.load_image(self, self._defaultImage_path)
 
 
     def load_image(self, image_path):
