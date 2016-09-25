@@ -3,18 +3,24 @@ import wx
 from .image import Image
 from .fns.generate import ChainerFNS
 import subprocess
+import numpy as np
 import os
 
 
 class Artwork(Image):
 
     _output_path = './artwork.jpg'
+    _arxiv_dir = './arxiv/'
     _gif_path = './artwork.gif'
     _pb_style = wx.PD_CAN_ABORT | wx.PD_ELAPSED_TIME | wx.PD_REMAINING_TIME
 
     def __init__(self, *args, **kwargs):
         self.processor = ChainerFNS(gpu=-1)
         super(Artwork, self).__init__(*args, **kwargs)
+
+        # mkdir for archiving files if it doesn't yet exist.
+        if not os.path.exists(self._arxiv_dir):
+            os.mkdir(self._arxiv_dir)
 
 
     def set_style(self, style):
@@ -79,3 +85,16 @@ class Artwork(Image):
         self.Play()
 
 
+    def new_arxiv_path(self):
+        style = os.path.basename(self.style_path).split('.')[0]                     # raw name of the style
+        path = self._arxiv_dir+style+'_'+str(np.random.randint(10**7)) + '.jpg'     # ./arxiv/<style>_<randint>.jpg
+        
+        return path
+
+
+    def arxiv(self):
+        arxiv_path = self._arxiv_dir    # exists
+        while os.path.exists(arxiv_path):
+            arxiv_path = self.new_arxiv_path()
+        
+        subprocess.call(['cp', self.path_to_image, arxiv_path])

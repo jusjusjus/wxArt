@@ -46,10 +46,8 @@ class frame(wx.Frame):
         super(frame, self).__init__(*args, **kwargs)
         self.Maximize(True)
 
-        #self.arts_manager = ArtistManager(self)
-
         #
-        # ~~~~~ auiManager ~~~~~
+        # ~~~~~ auiManager ~~~~~    # This is not really needed anymore.
         # manage two panels
         # left: network panel
         # right: main panel
@@ -146,6 +144,16 @@ class frame(wx.Frame):
         self.style_image.image_fit()
 
 
+    def query_save(self):
+
+        dialog = wx.MessageDialog(None, "Erlauben Sie uns Ihr Kunstwerk in unserer Zeitschrift zu benutzen?", "Erlaubniserteilung", wx.YES_NO)  # Change text to Ja/Nein
+        answer = dialog.ShowModal()
+
+        if answer == wx.ID_YES:
+            self.artwork_image.arxiv()
+            
+        #dialog should destroy right away, but doesn't.
+
     def send_as_email(self, event):
 
         if not self.email_field.IsEditable():
@@ -157,10 +165,11 @@ class frame(wx.Frame):
         style_path   = self.style_image.get_path_to_image()
         picture_path = self.artwork_image.get_path_to_image()
 
-        attachments = []
-        attachments.append(content_path)        # add path to content.
-        attachments.append(style_path)          # add path to style.
-        attachments.append(picture_path)        # add path to picture.
+        self.query_save()   # This command issues a save-file to the artwork_image if the user allows us.
+
+        attachments = [content_path,        # add path to content.
+                       style_path,            # add path to style.
+                       picture_path]        # add path to picture.
 
         # Issue e-mail-send command.
         self.email_field.send_email(attachments)
@@ -185,10 +194,6 @@ class frame(wx.Frame):
 
         self.artwork_image.set_style(style_model_path)
         self.artwork_image.load_images(fps=self.fps)
-
-        # Send the information
-        #self.arts_manager.set_paths(content_path, style_path)
-        #self.arts_manager.run()
 
 
     def issue_postcard(self, event):
