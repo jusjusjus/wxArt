@@ -12,12 +12,12 @@
 import wx
 import wx.lib.agw.aui as aui
 import wx.animate
-import os
 from .artwork import Artwork
 from .stylebutton import StyleButton
 from .EmailCtrl import EmailCtrl
 from .camerabutton import CameraButton
 from .styledialog import StyleDialog
+from .postcard import Postcard
 import subprocess
 
 
@@ -46,24 +46,28 @@ class frame(wx.Frame):
         super(frame, self).__init__(*args, **kwargs)
         self.Maximize(True)
 
-        #self.arts_manager = ArtistManager(self)
-
         #
-        # ~~~~~ auiManager ~~~~~
+        # ~~~~~ auiManager ~~~~~    # This is not really needed anymore.
         # manage two panels
         # left: network panel
         # right: main panel
         manager = self.manager = aui.AuiManager(self)
 
         # panes
-        main_pane    = self.main_pane    = aui.AuiPaneInfo().CloseButton(False).PaneBorder(False).CaptionVisible(False).Center().Resizable()
+        main_pane  = self.main_pane  = aui.AuiPaneInfo().CloseButton(False).PaneBorder(False).CaptionVisible(False).Center().Resizable()
 
         # panels
-        main_panel    = self.main_panel    = wx.Panel(self, -1, size=wx.Size(-1, -1), style=wx.NO_BORDER)
+        main_panel = self.main_panel = wx.Panel(self, -1, size=wx.Size(-1, -1), style=wx.NO_BORDER)
 
         # add panels to manager
         manager.AddPane(main_panel,    main_pane)
         manager.Update()
+
+        menuBar = wx.MenuBar()
+        fileMenu = wx.Menu()
+        menu_open = fileMenu.Append(wx.ID_OPEN, "Open File")
+        menuBar.Append(fileMenu, "&File")
+        self.SetMenuBar(menuBar)
 
         #
         # ~~~~~ main panel (right) ~~~~~
@@ -86,14 +90,16 @@ class frame(wx.Frame):
         # bottom: style (image button)
         content_image = self.content_image = CameraButton(main_panel,-1, debug=self.debug, fps=self.fps)
         style_image   = self.style_image   = StyleButton(main_panel, -1)
-        paint_button = self.paint_button   = wx.Button(main_panel, -1, "Jetzt malen!")
-        video_button = self.video_button   = wx.Button(main_panel, -1, "Jetzt video!")
+        paint_button = self.paint_button   = wx.Button(main_panel, -1, "Photo")
+        video_button = self.video_button   = wx.Button(main_panel, -1, "Video")
+        pcard_button = self.pcard_button   = wx.Button(main_panel, -1, "Postkarte")
 
         input_vsizer.Add(content_image, 1, wx.EXPAND | wx.ALL, 10)
         input_vsizer.Add(style_image, 1, wx.EXPAND | wx.ALL, 10)
         input_vsizer.Add(button_hsizer, 1, wx.EXPAND | wx.ALL, 10)
-        button_hsizer.Add(paint_button, 1, wx.EXPAND | wx.ALL, 10)
+        button_hsizer.Add(paint_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
         button_hsizer.Add(video_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
+        button_hsizer.Add(pcard_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
 
         #
         # ~~~~~ output sizer (right) ~~~~~
@@ -103,20 +109,23 @@ class frame(wx.Frame):
         # bottom: email line, input email address and button to send mail
         artwork_image = self.artwork_image = Artwork(main_panel, -1)  # Image.slider_vsizer has to be set later!
 
-        #artwork_gif = self.artwork_gif = wx.animate.GIFAnimationCtrl(main_panel, -1, "")  # Image.slider_vsizer has to be set later!
-        #artwork_gif.Show(False)
+        output_vsizer.Add(artwork_image, 1, wx.EXPAND | wx.ALL, 10)
 
-        # email line
-        email_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        # EMAIL
         email_field = self.email_field = EmailCtrl(main_panel, -1)
         email_field.SetHint(u'Zum Verschicken des Bildes bitte eine E-Mail-Adresse angeben.')
-        email_button = wx.Button(main_panel,-1,"Senden")
-        email_sizer.Add(email_field, 1, wx.EXPAND | wx.ALL, 10)
-        email_sizer.Add(email_button, 0, wx.ALL, 10)
 
-        output_vsizer.Add(artwork_image, 1, wx.EXPAND | wx.ALL, 10)
-        #output_vsizer.Add(artwork_gif, 1, wx.EXPAND | wx.ALL, 10)
-        output_vsizer.Add(email_sizer, 0, wx.EXPAND | wx.ALL, 10)
+        if email_field.IsEditable(): # Add the e-mail stuff only if available.
+            email_button = wx.Button(main_panel,-1,"Senden")
+            email_sizer = wx.BoxSizer(wx.HORIZONTAL)
+            email_sizer.Add(email_field, 1, wx.EXPAND | wx.ALL, 10)
+            email_sizer.Add(email_button, 0, wx.ALL, 10)
+            self.Bind(wx.EVT_BUTTON,     self.send_as_email, email_button)  #
+            self.Bind(wx.EVT_TEXT_ENTER, self.send_as_email, email_field)   # Redundancy.
+
+            output_vsizer.Add(email_sizer, 0, wx.EXPAND | wx.ALL, 10)
+        else: # Destroy!
+            email_field.Destroy()
 
         #
         # ~~~~~ initialize style dialog ~~~~~
@@ -128,9 +137,9 @@ class frame(wx.Frame):
         # main panel
         self.Bind(wx.EVT_BUTTON,     self.load_style,    style_image)
         self.Bind(wx.EVT_BUTTON,     self.issue_paint,   paint_button)
-        self.Bind(wx.EVT_BUTTON,     self.send_as_email, email_button)  #
-        self.Bind(wx.EVT_TEXT_ENTER, self.send_as_email, email_field)   # Redundancy.
+        self.Bind(wx.EVT_BUTTON,     self.issue_postcard,   pcard_button)
 
+        self.Bind(wx.EVT_MENU, self.OnOpenFile, menu_open)
 
         self.Bind(wx.EVT_BUTTON,          content_image.take_snapchat, video_button)
         content_image.Bind(wx.EVT_TIMER,  self.issue_video,            content_image.rectimer)
@@ -143,6 +152,17 @@ class frame(wx.Frame):
         self.style_image.image_fit()
 
 
+    def query_save(self):
+
+        dialog = wx.MessageDialog(None, "Erlauben Sie uns Ihr Kunstwerk in unserer Zeitschrift zu benutzen?", "Erlaubniserteilung", wx.YES_NO)  # Change text to Ja/Nein
+        answer = dialog.ShowModal()
+
+        if answer == wx.ID_YES:
+            self.artwork_image.arxiv()
+            
+        dialog.Destroy()
+        #dialog should destroy right away, but doesn't.
+
     def send_as_email(self, event):
 
         if not self.email_field.IsEditable():
@@ -154,10 +174,11 @@ class frame(wx.Frame):
         style_path   = self.style_image.get_path_to_image()
         picture_path = self.artwork_image.get_path_to_image()
 
-        attachments = []
-        attachments.append(content_path)        # add path to content.
-        attachments.append(style_path)          # add path to style.
-        attachments.append(picture_path)        # add path to picture.
+        self.query_save()   # This command issues a save-file to the artwork_image if the user allows us.
+
+        attachments = [content_path,        # add path to content.
+                       style_path,            # add path to style.
+                       picture_path]        # add path to picture.
 
         # Issue e-mail-send command.
         self.email_field.send_email(attachments)
@@ -181,8 +202,25 @@ class frame(wx.Frame):
         style_model_path = self.style_image.get_style_model()
 
         self.artwork_image.set_style(style_model_path)
-        self.artwork_image.load_images(fps=self.fps)
+        self.artwork_image.create_and_load_gif(fps = self.fps)
 
-        # Send the information
-        #self.arts_manager.set_paths(content_path, style_path)
-        #self.arts_manager.run()
+
+    def issue_postcard(self, event):
+        pcard_operator = Postcard(self)
+        pcard_operator.create()
+        
+
+    def OnOpenFile(self, event):
+
+        dialog = wx.FileDialog(self,
+                               message="",
+                               style=wx.FD_OPEN)
+
+        if dialog.ShowModal() == wx.ID_OK:
+            paths = dialog.GetPaths()
+            for file in paths:
+                self.content_image.load_image(file)
+                break
+
+        dialog.Destroy()
+
