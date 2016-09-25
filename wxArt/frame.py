@@ -201,7 +201,7 @@ class frame(wx.Frame):
         style_model_path = self.style_image.get_style_model()
 
         self.artwork_image.set_style(style_model_path)
-        self.artwork_image.load_images(fps=self.fps)
+        self.artwork_image.create_and_load_gif(fps = self.fps)
 
 
     def issue_postcard(self, event):
