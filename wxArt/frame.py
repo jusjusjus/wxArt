@@ -109,20 +109,23 @@ class frame(wx.Frame):
         # bottom: email line, input email address and button to send mail
         artwork_image = self.artwork_image = Artwork(main_panel, -1)  # Image.slider_vsizer has to be set later!
 
-
-        # email line
-        email_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        email_field = self.email_field = EmailCtrl(main_panel, -1)
-        email_field.SetHint(u'Zum Verschicken des Bildes bitte eine E-Mail-Adresse angeben.')
-        email_button = wx.Button(main_panel,-1,"Senden")
-        email_sizer.Add(email_field, 1, wx.EXPAND | wx.ALL, 10)
-        email_sizer.Add(email_button, 0, wx.ALL, 10)
-
         output_vsizer.Add(artwork_image, 1, wx.EXPAND | wx.ALL, 10)
 
-        # At the e-mail stuff only if available.
-        if email_field.IsEditable():
+        # EMAIL
+        email_field = self.email_field = EmailCtrl(main_panel, -1)
+        email_field.SetHint(u'Zum Verschicken des Bildes bitte eine E-Mail-Adresse angeben.')
+
+        if email_field.IsEditable(): # Add the e-mail stuff only if available.
+            email_button = wx.Button(main_panel,-1,"Senden")
+            email_sizer = wx.BoxSizer(wx.HORIZONTAL)
+            email_sizer.Add(email_field, 1, wx.EXPAND | wx.ALL, 10)
+            email_sizer.Add(email_button, 0, wx.ALL, 10)
+            self.Bind(wx.EVT_BUTTON,     self.send_as_email, email_button)  #
+            self.Bind(wx.EVT_TEXT_ENTER, self.send_as_email, email_field)   # Redundancy.
+
             output_vsizer.Add(email_sizer, 0, wx.EXPAND | wx.ALL, 10)
+        else: # Destroy!
+            email_field.Destroy()
 
         #
         # ~~~~~ initialize style dialog ~~~~~
@@ -135,8 +138,6 @@ class frame(wx.Frame):
         self.Bind(wx.EVT_BUTTON,     self.load_style,    style_image)
         self.Bind(wx.EVT_BUTTON,     self.issue_paint,   paint_button)
         self.Bind(wx.EVT_BUTTON,     self.issue_postcard,   pcard_button)
-        self.Bind(wx.EVT_BUTTON,     self.send_as_email, email_button)  #
-        self.Bind(wx.EVT_TEXT_ENTER, self.send_as_email, email_field)   # Redundancy.
 
         self.Bind(wx.EVT_MENU, self.OnOpenFile, menu_open)
 
