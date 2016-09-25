@@ -47,18 +47,7 @@ class CameraButton(ImageButton):
         #assert self.fps < 30, 'CameraButton: frame rate too high, too high...'
 
         # generate capture object and start reading camera buffer
-        self.capture = cv2.VideoCapture(0)
-        ret, cam_frame = self.capture.read()
-        if cam_frame is None:
-            ret, cam_frame = capture_stub()
-
-        if self.debug:
-            print cam_frame
-
-        cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
-
-        # make bitmap from buffer
-        self.InitBitmapBuffer( cam_frame )
+        self.InitBitmapBuffer()
 
         # start timer to control redraw
         self.timer = wx.Timer(self)
@@ -107,24 +96,35 @@ class CameraButton(ImageButton):
             self.i_rec += 1
 
 
-    def InitBitmapBuffer(self, cam_frame):
+    def InitBitmapBuffer(self):
         # Creates cam2bmp - bitmap buffer, that can quickly read out the camera.
         # To make full use of this one needs to find a better mechanism for plotting
         # later, because self.bmp is re-created every time.  However, I don't know
         # how to real with the raw bitmaps.
+
+        self.capture = cv2.VideoCapture(0)
+        ret, cam_frame = self.capture.read()
+        if cam_frame is None:
+            ret, cam_frame = capture_stub()
+    
+        if self.debug:
+            print cam_frame
+    
+        cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
+
         height, width = cam_frame.shape[:2]
         self.cam2bmp = wx.BitmapFromBuffer(width, height, cam_frame) # buffer for bitmap
         self.SetBitmap(self.cam2bmp)
 
 
     def CopyFromBuffer(self, cam_frame):
-        # The rescaling (2 lines down) is kind of funky:  it only increases in
-        # size and it doesn't keep the aspect ratio intact.
         self.cam2bmp.CopyFromBuffer(cam_frame[:, ::-1, :].flatten())
         self.Refresh()
 
 
     def halt_start_video(self, event):
+
+        print "Video is", self.video_on
 
         if self.video_on == True and not self.recording:
             self.take_snapshot()
@@ -141,7 +141,7 @@ class CameraButton(ImageButton):
 
 
     def record_image(self, filename):
-        image = self.cam2bmp.ConvertToImage().Mirror()    # Don't mirror!
+        image = self.cam2bmp.ConvertToImage().Mirror()      # cam2bmp is already mirrored.  That's why we call it again.
         image.SaveFile(filename, wx.BITMAP_TYPE_JPEG)
     
 
