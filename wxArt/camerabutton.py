@@ -148,6 +148,9 @@ class CameraButton(ImageButton):
     def take_snapchat(self, evt):
         self.recording = True
         self.i_rec = 0  # frame index for the recording
+        # delete previously recorded frames
+        possible_frames = ('frame_%03i.jpg' % (i) for i in xrange(1000))
+        frames = [os.remove(f) for f in possible_frames if os.path.exists(f)]
         self.Unbind(wx.EVT_TIMER, self.timer)
         self.Bind(wx.EVT_TIMER, self.record_next_frame, self.timer)
         self.rectimer.Start(1000. * 2.) # Record 2 seconds of video.

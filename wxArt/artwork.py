@@ -71,7 +71,11 @@ class Artwork(Image):
 
     def create_and_load_gif(self, fps):
         frames = self.get_frames_to_process()   # Check for available files in the folder
-        # self.process_frames(frames)             # Convert all frames to artworks.
+        self.merge_to_gif(fps = fps)            # Merge raw frames into one movie.
+        self.LoadFile(self._gif_path)
+        self.Play()
+        # TODO: add pause here then issue generation of artwork
+        self.process_frames(frames)             # Convert all frames to artworks.
         self.merge_to_gif(fps = fps)            # Merge all artworks into one movie.
         self.LoadFile(self._gif_path)
         self.Play()
