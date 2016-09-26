@@ -1,3 +1,4 @@
+import shutil
 
 import wx
 from .image import Image
@@ -63,13 +64,14 @@ class Artwork(Image):
 
 
     def merge_to_gif(self, fps):
-        subprocess.call(['rm', self._gif_path])
-        subprocess.call(['ffmpeg', '-f', 'image2', '-framerate', str(fps), '-i', 'frame_%03d.jpg', self._gif_path])
+        if os.path.exists(self._gif_path):
+            os.remove(self._gif_path)
+        subprocess.call(['ffmpeg', '-f', 'image2', '-framerate', str(fps), '-i', "'frame_%03d.jpg'", self._gif_path])
 
 
     def create_and_load_gif(self, fps):
         frames = self.get_frames_to_process()   # Check for available files in the folder
-        self.process_frames(frames)             # Convert all frames to artworks.
+        # self.process_frames(frames)             # Convert all frames to artworks.
         self.merge_to_gif(fps = fps)            # Merge all artworks into one movie.
         self.LoadFile(self._gif_path)
         self.Play()
