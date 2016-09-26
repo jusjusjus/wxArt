@@ -66,7 +66,7 @@ class Artwork(Image):
     def merge_to_gif(self, fps):
         if os.path.exists(self._gif_path):
             os.remove(self._gif_path)
-        subprocess.call(['ffmpeg', '-f', 'image2', '-framerate', str(fps), '-i', "'frame_%03d.jpg'", self._gif_path])
+        subprocess.call(['ffmpeg', '-f', 'image2', '-framerate', str(fps), '-i', 'frame_%03d.jpg', self._gif_path])
 
 
     def create_and_load_gif(self, fps):
