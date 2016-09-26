@@ -96,7 +96,7 @@ class frame(wx.Frame):
 
         input_vsizer.Add(content_image, 1, wx.EXPAND | wx.ALL, 10)
         input_vsizer.Add(style_image, 1, wx.EXPAND | wx.ALL, 10)
-        input_vsizer.Add(button_hsizer, 0, wx.EXPAND | wx.ALL, 10)
+        input_vsizer.Add(button_hsizer, 1, wx.EXPAND | wx.ALL, 10)
         button_hsizer.Add(paint_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
         button_hsizer.Add(video_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
         button_hsizer.Add(pcard_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
