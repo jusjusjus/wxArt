@@ -90,9 +90,9 @@ class frame(wx.Frame):
         # bottom: style (image button)
         content_image = self.content_image = CameraButton(main_panel,-1, debug=self.debug, fps=self.fps)
         style_image   = self.style_image   = StyleButton(main_panel, -1)
-        paint_button = self.paint_button   = wx.Button(main_panel, -1, "Fotografieren")
-        video_button = self.video_button   = wx.Button(main_panel, -1, "Aufnahme starten")
-        video_artwork_button = self.video_artwork_button   = wx.Button(main_panel, -1, "Stil anpassen")
+        paint_button = self.paint_button   = wx.Button(main_panel, -1, "Photo")
+        video_button = self.video_button   = wx.Button(main_panel, -1, "Video")
+        video_artwork_button = self.video_artwork_button   = wx.Button(main_panel, -1, "Video Artwork")
         pcard_button = self.pcard_button   = wx.Button(main_panel, -1, "Postkarte")
 
         input_vsizer.Add(content_image, 1, wx.EXPAND | wx.ALL, 10)
