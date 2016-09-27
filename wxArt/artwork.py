@@ -71,6 +71,12 @@ class Artwork(Image):
         self.Play()
 
 
+    def take_video(self, fps):
+        self.merge_to_gif(fps=fps)  # Merge all artworks into one movie.
+        self.LoadFile(self._gif_path)
+        self.Play()
+
+
     def create_artwork_gif(self, fps):
         # TODO: add pause here then issue generation of artwork
         self.process_frames(self.frames)  # Convert all frames to artworks.
