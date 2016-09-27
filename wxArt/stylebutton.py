@@ -1,6 +1,7 @@
 
 import os
 from .imagebutton import ImageButton
+from .events import StyleSelectedEvent
 
 
 class StyleButton(ImageButton):
