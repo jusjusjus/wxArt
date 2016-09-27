@@ -53,23 +53,26 @@ class StyleDialog(wx.Dialog):
         grid = wx.GridBagSizer(hgap=1,vgap=1)
         panel.SetSizer(grid)
         for i in range(len(self.file_dict)):
-            # generate sizer and image button
-            vsizer = wx.BoxSizer(wx.VERTICAL)
-            ibutton = ImageButton(panel,-1,size=self._buttonSize)
-            # load image
-            ibutton.load_image(self._styledir + '/' + self.file_dict[i]['name'])
-            # fit image into button
-            ibutton.image_fit()
-            # add everything to sizer
-            vsizer.Add(ibutton,1, wx.ALIGN_CENTER, 0)
-            for info in self.file_dict[i]['info']:
-                vsizer.Add(wx.StaticText(panel,-1,info),0,wx.ALIGN_CENTER_HORIZONTAL | wx.ALIGN_TOP,0)
-            # add to grid
-            pos = (i/self._ncolumns,i%self._ncolumns)
-            grid.Add(vsizer, pos=pos)
-            # BIND BUTTON
-            # needs to be done here!!
-            ibutton.Bind(wx.EVT_BUTTON, lambda evt, string=ibutton.get_path_to_image() : self.OnClick(evt, string))
+            try:
+                # generate sizer and image button
+                vsizer = wx.BoxSizer(wx.VERTICAL)
+                ibutton = ImageButton(panel,-1,size=self._buttonSize)
+                # load image
+                ibutton.load_image(self._styledir + '/' + self.file_dict[i]['name'])
+                # fit image into button
+                ibutton.image_fit()
+                # add everything to sizer
+                vsizer.Add(ibutton,1, wx.ALIGN_CENTER, 0)
+                for info in self.file_dict[i]['info']:
+                    vsizer.Add(wx.StaticText(panel,-1,info),0,wx.ALIGN_CENTER_HORIZONTAL | wx.ALIGN_TOP,0)
+                # add to grid
+                pos = (i/self._ncolumns,i%self._ncolumns)
+                grid.Add(vsizer, pos=pos)
+                # BIND BUTTON
+                # needs to be done here!!
+                ibutton.Bind(wx.EVT_BUTTON, lambda evt, string=ibutton.get_path_to_image() : self.OnClick(evt, string))
+            except:
+                pass
 
             if self.debug == True: break
 

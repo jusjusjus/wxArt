@@ -9,7 +9,7 @@
 #
 import wx
 from .imagebutton import ImageButton
-import cv, cv2
+import cv2
 import tempfile
 
 from skimage import io
@@ -22,7 +22,7 @@ def capture_stub():
 
     :return:
     """
-    image = io.imread(os.path.abspath(os.path.dirname(__file__) + "/../resources/selfie.jpg"))
+    image = io.imread(os.path.abspath(os.path.dirname(__file__) + "/../resources/default_picture.jpg"))
     return 0, image[:, :, [2, 1, 0]]
 
 
