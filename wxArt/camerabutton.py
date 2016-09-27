@@ -9,7 +9,7 @@
 #
 import wx
 from .imagebutton import ImageButton
-import cv, cv2
+import cv2
 import tempfile
 
 from skimage import io
