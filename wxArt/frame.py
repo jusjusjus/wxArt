@@ -90,17 +90,20 @@ class frame(wx.Frame):
         # bottom: style (image button)
         content_image = self.content_image = CameraButton(main_panel,-1, debug=self.debug, fps=self.fps)
         style_image   = self.style_image   = StyleButton(main_panel, -1)
-        paint_button = self.paint_button   = wx.Button(main_panel, -1, "Photo")
-        video_button = self.video_button   = wx.Button(main_panel, -1, "Video")
-        video_artwork_button = self.video_artwork_button   = wx.Button(main_panel, -1, "Video Artwork")
-        pcard_button = self.pcard_button   = wx.Button(main_panel, -1, "Postkarte")
+        photo_button = self.photo_button   = wx.Button(main_panel, -1, "Fotografie")
+        video_button = self.video_button   = wx.Button(main_panel, -1, "Aufnahme")
+        paint_button = self.paint_button   = wx.Button(main_panel, -1, "kunstwerk malen")
+        pcard_button = self.pcard_button   = wx.Button(main_panel, -1, "Postkarte erstellen")
+
+        paint_button.Disable()
+        pcard_button.Disable()
 
         input_vsizer.Add(content_image, 1, wx.EXPAND | wx.ALL, 10)
         input_vsizer.Add(style_image, 1, wx.EXPAND | wx.ALL, 10)
         input_vsizer.Add(button_hsizer, 1, wx.EXPAND | wx.ALL, 10)
-        button_hsizer.Add(paint_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
+        button_hsizer.Add(photo_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
         button_hsizer.Add(video_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
-        button_hsizer.Add(video_artwork_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
+        button_hsizer.Add(paint_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
         button_hsizer.Add(pcard_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
 
         #
@@ -138,15 +141,15 @@ class frame(wx.Frame):
         # ~~~~~ bind events to functions ~~~~~
         # main panel
         self.Bind(wx.EVT_BUTTON,     self.load_style,    style_image)
-        self.Bind(wx.EVT_BUTTON,     self.issue_paint,   paint_button)
+        self.Bind(wx.EVT_BUTTON,     self.take_picture,   photo_button)
         self.Bind(wx.EVT_BUTTON,     self.issue_postcard,   pcard_button)
 
         self.Bind(wx.EVT_MENU, self.OnOpenFile, menu_open)
 
         self.Bind(wx.EVT_BUTTON,          content_image.take_snapchat, video_button)
-        content_image.Bind(wx.EVT_TIMER,  self.issue_video,            content_image.rectimer)
+        content_image.Bind(wx.EVT_TIMER,  self.take_video,            content_image.rectimer)
 
-        self.Bind(wx.EVT_BUTTON,          self.create_artwork_gif, video_artwork_button)
+        self.Bind(wx.EVT_BUTTON,          self.convert_to_artwork, paint_button)
 
     #
     # ~~~~~ functions bound to events ~~~~~
@@ -188,29 +191,32 @@ class frame(wx.Frame):
         self.email_field.send_email(attachments)
 
 
-    def issue_paint(self, event):
+    def take_picture(self, event):
         # gether information
+        self.paint_button.Enable()
+        self.pcard_button.Enable()
         content_path = self.content_image.get_path_to_image()   # Get path to content.
-        style_path   = self.style_image.get_path_to_image()     # Get path to style.
-
-        style_model_path = self.style_image.get_style_model()
-
-        self.artwork_image.set_style(style_model_path)
-        self.artwork_image.load_image(content_path)
+        self.artwork_image.take_picture(content_path)
 
 
-    def issue_video(self, event):
+    def take_video(self, event):
+        self.paint_button.Enable()
+        self.pcard_button.Disable()
         self.content_image.video_off(None)
-
-        style_path       = self.style_image.get_path_to_image()     # Get path to style.
-        style_model_path = self.style_image.get_style_model()
-
-        self.artwork_image.set_style(style_model_path)
         self.artwork_image.take_video(fps = self.fps)
 
 
-    def create_artwork_gif(self, event):
-        self.artwork_image.create_artwork_gif(fps = self.fps)
+    def enable_paint(self, evt):
+        self.paint_enable.Enable()
+
+
+    def convert_to_artwork(self, event):
+        self.paint_button.Disable()
+        style_path       = self.style_image.get_path_to_image()     # Get path to style.
+        style_model_path = self.style_image.get_style_model()
+        self.artwork_image.set_style(style_model_path)
+
+        self.artwork_image.convert_to_artwork(fps = self.fps)
 
 
     def issue_postcard(self, event):
@@ -219,7 +225,8 @@ class frame(wx.Frame):
         
 
     def OnOpenFile(self, event):
-
+        self.paint_button.Enable()
+        self.pcard_button.Enable()
         dialog = wx.FileDialog(self,
                                message="",
                                style=wx.FD_OPEN)

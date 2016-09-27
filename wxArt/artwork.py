@@ -8,6 +8,7 @@ import os
 
 
 class Artwork(Image):
+
     _output_path = './artwork.jpg'
     _arxiv_dir = './arxiv/'
     _gif_path = './artwork.gif'
@@ -25,10 +26,6 @@ class Artwork(Image):
         self.style_path = style
         self.processor.set_style(style)
 
-    def load_image(self, image_path):
-        self.path_to_image = image_path
-        self.processor.generate(self.path_to_image, self._output_path)
-        super(Artwork, self).load_image(self._output_path)
 
     # Methods for gif-creation
     def get_frames_to_process(self):
@@ -63,26 +60,43 @@ class Artwork(Image):
         subprocess.call(['ffmpeg', '-f', 'image2', '-framerate', str(fps), '-i', 'frame_%03d.jpg', self._gif_path])
 
 
-    def create_and_load_gif(self, fps):
-        frames = self.get_frames_to_process()   # Check for available files in the folder
-        self.process_frames(frames)             # Convert all frames to artworks.
-        self.merge_to_gif(fps = fps)            # Merge all artworks into one movie.
-        self.LoadFile(self._gif_path)
-        self.Play()
+    def take_picture(self, image_path):
+        self.path_to_image = image_path
+        super(Artwork, self).load_image(self.path_to_image)
 
 
     def take_video(self, fps):
+        self.path_to_image = self._gif_path
         self.merge_to_gif(fps=fps)  # Merge all artworks into one movie.
         self.LoadFile(self._gif_path)
         self.Play()
 
 
-    def create_artwork_gif(self, fps):
-        # TODO: add pause here then issue generation of artwork
-        self.process_frames(self.frames)  # Convert all frames to artworks.
+    def convert_to_artwork(self, fps=None):
+        suffix = os.path.basename(self.path_to_image).split('.')[1]
+
+        if suffix == 'gif': # it's a gif video
+            self.convert_gif_to_artwork( fps )
+
+        else:   # it's a jpg
+            self.convert_jpg_to_artwork()
+
+
+
+    def convert_gif_to_artwork(self, fps):
+        assert not fps == None, "Fps cannot be none."
+
+        self.Stop()
+        frames = self.get_frames_to_process()   # Check for available files in the folder
+        self.process_frames(frames)  # Convert all frames to artworks.
         self.merge_to_gif(fps=fps)  # Merge all artworks into one movie.
         self.LoadFile(self._gif_path)
         self.Play()
+
+
+    def convert_jpg_to_artwork(self):
+        self.processor.generate(self.path_to_image, self._output_path)
+        super(Artwork, self).load_image(self._output_path)
 
 
     # Methods for archiving
@@ -91,6 +105,7 @@ class Artwork(Image):
         path = self._arxiv_dir + style + '_' + str(np.random.randint(10 ** 7)) + '.jpg'  # ./arxiv/<style>_<randint>.jpg
 
         return path
+
 
     def arxiv(self):
         arxiv_path = self._arxiv_dir  # This one definitely exists.
