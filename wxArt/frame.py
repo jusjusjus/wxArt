@@ -90,8 +90,9 @@ class frame(wx.Frame):
         # bottom: style (image button)
         content_image = self.content_image = CameraButton(main_panel,-1, debug=self.debug, fps=self.fps)
         style_image   = self.style_image   = StyleButton(main_panel, -1)
-        paint_button = self.paint_button   = wx.Button(main_panel, -1, "Photo")
-        video_button = self.video_button   = wx.Button(main_panel, -1, "Video")
+        paint_button = self.paint_button   = wx.Button(main_panel, -1, "Fotografieren")
+        video_button = self.video_button   = wx.Button(main_panel, -1, "Aufnahme starten")
+        video_artwork_button = self.video_artwork_button   = wx.Button(main_panel, -1, "Stil anpassen")
         pcard_button = self.pcard_button   = wx.Button(main_panel, -1, "Postkarte")
 
         input_vsizer.Add(content_image, 1, wx.EXPAND | wx.ALL, 10)
@@ -99,6 +100,7 @@ class frame(wx.Frame):
         input_vsizer.Add(button_hsizer, 1, wx.EXPAND | wx.ALL, 10)
         button_hsizer.Add(paint_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
         button_hsizer.Add(video_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
+        button_hsizer.Add(video_artwork_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
         button_hsizer.Add(pcard_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
 
         #
@@ -143,6 +145,8 @@ class frame(wx.Frame):
 
         self.Bind(wx.EVT_BUTTON,          content_image.take_snapchat, video_button)
         content_image.Bind(wx.EVT_TIMER,  self.issue_video,            content_image.rectimer)
+
+        self.Bind(wx.EVT_BUTTON,          self.create_artwork_gif, video_artwork_button)
 
     #
     # ~~~~~ functions bound to events ~~~~~
@@ -202,7 +206,11 @@ class frame(wx.Frame):
         style_model_path = self.style_image.get_style_model()
 
         self.artwork_image.set_style(style_model_path)
-        self.artwork_image.create_and_load_gif(fps = self.fps)
+        self.artwork_image.take_video(fps = self.fps)
+
+
+    def create_artwork_gif(self, event):
+        self.artwork_image.create_artwork_gif(fps = self.fps)
 
 
     def issue_postcard(self, event):
