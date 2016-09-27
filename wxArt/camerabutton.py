@@ -22,7 +22,7 @@ def capture_stub():
 
     :return:
     """
-    image = io.imread(os.path.abspath(os.path.dirname(__file__) + "/../resources/selfie.jpg"))
+    image = io.imread(os.path.abspath(os.path.dirname(__file__) + "/../resources/default_picture.jpg"))
     return 0, image[:, :, [2, 1, 0]]
 
 
