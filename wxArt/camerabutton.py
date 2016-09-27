@@ -106,10 +106,10 @@ class CameraButton(ImageButton):
         ret, cam_frame = self.capture.read()
         if cam_frame is None:
             ret, cam_frame = capture_stub()
-
+    
         if self.debug:
             print cam_frame
-
+    
         cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
 
         height, width = cam_frame.shape[:2]
@@ -143,7 +143,7 @@ class CameraButton(ImageButton):
     def record_image(self, filename):
         image = self.cam2bmp.ConvertToImage().Mirror()      # cam2bmp is already mirrored.  That's why we call it again.
         image.SaveFile(filename, wx.BITMAP_TYPE_JPEG)
-
+    
 
     def take_snapchat(self, evt):
         self.recording = True

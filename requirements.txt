@@ -1,0 +1,5 @@
+#wxArt
+chainer>=1.10
+wxPython>=3.0
+opencv>=0.0.1
+scikit-image>=0.10
