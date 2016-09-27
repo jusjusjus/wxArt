@@ -18,7 +18,6 @@ from .EmailCtrl import EmailCtrl
 from .camerabutton import CameraButton
 from .styledialog import StyleDialog
 from .postcard import Postcard
-from .events import EVT_STYLE_SELECTED
 import subprocess
 
 
