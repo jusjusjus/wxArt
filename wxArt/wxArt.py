@@ -13,7 +13,7 @@ from .frame import frame
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # % App Class
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-class App(wx.App):
+class wxArt(wx.App):
 
     default_kwargs = dict(debug = False,
                           fps   = 20)
@@ -29,7 +29,7 @@ class App(wx.App):
             else:
                 setattr(self, att, self.default_kwargs[att])
 
-        super(App, self).__init__(*args, **kwargs)
+        super(wxArt, self).__init__(*args, **kwargs)
 
 
     def OnInit(self):

@@ -5,7 +5,7 @@ import argparse
 
 if __name__ == "__main__":
 
-    from wxArt.app import App
+    from wxArt.wxArt import wxArt
 
 
     description = "wxArt is a deep art interface."
@@ -15,5 +15,5 @@ if __name__ == "__main__":
     parser.add_argument('-f', '--fps', default=7, type=int)
     args = parser.parse_args()
     
-    app = App(debug=args.debug, fps=args.fps, redirect=False)
+    app = wxArt(debug=args.debug, fps=args.fps, redirect=False)
     app.MainLoop()
