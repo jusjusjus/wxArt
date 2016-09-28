@@ -11,7 +11,7 @@
 import wx
 import wx.lib.agw.aui as aui
 import os
-from .imagebutton import ImageButton
+from .ImageButton import ImageButton
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

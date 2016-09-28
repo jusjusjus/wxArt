@@ -12,20 +12,20 @@
 import wx
 import wx.lib.agw.aui as aui
 import wx.animate
-from .artwork import Artwork
+from .Artwork import Artwork
 from .StyleButton import StyleButton
 from .EmailCtrl import EmailCtrl
 from .Camera import Camera
-from .postcard import Postcard
+from .Postcard import Postcard
 import subprocess
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# % frame class
+# % Frame class
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #
 # draw the main window of the application
-class frame(wx.Frame):
+class Frame(wx.Frame):
     #
     # ~~~~~ constant members ~~~~~
     _max_pane = 200
@@ -42,7 +42,7 @@ class frame(wx.Frame):
             else:
                 setattr(self, att, self.default_kwargs[att])
 
-        super(frame, self).__init__(*args, **kwargs)
+        super(Frame, self).__init__(*args, **kwargs)
         self.Maximize(True)
 
         #

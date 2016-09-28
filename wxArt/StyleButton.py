@@ -1,7 +1,7 @@
 
 import os
 import wx
-from .styledialog import StyleDialog
+from .StyleDialog import StyleDialog
 
 
 class StyleButton(wx.BitmapButton):

@@ -3,7 +3,7 @@
 import wx
 import os
 import sys
-from .artwork import Artwork
+from .Artwork import Artwork
 import subprocess
 
 

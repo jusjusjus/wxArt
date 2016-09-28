@@ -8,7 +8,7 @@
 # ==============================================================================
 #
 import wx
-from .frame import frame
+from .Frame import Frame
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # % App Class
@@ -36,7 +36,7 @@ class wxArt(wx.App):
         '''
         makes frame, gets called on init
         '''
-        self.frame = frame(None, size=wx.Size(1500, 800), title='wxArt', debug=self.debug, fps=self.fps)
+        self.frame = Frame(None, size=wx.Size(1500, 800), title='wxArt', debug=self.debug, fps=self.fps)
         self.frame.Show()
         return True
 
