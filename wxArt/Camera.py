@@ -22,6 +22,7 @@ import os
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 class Camera(wx.StaticBitmap):
 
+    _countdown_path = os.path.dirname(__file__) + "/../resources/countdown/"
     _defaultImage_path = os.path.dirname(__file__) + "/../resources/default_picture.jpg"
     default_kwargs = dict(debug = False,
                           fps   = 20)
@@ -64,7 +65,7 @@ class Camera(wx.StaticBitmap):
         '''
         ret, cam_frame = self.capture.read()
         if cam_frame is None:
-            ret, cam_frame = capture_stub()
+            ret, cam_frame = self.capture_stub()
         if ret:
             cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
             self.CopyFromBuffer(cam_frame)
@@ -77,7 +78,7 @@ class Camera(wx.StaticBitmap):
         '''
         ret, cam_frame = self.capture.read()
         if cam_frame is None:
-            ret, cam_frame = capture_stub()
+            ret, cam_frame = self.capture_stub()
         if ret:
             cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
             self.CopyFromBuffer(cam_frame)
@@ -95,7 +96,7 @@ class Camera(wx.StaticBitmap):
         self.capture = cv2.VideoCapture(0)
         ret, cam_frame = self.capture.read()
         if cam_frame is None:
-            ret, cam_frame = capture_stub()
+            ret, cam_frame = self.capture_stub()
     
         if self.debug:
             print cam_frame
@@ -112,20 +113,57 @@ class Camera(wx.StaticBitmap):
         self.Refresh()
 
 
-    def record_image(self, filename):
+    def record_image(self, filename=None):
+        
+        if filename == None:
+            filename = self.path_to_image
+
         image = self.cam2bmp.ConvertToImage().Mirror()      # cam2bmp is already mirrored.  That's why we call it again.
         image.SaveFile(filename, wx.BITMAP_TYPE_JPEG)
+
+
+    def countdown(self, evt):   # runs down the countdown.
+        print 'countdown'
+
+        self.count -= 1
+        if self.count > 0:
+            path = self._countdown_path+"mnist_%i.jpg" % (self.count)
+            self.image_fit(path)
     
+        else: # start the recording
+            # Stop the countdown
+            self.timer.Stop()
+            self.Unbind(wx.EVT_TIMER, self.timer)
+
+            # Set the recording vars..
+            self.recording = True
+            self.i_rec = 0  # frame index for the recording
+
+                # delete previously recorded frames
+            possible_frames = ('frame_%03i.jpg' % (i) for i in xrange(1000))
+            frames = [os.remove(f) for f in possible_frames if os.path.exists(f)]
+
+            # Bind the video timer
+            self.Bind(wx.EVT_TIMER, self.record_next_frame, self.timer)
+            self.SetBitmap(self.cam2bmp)
+
+            # Start the video/recording timer
+            self.timer.Start(1000./self.fps)
+            self.rectimer.Start(1000. * 2.) # Record 2 seconds of video.
+
 
     def take_snapchat(self, evt):
-        self.recording = True
-        self.i_rec = 0  # frame index for the recording
-        # delete previously recorded frames
-        possible_frames = ('frame_%03i.jpg' % (i) for i in xrange(1000))
-        frames = [os.remove(f) for f in possible_frames if os.path.exists(f)]
+        # Unbind the video timer
+        self.timer.Stop()
         self.Unbind(wx.EVT_TIMER, self.timer)
-        self.Bind(wx.EVT_TIMER, self.record_next_frame, self.timer)
-        self.rectimer.Start(1000. * 2.) # Record 2 seconds of video.
+
+        # Bind the countdown timer
+        self.count = 4
+        self.Bind(wx.EVT_TIMER, self.countdown, self.timer)
+        self.timer.Start(750.) # Record 2 seconds of video.
+
+        path = self._countdown_path+"mnist_%i.jpg" % (self.count)
+        self.image_fit(path)
 
 
     def video_off(self, evt):
@@ -137,10 +175,6 @@ class Camera(wx.StaticBitmap):
 
 
     def get_path_to_image(self): # Takes a snapshot before ..
-
-        if not self.recording:
-            self.record_image(self.path_to_image)
-
         return self.path_to_image
 
 
@@ -150,13 +184,16 @@ class Camera(wx.StaticBitmap):
         self.SetBitmap(bitmap)
 
 
-    def image_fit(self):
+    def image_fit(self, image_path=None):
+
+        if image_path == None:
+            image_path = self.get_path_to_image()
+
         # get size
         width, height = self.GetSize()
 
         # load image and get aspect ratio
-        image_path = self.get_path_to_image()
-        image = wx.Image(image_path,wx.BITMAP_TYPE_ANY)
+        image = wx.Image(image_path, wx.BITMAP_TYPE_ANY)
         Iwidth, Iheight = image.GetSize()
         aspect_ratio = float(Iwidth)/Iheight
 

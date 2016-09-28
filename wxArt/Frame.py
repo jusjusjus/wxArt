@@ -183,6 +183,7 @@ class Frame(wx.Frame):
         # gether information
         self.paint_button.Enable()
         self.pcard_button.Enable()
+        self.camera.record_image()
         content_path = self.camera.get_path_to_image()   # Get path to content.
         self.artwork_image.load_image(content_path)
 
