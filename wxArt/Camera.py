@@ -29,7 +29,7 @@ def capture_stub():
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # % CameraButton class
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-class CameraButton(ImageButton):
+class Camera(ImageButton):
 
     default_kwargs = dict(debug = False,
                           fps   = 20)
@@ -42,7 +42,7 @@ class CameraButton(ImageButton):
             else:
                 setattr(self, att, self.default_kwargs[att])
 
-        super(CameraButton, self).__init__(*args, **kwargs)
+        super(Camera, self).__init__(*args, **kwargs)
 
         #assert self.fps < 30, 'CameraButton: frame rate too high, too high...'
 
@@ -169,7 +169,7 @@ class CameraButton(ImageButton):
         if self.video_on == True:
             self.halt_start_video( None )   # Trigger halt event.  Halting takes a snapshot.
 
-        super(CameraButton, self).load_image(filename)
+        super(Camera, self).load_image(filename)
 
 
     def get_path_to_image(self): # overwrite
@@ -177,7 +177,7 @@ class CameraButton(ImageButton):
         if self.video_on == True:           # forgot to turn it off.  Let's do it:
             self.halt_start_video( None )   # Trigger halt event.  Halting takes a snapshot.
 
-        return super(CameraButton, self).get_path_to_image()   # Call mother function.
+        return super(Camera, self).get_path_to_image()   # Call mother function.
 
 
     def snapchat(self, duration=2., frame_rate=7):    # duration in seconds

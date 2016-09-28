@@ -15,7 +15,7 @@ import wx.animate
 from .artwork import Artwork
 from .StyleButton import StyleButton
 from .EmailCtrl import EmailCtrl
-from .camerabutton import CameraButton
+from .Camera import Camera
 from .styledialog import StyleDialog
 from .postcard import Postcard
 import subprocess
@@ -88,7 +88,7 @@ class frame(wx.Frame):
         # mange the user input
         # top: content (camera button)
         # bottom: style (image button)
-        content_image = self.content_image = CameraButton(main_panel,-1, debug=self.debug, fps=self.fps)
+        camera = self.camera = Camera(main_panel,-1, debug=self.debug, fps=self.fps)
         style_image   = self.style_image   = StyleButton(main_panel, -1)
         photo_button = self.photo_button   = wx.Button(main_panel, -1, "Fotografie")
         video_button = self.video_button   = wx.Button(main_panel, -1, "Aufnahme")
@@ -98,7 +98,7 @@ class frame(wx.Frame):
         paint_button.Disable()
         pcard_button.Disable()
 
-        input_vsizer.Add(content_image, 1, wx.EXPAND | wx.ALL, 10)
+        input_vsizer.Add(camera, 1, wx.EXPAND | wx.ALL, 10)
         input_vsizer.Add(style_image, 1, wx.EXPAND | wx.ALL, 10)
         input_vsizer.Add(button_hsizer, 1, wx.EXPAND | wx.ALL, 10)
         button_hsizer.Add(photo_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
@@ -146,8 +146,8 @@ class frame(wx.Frame):
 
         self.Bind(wx.EVT_MENU, self.OnOpenFile, menu_open)
 
-        self.Bind(wx.EVT_BUTTON,          content_image.take_snapchat, video_button)
-        content_image.Bind(wx.EVT_TIMER,  self.take_video,            content_image.rectimer)
+        self.Bind(wx.EVT_BUTTON,          camera.take_snapchat, video_button)
+        camera.Bind(wx.EVT_TIMER,  self.take_video,            camera.rectimer)
 
         self.Bind(wx.EVT_BUTTON,          self.convert_to_artwork, paint_button)
 
@@ -177,7 +177,7 @@ class frame(wx.Frame):
             return
 
         # Gather attachment info.
-        content_path = self.content_image.get_path_to_image()
+        content_path = self.camera.get_path_to_image()
         style_path   = self.style_image.get_path_to_image()
         picture_path = self.artwork_image.get_path_to_image()
 
@@ -195,14 +195,14 @@ class frame(wx.Frame):
         # gether information
         self.paint_button.Enable()
         self.pcard_button.Enable()
-        content_path = self.content_image.get_path_to_image()   # Get path to content.
+        content_path = self.camera.get_path_to_image()   # Get path to content.
         self.artwork_image.load_image(content_path)
 
 
     def take_video(self, event):
         self.paint_button.Enable()
         self.pcard_button.Disable()
-        self.content_image.video_off(None)
+        self.camera.video_off(None)
         self.artwork_image.load_video(fps = self.fps)
 
 
@@ -234,7 +234,7 @@ class frame(wx.Frame):
         if dialog.ShowModal() == wx.ID_OK:
             paths = dialog.GetPaths()
             for file in paths:
-                self.content_image.load_image(file)
+                self.camera.load_image(file)
                 break
 
         dialog.Destroy()
