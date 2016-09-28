@@ -19,13 +19,13 @@ class Image(wx.animate.GIFAnimationCtrl):
 
     _defaultImage_path = os.path.dirname(__file__) + "/../resources/default_picture.jpg"
 
-    def __init__(self, parent, *args, **kwargs):
-        super(Image, self).__init__(parent, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(Image, self).__init__(*args, **kwargs)
 
         # Initial load.  In here, self.path_to_image is set, which is used later
         # to send the pictures to the server for processing.  One should take
         # care that this path is always set correctly.
-        Image.load_image(self, self._defaultImage_path)     # Load default image without calling child routines!
+        self.load_image(self._defaultImage_path)     # Load default image without calling child routines!
 
 
     def get_path_to_image(self):
@@ -60,6 +60,13 @@ class Image(wx.animate.GIFAnimationCtrl):
         self.path_to_image = image_path
         bitmap = wx.Image(image_path, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
         self.SetBitmap(bitmap)
+
+
+    def load_video(self, fps):
+        self.path_to_image = self._gif_path
+        self.merge_to_gif(fps=fps)  # Merge all artworks into one movie.
+        self.LoadFile(self._gif_path)
+        self.Play()
 
 
     def SetBitmap(self, bitmap):

@@ -196,14 +196,14 @@ class frame(wx.Frame):
         self.paint_button.Enable()
         self.pcard_button.Enable()
         content_path = self.content_image.get_path_to_image()   # Get path to content.
-        self.artwork_image.take_picture(content_path)
+        self.artwork_image.load_image(content_path)
 
 
     def take_video(self, event):
         self.paint_button.Enable()
         self.pcard_button.Disable()
         self.content_image.video_off(None)
-        self.artwork_image.take_video(fps = self.fps)
+        self.artwork_image.load_video(fps = self.fps)
 
 
     def enable_paint(self, evt):

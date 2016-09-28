@@ -60,23 +60,11 @@ class Artwork(Image):
         subprocess.call(['ffmpeg', '-f', 'image2', '-framerate', str(fps), '-i', 'frame_%03d.jpg', self._gif_path])
 
 
-    def take_picture(self, image_path):
-        self.path_to_image = image_path
-        super(Artwork, self).load_image(self.path_to_image)
-
-
-    def take_video(self, fps):
-        self.path_to_image = self._gif_path
-        self.merge_to_gif(fps=fps)  # Merge all artworks into one movie.
-        self.LoadFile(self._gif_path)
-        self.Play()
-
-
     def convert_to_artwork(self, fps=None):
         suffix = os.path.basename(self.path_to_image).split('.')[1]
 
         if suffix == 'gif': # it's a gif video
-            self.convert_gif_to_artwork( fps )
+            self.convert_gif_to_artwork(fps)
 
         else:   # it's a jpg
             self.convert_jpg_to_artwork()
