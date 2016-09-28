@@ -8,7 +8,7 @@
 # ==============================================================================
 #
 import wx
-from .imagebutton import ImageButton
+#from .imagebutton import ImageButton
 import cv2
 import tempfile
 
@@ -17,20 +17,12 @@ import os
 
 
 
-def capture_stub():
-    """Stub to give images without camera.
-
-    :return:
-    """
-    image = io.imread(os.path.abspath(os.path.dirname(__file__) + "/../resources/default_picture.jpg"))
-    return 0, image[:, :, [2, 1, 0]]
-
-
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # % CameraButton class
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-class Camera(ImageButton):
+class Camera(wx.StaticBitmap):
 
+    _defaultImage_path = os.path.dirname(__file__) + "/../resources/default_picture.jpg"
     default_kwargs = dict(debug = False,
                           fps   = 20)
 
@@ -60,8 +52,6 @@ class Camera(ImageButton):
         self.Bind(wx.EVT_TIMER, self.show_next_frame, self.timer)
         self.video_on  = True                        # Flag indicate video state.
         self.recording = False
-
-        self.Bind(wx.EVT_BUTTON, self.halt_start_video, self)
 
         # set value for path_to_image 
         self.path_to_image = "./content.jpg"
@@ -122,24 +112,6 @@ class Camera(ImageButton):
         self.Refresh()
 
 
-    def halt_start_video(self, event):
-
-        print "Video is", self.video_on
-
-        if self.video_on == True and not self.recording:
-            self.take_snapshot()
-            self.video_on = False
-
-        else:
-            self.timer.Start()
-            self.video_on = True
-
-
-    def take_snapshot(self):
-        self.timer.Stop()   # Stop timer.  Remember: last snapshot is still in cam2bmp.
-        self.record_image(self.path_to_image)
-
-
     def record_image(self, filename):
         image = self.cam2bmp.ConvertToImage().Mirror()      # cam2bmp is already mirrored.  That's why we call it again.
         image.SaveFile(filename, wx.BITMAP_TYPE_JPEG)
@@ -164,21 +136,48 @@ class Camera(ImageButton):
         if not evt == None: evt.Skip()
 
 
-    def load_image(self, filename):
+    def get_path_to_image(self): # Takes a snapshot before ..
 
-        if self.video_on == True:
-            self.halt_start_video( None )   # Trigger halt event.  Halting takes a snapshot.
+        if not self.recording:
+            self.record_image(self.path_to_image)
 
-        super(Camera, self).load_image(filename)
-
-
-    def get_path_to_image(self): # overwrite
-
-        if self.video_on == True:           # forgot to turn it off.  Let's do it:
-            self.halt_start_video( None )   # Trigger halt event.  Halting takes a snapshot.
-
-        return super(Camera, self).get_path_to_image()   # Call mother function.
+        return self.path_to_image
 
 
-    def snapchat(self, duration=2., frame_rate=7):    # duration in seconds
-        pass
+    def load_image(self, image_path):
+        self.path_to_image = image_path
+        bitmap = wx.Image(image_path, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        self.SetBitmap(bitmap)
+
+
+    def image_fit(self):
+        # get size
+        width, height = self.GetSize()
+
+        # load image and get aspect ratio
+        image_path = self.get_path_to_image()
+        image = wx.Image(image_path,wx.BITMAP_TYPE_ANY)
+        Iwidth, Iheight = image.GetSize()
+        aspect_ratio = float(Iwidth)/Iheight
+
+        # compute possible sizes
+        dummy_height = float(width)/aspect_ratio
+        dummy_width = height*aspect_ratio
+
+        # choose size that fits
+        if width<dummy_width:
+            image = image.Rescale(width,dummy_height,wx.IMAGE_QUALITY_HIGH)
+        else:
+            image = image.Rescale(dummy_width,height,wx.IMAGE_QUALITY_HIGH)
+        bitmap = image.ConvertToBitmap()
+        self.SetBitmap(bitmap)
+
+
+    @staticmethod
+    def capture_stub():
+        """Stub to give images without camera.
+    
+        :return:
+        """
+        image = io.imread(os.path.abspath(os.path.dirname(__file__) + "/../resources/default_picture.jpg"))
+        return 0, image[:, :, [2, 1, 0]]

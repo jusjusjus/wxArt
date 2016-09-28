@@ -1,12 +1,13 @@
 
 import os
 import wx
+from .styledialog import StyleDialog
 
 
 class StyleButton(wx.BitmapButton):
 
     _root_dir = os.path.dirname(__file__) + "/../resources/models/"
-    _defaultImage_path = os.path.dirname(__file__) + "/../resources/default_picture.jpg"
+    _defaultImage_path = os.path.dirname(__file__) + "/../resources/styles/Wassily_Kandinsky-Transverse_Linie.jpg"
 
     def __init__(self, *args, **kwargs):
 
@@ -14,6 +15,12 @@ class StyleButton(wx.BitmapButton):
 
         self.style_model_path = None
         self.load_image(self._defaultImage_path)
+
+        #
+        # ~~~~~ initialize style dialog ~~~~~
+        self.styledlg = StyleDialog(self, -1)
+        self.styledlg.current_path = self.get_path_to_image()
+        self.Bind(wx.EVT_BUTTON,     self.load_style,    self)
 
 
     def get_style_model(self):
@@ -60,3 +67,11 @@ class StyleButton(wx.BitmapButton):
             image = image.Rescale(dummy_width,height,wx.IMAGE_QUALITY_HIGH)
         bitmap = image.ConvertToBitmap()
         self.SetBitmap(bitmap)
+
+
+    #
+    # ~~~~~ functions bound to events ~~~~~
+    def load_style(self, event):
+        self.styledlg.ShowModal()
+        self.load_image(self.styledlg.current_path)
+        self.image_fit()

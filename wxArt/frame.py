@@ -16,7 +16,6 @@ from .artwork import Artwork
 from .StyleButton import StyleButton
 from .EmailCtrl import EmailCtrl
 from .Camera import Camera
-from .styledialog import StyleDialog
 from .postcard import Postcard
 import subprocess
 
@@ -132,31 +131,20 @@ class frame(wx.Frame):
         else: # Destroy!
             email_field.Destroy()
 
-        #
-        # ~~~~~ initialize style dialog ~~~~~
-        self.styledlg = StyleDialog(self, -1, debug=self.debug)
-        self.styledlg.current_path = self.style_image.get_path_to_image()
 
         #
         # ~~~~~ bind events to functions ~~~~~
         # main panel
-        self.Bind(wx.EVT_BUTTON,     self.load_style,    style_image)
         self.Bind(wx.EVT_BUTTON,     self.take_picture,   photo_button)
         self.Bind(wx.EVT_BUTTON,     self.issue_postcard,   pcard_button)
 
         self.Bind(wx.EVT_MENU, self.OnOpenFile, menu_open)
 
-        self.Bind(wx.EVT_BUTTON,          camera.take_snapchat, video_button)
+        self.Bind(wx.EVT_BUTTON,   camera.take_snapchat,       video_button)
         camera.Bind(wx.EVT_TIMER,  self.take_video,            camera.rectimer)
 
-        self.Bind(wx.EVT_BUTTON,          self.convert_to_artwork, paint_button)
+        self.Bind(wx.EVT_BUTTON,   self.convert_to_artwork,    paint_button)
 
-    #
-    # ~~~~~ functions bound to events ~~~~~
-    def load_style(self, event):
-        self.styledlg.ShowModal()
-        self.style_image.load_image(self.styledlg.current_path)
-        self.style_image.image_fit()
 
 
     def query_save(self):
@@ -211,7 +199,6 @@ class frame(wx.Frame):
 
 
     def convert_to_artwork(self, event):
-        self.paint_button.Disable()
         style_path       = self.style_image.get_path_to_image()     # Get path to style.
         style_model_path = self.style_image.get_style_model()
         self.artwork_image.set_style(style_model_path)
