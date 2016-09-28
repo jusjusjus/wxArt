@@ -65,7 +65,7 @@ class Postcard(object):
         #subprocess.call(['rm', 'pg_*pdf', 'page_*.pdf', 'default*'])
 
 
-    def show_postcard(self):
-        subprocess.call(['evince', 'merger.pdf'])
+    def show_postcard(self, filename='merger.pdf'):
+        subprocess.call(['evince', filename])
 
 
