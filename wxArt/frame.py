@@ -13,7 +13,7 @@ import wx
 import wx.lib.agw.aui as aui
 import wx.animate
 from .artwork import Artwork
-from .stylebutton import StyleButton
+from .StyleButton import StyleButton
 from .EmailCtrl import EmailCtrl
 from .camerabutton import CameraButton
 from .styledialog import StyleDialog
