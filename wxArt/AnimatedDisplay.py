@@ -15,12 +15,12 @@ import wx.animate
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # % Image class
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-class Image(wx.animate.GIFAnimationCtrl):
+class AnimatedDisplay(wx.animate.GIFAnimationCtrl):
 
     _defaultImage_path = os.path.dirname(__file__) + "/../resources/default_picture.jpg"
 
     def __init__(self, *args, **kwargs):
-        super(Image, self).__init__(*args, **kwargs)
+        super(AnimatedDisplay, self).__init__(*args, **kwargs)
 
         # Initial load.  In here, self.path_to_image is set, which is used later
         # to send the pictures to the server for processing.  One should take

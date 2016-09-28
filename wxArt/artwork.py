@@ -1,13 +1,13 @@
 
 import wx
-from .image import Image
+from .AnimatedDisplay import AnimatedDisplay
 from .fns.generate import ChainerFNS
 import subprocess
 import numpy as np
 import os
 
 
-class Artwork(Image):
+class Artwork(AnimatedDisplay):
 
     _output_path = './artwork.jpg'
     _arxiv_dir = './arxiv/'
