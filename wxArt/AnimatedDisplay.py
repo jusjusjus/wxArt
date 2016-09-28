@@ -20,6 +20,7 @@ class AnimatedDisplay(wx.animate.GIFAnimationCtrl):
     _defaultImage_path = os.path.dirname(__file__) + "/../resources/default_picture.jpg"
 
     def __init__(self, *args, **kwargs):
+        kwargs["filename"] = self._defaultImage_path
         super(AnimatedDisplay, self).__init__(*args, **kwargs)
 
         # Initial load.  In here, self.path_to_image is set, which is used later
@@ -70,6 +71,6 @@ class AnimatedDisplay(wx.animate.GIFAnimationCtrl):
 
 
     def SetBitmap(self, bitmap):
-        self.SetInactiveBitmap(bitmap)
         self.Stop()
-
+        self.SetInactiveBitmap(bitmap)
+        self.image_fit()
