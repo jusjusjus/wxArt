@@ -45,22 +45,8 @@ class Frame(wx.Frame):
         super(Frame, self).__init__(*args, **kwargs)
         self.Maximize(True)
 
-        #
-        # ~~~~~ auiManager ~~~~~    # This is not really needed anymore.
-        # manage two panels
-        # left: network panel
-        # right: main panel
-        manager = self.manager = aui.AuiManager(self)
-
-        # panes
-        main_pane  = self.main_pane  = aui.AuiPaneInfo().CloseButton(False).PaneBorder(False).CaptionVisible(False).Center().Resizable()
-
         # panels
         main_panel = self.main_panel = wx.Panel(self, -1, size=wx.Size(-1, -1), style=wx.NO_BORDER)
-
-        # add panels to manager
-        manager.AddPane(main_panel,    main_pane)
-        manager.Update()
 
         menuBar = wx.MenuBar()
         fileMenu = wx.Menu()
@@ -79,8 +65,8 @@ class Frame(wx.Frame):
         button_hsizer = wx.BoxSizer(wx.HORIZONTAL)
 
         main_panel.SetSizer(main_hsizer)
-        main_hsizer.Add(input_vsizer, 1, wx.EXPAND | wx.ALL, 10)
-        main_hsizer.Add(output_vsizer, 1, wx.EXPAND | wx.ALL, 10)
+        main_hsizer.Add(input_vsizer, 2, wx.EXPAND | wx.ALL, 10)
+        main_hsizer.Add(output_vsizer, 5, wx.EXPAND | wx.ALL, 10)
 
         #
         # ~~~~~ input sizer (left) ~~~~~
@@ -120,7 +106,7 @@ class Frame(wx.Frame):
         email_field.SetHint(u'Zum Verschicken des Bildes bitte eine E-Mail-Adresse angeben.')
 
         if email_field.IsEditable(): # Add the e-mail stuff only if available.
-            email_button = wx.Button(main_panel,-1,"Senden")
+            email_button = wx.Button(main_panel, -1, "Senden")
             email_sizer = wx.BoxSizer(wx.HORIZONTAL)
             email_sizer.Add(email_field, 1, wx.EXPAND | wx.ALL, 10)
             email_sizer.Add(email_button, 0, wx.ALL, 10)
@@ -145,6 +131,7 @@ class Frame(wx.Frame):
 
         self.Bind(wx.EVT_BUTTON,   self.convert_to_artwork,    paint_button)
 
+        main_panel.Layout()
 
 
     def query_save(self):

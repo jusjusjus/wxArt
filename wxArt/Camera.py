@@ -66,16 +66,16 @@ class Camera(wx.StaticBitmap):
         ret, cam_frame = self.capture.read()
         if cam_frame is None:
             ret, cam_frame = self.capture_stub()
+
         if ret:
             cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
             self.CopyFromBuffer(cam_frame)
-
+            self.GetParent().Layout()
+        
 
     def record_next_frame(self, event):
-        '''
-        when time is right get new snapshot from camera
-        and update the bitmap
-        '''
+        '''When time is right get new snapshot from camera
+        and update the bitmap'''
         ret, cam_frame = self.capture.read()
         if cam_frame is None:
             ret, cam_frame = self.capture_stub()
@@ -85,6 +85,7 @@ class Camera(wx.StaticBitmap):
 
             self.record_image(filename="frame_{:03d}.jpg".format(self.i_rec))
             self.i_rec += 1
+            self.GetParent().Layout()
 
 
     def InitBitmapBuffer(self):
@@ -114,6 +115,7 @@ class Camera(wx.StaticBitmap):
 
 
     def record_image(self, filename=None):
+        print "record image", filename
         
         if filename == None:
             filename = self.path_to_image
@@ -123,12 +125,12 @@ class Camera(wx.StaticBitmap):
 
 
     def countdown(self, evt):   # runs down the countdown.
-        print 'countdown'
 
         self.count -= 1
         if self.count > 0:
             path = self._countdown_path+"mnist_%i.jpg" % (self.count)
             self.image_fit(path)
+            self.GetParent().Layout()
     
         else: # start the recording
             # Stop the countdown
@@ -145,6 +147,10 @@ class Camera(wx.StaticBitmap):
 
             # Bind the video timer
             self.Bind(wx.EVT_TIMER, self.record_next_frame, self.timer)
+            self.show_next_frame(None) # To empty the backed-up buffer
+            self.show_next_frame(None) # To empty the backed-up buffer
+            self.show_next_frame(None) # To empty the backed-up buffer
+            self.show_next_frame(None) # To empty the backed-up buffer
             self.SetBitmap(self.cam2bmp)
 
             # Start the video/recording timer
@@ -164,6 +170,7 @@ class Camera(wx.StaticBitmap):
 
         path = self._countdown_path+"mnist_%i.jpg" % (self.count)
         self.image_fit(path)
+        self.GetParent().Layout()
 
 
     def video_off(self, evt):

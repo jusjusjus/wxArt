@@ -11,7 +11,6 @@ class Artwork(AnimatedDisplay):
 
     _output_path = './artwork.jpg'
     _arxiv_dir = './arxiv/'
-    _gif_path = './artwork.gif'
     _pb_style = wx.PD_CAN_ABORT | wx.PD_ELAPSED_TIME | wx.PD_REMAINING_TIME
 
     def __init__(self, *args, **kwargs):
@@ -22,27 +21,26 @@ class Artwork(AnimatedDisplay):
         if not os.path.exists(self._arxiv_dir):
             os.mkdir(self._arxiv_dir)
 
+
     def set_style(self, style):
         self.style_path = style
         self.processor.set_style(style)
 
 
-    # Methods for gif-creation
-    def get_frames_to_process(self):
-        possible_frames = ('frame_%03i.jpg' % (i) for i in xrange(1000))
-        frames = [f for f in possible_frames if os.path.exists(f)]
-        return frames
-
     def process_frames(self, frames):
 
         num_frames = len(frames)
 
-        progress = wx.ProgressDialog("Berechnungsfortschritt", "Noch zu verbleibende Zeit", num_frames,
+        progress = wx.ProgressDialog("Berechnungsfortschritt",
+                                     "Noch zu verbleibende Zeit",
+                                     num_frames,
                                      style=self._pb_style)
+
         keepGoing = progress.Update(0)  # Initialize
 
         for idx_f in xrange(num_frames):
-            self.processor.generate(frames[idx_f], frames[idx_f])
+            print frames[idx_f]
+            self.processor.generate(frames[idx_f][0], frames[idx_f][1])
             keepGoing = progress.Update(idx_f)
 
             if not keepGoing[0]:
@@ -52,12 +50,7 @@ class Artwork(AnimatedDisplay):
 
         # delete the frames that have not been processed
         for i_del in xrange(idx_f + 1, num_frames):
-            subprocess.call(['rm', frames[i_del]])
-
-
-    def merge_to_gif(self, fps):
-        subprocess.call(['rm', self._gif_path])
-        subprocess.call(['ffmpeg', '-f', 'image2', '-framerate', str(fps), '-i', 'frame_%03d.jpg', self._gif_path])
+            subprocess.call(['rm', frames[i_del][0]])
 
 
     def convert_to_artwork(self, fps=None):
@@ -70,13 +63,19 @@ class Artwork(AnimatedDisplay):
             self.convert_jpg_to_artwork()
 
 
-
     def convert_gif_to_artwork(self, fps):
         assert not fps == None, "Fps cannot be none."
 
         self.Stop()
         frames = self.get_frames_to_process()   # Check for available files in the folder
         self.process_frames(frames)  # Convert all frames to artworks.
+        # But not maybe not all processes were processed.
+        # The rest was deleted.
+        
+        # Check for available files in the folder
+        for fi, fo in self.get_frames_to_process():
+            self.fit_and_save(fo, fo) # Only fo contain the artwork now!!!
+
         self.merge_to_gif(fps=fps)  # Merge all artworks into one movie.
         self.LoadFile(self._gif_path)
         self.Play()
