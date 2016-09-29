@@ -104,47 +104,47 @@ class EmailCtrl(wx.TextCtrl):
 
     body = """Hallo!
 
-    Wir freuen uns, dass Sie sich zum Tag der Deutschen Einheit die Zeit
+    Wir freuen uns, dass Sie sich am Tag der Deutschen Einheit die Zeit
     genommen haben unseren Stand im Wissenschaftszelt zu besuchen.
-    
-    Mehrschichtige neuronale Netze werden zunehmend Teil der Technologie die
-    uns in unserem täglichen Leben umgibt.  Die zugrunde liegenden Mechanismen
+
+    Mehrschichtige neuronale Netze werden zunehmend Teil der Technologie, die
+    uns in unserem täglichen Leben umgibt. Die zugrunde liegenden Mechanismen
     versuchen die Funktionsweise von Gehirnen lebender Wesen nachzuahmen und
-    erreichen dadurch faszinierende Ergebnisse.  Die Vorstellung ein denkendes
+    erreichen so faszinierende Ergebnisse. Die Vorstellung ein denkendes
     Wesen in unserem Computer zu simulieren ist natürlich sehr ungewohnt.
     Viele Menschen machen sich Sorgen, dass wir diese Technik nicht ausreichend
-    beherrschen.  Darum haben wir uns am Max-Planck Institut für die Physik
-    Komplexer Systeme darum bemüht diese Funktionsweise am Beispiel von 'Sehen'
-    etwas zu entzaubern.
+    beherrschen. Darum haben wir uns am Stand des Max-Planck-Instituts für die
+    Physik Komplexer Systeme darum bemüht, diese Technik am Beispiel von
+    'Sehen' etwas zu entzaubern.
 
-    Wenn sich ein mehrschichtige neuronales Netz ein Bild ansieht, dann sieht
+    Wenn sich ein mehrschichtiges neuronales Netz ein Bild ansieht, dann sieht
     es nicht zuerst auf das große Ganze sondern sucht systematisch nach
-    einfachen Details.  Zum Beispiel entdeckt es auf dieser ersten
-    Prozessierungsebene Kanten von Farbübergängen die unterschiedlich auf dem
-    Bild ausgerichtet sind.  Dies passiert für jeden Farbkanal, rot, grün und
-    blau, einzeln.  So werden aus den drei Farbkanälen, die zusammen das
-    ursprüngliche Bild ergeben, Kanäle von Kanten unterschiedlicher Ausrichtung
-    in der ersten Prozessierungsebene.  In den folgenden Ebenen werden Kanten
-    nun zu Umrissen und Umrisse zu Objekten.  Die Information wird also immer
-    abstrakter.
+    einfachen Details. Auf seiner ersten Prozessierungsebene entdeckt es zum
+    Beispiel Kanten von Farbübergängen, die unterschiedlich auf dem Bild
+    ausgerichtet sind. Dies passiert für jeden Farbkanal, Rot, Grün und Blau,
+    einzeln. So werden aus den drei Farbkanälen, die zusammen das ursprüngliche
+    Bild ergeben, Kanäle von Kanten unterschiedlicher Ausrichtung. In den
+    folgenden Ebenen werden diese Kanten nun zu Umrissen und Umrisse zu Objekten.
+    Die verarbeitete Information wird also immer abstrakter.
 
     An unserem Stand haben wir diese Technologie nun genutzt, um aus einem Foto
-    und einem Kunstwerk ein neues Kunstwerk zu machen.  Wie geht das wohl?  Mit
-    solchen mehrschichtigen neuronalen Netzen geht das ganz einfach:  Wie zuvor
-    beschrieben zerlegen diese ein Bild in seine Informationsbestandteile, und
-    zwar auf unterschiedlichen Ebenen der Abstraktion.  Im Foto wird der Inhalt
-    erkannt, zum Beispiel ein Ohr oder eine Nase.  Im Kunstwerk hingegen,
-    erkennt das Netzwerk die Art und Weise wie Umrisse aus verschiedenen Kanten
-    und Farbenspiel konstruiert ist.  Tut man beides zusammen, erhällt man ein
-    neues Kunstwerk mit dem Inhalt des Fotos, und wenn bei uns alles geklappt
-    hat, dann können Sie dieses auch im Anhang der e-mail beobachten.
+    und einem Gemälde ein neues Kunstwerk zu machen.
+    Wie geht das wohl? Wie zuvor beschrieben zerlegen wir mit Hilfe eines
+    Neuronalen Netzwerkes ein Bild auf unterschiedlichen
+    Abstraktionsebenen in seine Informationsbestandteile. Im Foto wird der Inhalt erkannt,
+    zum Beispiel ein Ohr oder eine Nase, im Kunstwerk hingegen, erkennt das
+    Netzwerk die Art und Weise wie Inhalte aus verschiedenen Kanten
+    und Farbenspielen konstruiert sind. Kombiniert man beides, erhält man ein
+    neues Kunstwerk mit dem Inhalt des Fotos und dem Stil des Gemäldes.
+    Und wenn bei uns alles geklappt hat, dann können Sie nun Ihr neues Kunstwerk im
+    Anhang dieser E-Mail bewundern.
 
-    Viele Grüße aus dem Sonnigen Sachsen wünschen Ihnen unser team.
+    Viele Grüße aus dem sonnigen Sachsen wünschen Ihnen unser Team.
 
-    Benedikt Lünsmann
+    Justus Schwabedal
+    Benedict Lünsmann
     Mehrdad Baghery
     Andre Scholich
-    Justus Schwabedal
     """
 
 
