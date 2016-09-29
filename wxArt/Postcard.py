@@ -57,7 +57,7 @@ class Postcard(object):
         # Join the third page 4 times as back of the postcard.
         subprocess.call(['pdftk', 'pg_0003.pdf', 'pg_0003.pdf', 'pg_0003.pdf', 'pg_0003.pdf', 'cat', 'output', 'page_2.pdf'])
         # Join the two results.
-        subprocess.call(['pdftk', 'page_1.pdf', 'page_2.pdf', 'cat', 'output', 'to_print_4x4.pdf'])
+        # subprocess.call(['pdftk', 'page_1.pdf', 'page_2.pdf', 'cat', 'output', 'to_print_4x4.pdf'])
 
         subprocess.call(['pdflatex', self.mrg_file])
         # Cleanup temporary files.
