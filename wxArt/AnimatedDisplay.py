@@ -12,16 +12,17 @@ import os
 import wx
 import wx.animate
 import subprocess
+from .Camera import Camera
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # % Image class
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 class AnimatedDisplay(wx.animate.GIFAnimationCtrl):
 
-    _input_frame_base = 'frame'
-    _output_frame_base = 'conv_frame'
+    _input_frame_base = Camera._frame_base  # = 'frame'
+    _output_frame_base = 'large_'+_input_frame_base  # = 'large_frame'
+    _gif_path = _output_frame_base+'s.gif'  # ='large_frames.gif'
     _defaultImage_path = os.path.dirname(__file__) + "/../resources/default_picture.jpg"
-    _gif_path = './artwork.gif'
 
     def __init__(self, *args, **kwargs):
         kwargs["filename"] = self._defaultImage_path

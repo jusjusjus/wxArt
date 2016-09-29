@@ -22,6 +22,7 @@ import os
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 class Camera(wx.StaticBitmap):
 
+    _frame_base = 'frame'
     _countdown_path = os.path.dirname(__file__) + "/../resources/countdown/"
     _defaultImage_path = os.path.dirname(__file__) + "/../resources/default_picture.jpg"
     default_kwargs = dict(debug = False,
@@ -83,7 +84,7 @@ class Camera(wx.StaticBitmap):
             cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
             self.CopyFromBuffer(cam_frame)
 
-            self.record_image(filename="frame_{:03d}.jpg".format(self.i_rec))
+            self.record_image(filename=self._frame_base+"_{:03d}.jpg".format(self.i_rec))
             self.i_rec += 1
             self.GetParent().Layout()
 
@@ -115,7 +116,6 @@ class Camera(wx.StaticBitmap):
 
 
     def record_image(self, filename=None):
-        print "record image", filename
         
         if filename == None:
             filename = self.path_to_image
@@ -127,13 +127,13 @@ class Camera(wx.StaticBitmap):
     def countdown(self, evt):   # runs down the countdown.
 
         self.count -= 1
-        if self.count > 0:
+        if self.count > 0:  # While countdown is running..
             path = self._countdown_path+"mnist_%i.jpg" % (self.count)
             self.image_fit(path)
             self.GetParent().Layout()
     
-        else: # start the recording
-            # Stop the countdown
+        else: # Coundown over -> start the recording..
+            # Stop the countdown timer
             self.timer.Stop()
             self.Unbind(wx.EVT_TIMER, self.timer)
 
@@ -142,8 +142,10 @@ class Camera(wx.StaticBitmap):
             self.i_rec = 0  # frame index for the recording
 
                 # delete previously recorded frames
-            possible_frames = ('frame_%03i.jpg' % (i) for i in xrange(1000))
-            frames = [os.remove(f) for f in possible_frames if os.path.exists(f)]
+            possible_frames = (self._frame_base+'_%03i.jpg' % (i) for i in xrange(1000))
+            for f in possible_frames:
+                if os.path.exists(f):
+                    os.remove(f)
 
             # Bind the video timer
             self.Bind(wx.EVT_TIMER, self.record_next_frame, self.timer)

@@ -38,9 +38,10 @@ class Artwork(AnimatedDisplay):
 
         keepGoing = progress.Update(0)  # Initialize
 
+        processed_frames = []
         for idx_f in xrange(num_frames):
-            print frames[idx_f]
-            self.processor.generate(frames[idx_f][0], frames[idx_f][1])
+            self.processor.generate(frames[idx_f][0], frames[idx_f][0])
+            processed_frames.append( frames[idx_f] )
             keepGoing = progress.Update(idx_f)
 
             if not keepGoing[0]:
@@ -52,6 +53,8 @@ class Artwork(AnimatedDisplay):
         for i_del in xrange(idx_f + 1, num_frames):
             subprocess.call(['rm', frames[i_del][0]])
 
+        return processed_frames
+        
 
     def convert_to_artwork(self, fps=None):
         suffix = os.path.basename(self.path_to_image).split('.')[1]
@@ -67,22 +70,20 @@ class Artwork(AnimatedDisplay):
         assert not fps == None, "Fps cannot be none."
 
         self.Stop()
-        frames = self.get_frames_to_process()   # Check for available files in the folder
-        self.process_frames(frames)  # Convert all frames to artworks.
-        # But not maybe not all processes were processed.
-        # The rest was deleted.
-        
-        # Check for available files in the folder
-        for fi, fo in self.get_frames_to_process():
-            self.fit_and_save(fo, fo) # Only fo contain the artwork now!!!
+        frames = self.get_frames_to_process()               # Check for available files in the folder
+        processed_frames = self.process_frames(frames)      # Convert all frames to artworks.
 
-        self.merge_to_gif(fps=fps)  # Merge all artworks into one movie.
+        for fi, fo in processed_frames:
+            self.fit_and_save(fi, fo) # fi contains the artwork now!!!
+
+        self.merge_to_gif(fps=fps)  # Merge all processed and enlarged frames into one movie.
         self.LoadFile(self._gif_path)
         self.Play()
 
 
     def convert_jpg_to_artwork(self):
         self.processor.generate(self.path_to_image, self._output_path)
+        self.arxiv()
         super(Artwork, self).load_image(self._output_path)
 
 
@@ -99,4 +100,5 @@ class Artwork(AnimatedDisplay):
         while os.path.exists(arxiv_path):  # Was it by chance a name that already exists.
             arxiv_path = self.new_arxiv_path()  # Get a random name.
 
+        print ' '.join(['cp', self.path_to_image, arxiv_path])  # shows the command
         subprocess.call(['cp', self.path_to_image, arxiv_path])
