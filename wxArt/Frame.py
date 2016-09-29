@@ -73,23 +73,27 @@ class Frame(wx.Frame):
         # mange the user input
         # top: content (camera button)
         # bottom: style (image button)
+        # font = wx.Font(18, wx.NORMAL, wx.NORMAL, wx.BOLD) # defunc
+        # self.SetFont(font) # defunc
+        dummy_pos = (0,0)
+        button_size = (180,80)
         camera = self.camera = Camera(main_panel,-1, debug=self.debug, fps=self.fps)
         style_image   = self.style_image   = StyleButton(main_panel, -1)
-        photo_button = self.photo_button   = wx.Button(main_panel, -1, "Fotografie")
-        video_button = self.video_button   = wx.Button(main_panel, -1, "Aufnahme")
-        paint_button = self.paint_button   = wx.Button(main_panel, -1, "kunstwerk malen")
-        pcard_button = self.pcard_button   = wx.Button(main_panel, -1, "Postkarte erstellen")
+        photo_button = self.photo_button   = wx.Button(main_panel, -1, "Foto", dummy_pos, button_size)
+        video_button = self.video_button   = wx.Button(main_panel, -1, "Video", dummy_pos, button_size)
+        paint_button = self.paint_button   = wx.Button(main_panel, -1, "Kunstwerk malen", dummy_pos, button_size)
+        pcard_button = self.pcard_button   = wx.Button(main_panel, -1, "Postkarte erstellen", dummy_pos, button_size)
 
         paint_button.Disable()
         pcard_button.Disable()
 
         input_vsizer.Add(camera, 1, wx.EXPAND | wx.ALL, 10)
         input_vsizer.Add(style_image, 1, wx.EXPAND | wx.ALL, 10)
-        input_vsizer.Add(button_hsizer, 1, wx.EXPAND | wx.ALL, 10)
-        button_hsizer.Add(photo_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
-        button_hsizer.Add(video_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
-        button_hsizer.Add(paint_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
-        button_hsizer.Add(pcard_button, 1, wx.ALIGN_CENTER | wx.ALL, 10)
+        input_vsizer.Add(button_hsizer, 0, wx.EXPAND | wx.ALL, 10)
+        button_hsizer.Add(photo_button, 1, wx.ALIGN_CENTER | wx.RIGHT | wx.LEFT, 2)
+        button_hsizer.Add(video_button, 1, wx.ALIGN_CENTER | wx.RIGHT | wx.LEFT, 2)
+        button_hsizer.Add(paint_button, 1, wx.ALIGN_CENTER | wx.RIGHT | wx.LEFT, 2)
+        button_hsizer.Add(pcard_button, 1, wx.ALIGN_CENTER | wx.RIGHT | wx.LEFT, 2)
 
         #
         # ~~~~~ output sizer (right) ~~~~~
