@@ -9,6 +9,7 @@
 #
 # ==============================================================================
 #
+import os
 import wx
 import wx.lib.agw.aui as aui
 import wx.animate
@@ -75,9 +76,9 @@ class Frame(wx.Frame):
         # bottom: style (image button)
         camera = self.camera = Camera(main_panel,-1, debug=self.debug, fps=self.fps)
         style_image   = self.style_image   = StyleButton(main_panel, -1)
-        photo_button = self.photo_button   = wx.Button(main_panel, -1, "Fotografie")
-        video_button = self.video_button   = wx.Button(main_panel, -1, "Aufnahme")
-        paint_button = self.paint_button   = wx.Button(main_panel, -1, "kunstwerk malen")
+        photo_button = self.photo_button   = wx.Button(main_panel, -1, "Foto machen")
+        video_button = self.video_button   = wx.Button(main_panel, -1, "Aufnahme starten")
+        paint_button = self.paint_button   = wx.Button(main_panel, -1, "Kunstwerk malen")
         pcard_button = self.pcard_button   = wx.Button(main_panel, -1, "Postkarte erstellen")
 
         paint_button.Disable()
@@ -156,10 +157,11 @@ class Frame(wx.Frame):
         style_path   = self.style_image.get_path_to_image()
         picture_path = self.artwork_image.get_path_to_image()
 
-
-        attachments = [content_path,        # add path to content.
-                       style_path,            # add path to style.
-                       picture_path]        # add path to picture.
+        possible_attachments = [content_path,        # add path to content.
+                                style_path,            # add path to style.
+                                picture_path]        # add path to picture.
+        
+        attachments = [path for path in possible_attachments if os.path.exists(path)]
 
         # Issue e-mail-send command.
         self.email_field.send_email(attachments)
