@@ -1,4 +1,6 @@
 
+# -*- coding: utf-8 -*- 
+
 import os
 import wx
 import smtplib
@@ -16,8 +18,6 @@ class EmailCtrl(wx.TextCtrl):
     port              = 587
     sender            = "kevin.clever@gmx.ch"
     default_recipient = "jschwabedal@gmail.com"
-    subject           = "Neural artistic style"
-    body              = "Here comes some descriptive text."
     
     _pwd_title        = "Password for %s" % (sender)
 
@@ -97,3 +97,77 @@ class EmailCtrl(wx.TextCtrl):
             else:   # dialog not ok:  Disable the ability to enter stuff into the text field.
                 self.SetEditable(False)
                 return
+
+
+
+    subject           = "Kunst durch künstliche Intelligenz"
+
+    body = """Hallo!
+
+    Wir freuen uns, dass Sie sich zum Tag der Deutschen Einheit die Zeit
+    genommen haben unseren Stand im Wissenschaftszelt zu besuchen.
+    
+    Mehrschichtige neuronale Netze werden zunehmend Teil der Technologie die
+    uns in unserem täglichen Leben umgibt.  Die zugrunde liegenden Mechanismen
+    versuchen die Funktionsweise von Gehirnen lebender Wesen nachzuahmen und
+    erreichen dadurch faszinierende Ergebnisse.  Die Vorstellung ein denkendes
+    Wesen in unserem Computer zu simulieren ist natürlich sehr ungewohnt.
+    Viele Menschen machen sich Sorgen, dass wir diese Technik nicht ausreichend
+    beherrschen.  Darum haben wir uns am Max-Planck Institut für die Physik
+    Komplexer Systeme darum bemüht diese Funktionsweise am Beispiel von 'Sehen'
+    etwas zu entzaubern.
+
+    Wenn sich ein mehrschichtige neuronales Netz ein Bild ansieht, dann sieht
+    es nicht zuerst auf das große Ganze sondern sucht systematisch nach
+    einfachen Details.  Zum Beispiel entdeckt es auf dieser ersten
+    Prozessierungsebene Kanten von Farbübergängen die unterschiedlich auf dem
+    Bild ausgerichtet sind.  Dies passiert für jeden Farbkanal, rot, grün und
+    blau, einzeln.  So werden aus den drei Farbkanälen, die zusammen das
+    ursprüngliche Bild ergeben, Kanäle von Kanten unterschiedlicher Ausrichtung
+    in der ersten Prozessierungsebene.  In den folgenden Ebenen werden Kanten
+    nun zu Umrissen und Umrisse zu Objekten.  Die Information wird also immer
+    abstrakter.
+
+    An unserem Stand haben wir diese Technologie nun genutzt, um aus einem Foto
+    und einem Kunstwerk ein neues Kunstwerk zu machen.  Wie geht das wohl?  Mit
+    solchen mehrschichtigen neuronalen Netzen geht das ganz einfach:  Wie zuvor
+    beschrieben zerlegen diese ein Bild in seine Informationsbestandteile, und
+    zwar auf unterschiedlichen Ebenen der Abstraktion.  Im Foto wird der Inhalt
+    erkannt, zum Beispiel ein Ohr oder eine Nase.  Im Kunstwerk hingegen,
+    erkennt das Netzwerk die Art und Weise wie Umrisse aus verschiedenen Kanten
+    und Farbenspiel konstruiert ist.  Tut man beides zusammen, erhällt man ein
+    neues Kunstwerk mit dem Inhalt des Fotos, und wenn bei uns alles geklappt
+    hat, dann können Sie dieses auch im Anhang der e-mail beobachten.
+
+    Viele Grüße aus dem Sonnigen Sachsen wünschen Ihnen unser team.
+
+    Benedikt Lünsmann
+    Mehrdad Baghery
+    Andre Scholich
+    Justus Schwabedal
+    """
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

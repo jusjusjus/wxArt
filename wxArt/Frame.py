@@ -156,7 +156,7 @@ class Frame(wx.Frame):
         style_path   = self.style_image.get_path_to_image()
         picture_path = self.artwork_image.get_path_to_image()
 
-        self.query_save()   # This command issues a save-file to the artwork_image if the user allows us.
+        #self.query_save()   # This command issues a save-file to the artwork_image if the user allows us.
 
         attachments = [content_path,        # add path to content.
                        style_path,            # add path to style.
