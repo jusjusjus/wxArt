@@ -204,7 +204,8 @@ class Frame(wx.Frame):
     def issue_postcard(self, event):
         pcard_operator = Postcard(self)
         pcard_operator.create()
-        
+        # pcard_operator.show_postcard()
+        pcard_operator.print_postcard()
 
     def OnOpenFile(self, event):
         self.paint_button.Enable()

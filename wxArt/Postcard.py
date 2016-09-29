@@ -43,7 +43,6 @@ class Postcard(object):
 
         self.compile_tex()
         self.create_postcard()
-        self.show_postcard()
 
 
     def compile_tex(self):
@@ -64,8 +63,10 @@ class Postcard(object):
         # Cleanup temporary files.
         #subprocess.call(['rm', 'pg_*pdf', 'page_*.pdf', 'default*'])
 
-
     def show_postcard(self, filename='merger.pdf'):
         subprocess.call(['evince', filename])
+
+    def print_postcard(self, filename='merger.pdf'):
+        subprocess.call(['lpr', filename])
 
 
