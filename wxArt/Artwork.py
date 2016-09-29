@@ -83,14 +83,19 @@ class Artwork(AnimatedDisplay):
 
     def convert_jpg_to_artwork(self):
         self.processor.generate(self.path_to_image, self._output_path)
-        self.arxiv()
         super(Artwork, self).load_image(self._output_path)
 
 
     # Methods for archiving
     def new_arxiv_path(self):
-        style = os.path.basename(self.style_path).split('.')[0]  # raw name of the style
-        path = self._arxiv_dir + style + '_' + str(np.random.randint(10 ** 7)) + '.jpg'  # ./arxiv/<style>_<randint>.jpg
+        suffix = os.path.basename(self.path_to_image).split('.')[1]
+        style = os.path.basename(self.style_path).split('.')[0]
+
+        path  = self._arxiv_dir	                    # ./arxiv/
+        path += style          	                    # ./arxiv/<style>
+        path += '_'            	                    # ./arxiv/<style>_
+        path += str(np.random.randint(10 ** 7))     # ./arxiv/<style>_<random number>
+        path += '.'+suffix                          # ./arxiv/<style>_<random number>.<suffix>
 
         return path
 
