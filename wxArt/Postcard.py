@@ -67,6 +67,6 @@ class Postcard(object):
         subprocess.call(['evince', filename])
 
     def print_postcard(self, filename='merger.pdf'):
-        subprocess.call(['lpr', filename])
+        subprocess.call(['lpr', '-o', 'sides=two-sided-short-edge', filename])
 
 
