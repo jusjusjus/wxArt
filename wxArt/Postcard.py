@@ -53,9 +53,11 @@ class Postcard(object):
         # Split the .tex-output into separate pages.
         subprocess.call(['pdftk', self.pdf_file, 'burst'])
         # Join the second page 4 times as front of the postcard.
-        subprocess.call(['pdftk', 'pg_0002.pdf', 'pg_0002.pdf', 'pg_0002.pdf', 'pg_0002.pdf', 'cat', 'output', 'page_1.pdf'])
+        # subprocess.call(['pdftk', 'pg_0002.pdf', 'pg_0002.pdf', 'pg_0002.pdf', 'pg_0002.pdf', 'cat', 'output', 'page_1.pdf'])
+        subprocess.call(['pdftk', 'pg_0001.pdf', 'pg_0001.pdf', 'pg_0001.pdf', 'pg_0001.pdf', 'cat', 'output', 'page_1.pdf'])
         # Join the third page 4 times as back of the postcard.
-        subprocess.call(['pdftk', 'pg_0003.pdf', 'pg_0003.pdf', 'pg_0003.pdf', 'pg_0003.pdf', 'cat', 'output', 'page_2.pdf'])
+        # subprocess.call(['pdftk', 'pg_0003.pdf', 'pg_0003.pdf', 'pg_0003.pdf', 'pg_0003.pdf', 'cat', 'output', 'page_2.pdf'])
+        subprocess.call(['pdftk', 'pg_0002.pdf', 'pg_0002.pdf', 'pg_0002.pdf', 'pg_0002.pdf', 'cat', 'output', 'page_2.pdf'])
         # Join the two results.
         # subprocess.call(['pdftk', 'page_1.pdf', 'page_2.pdf', 'cat', 'output', 'to_print_4x4.pdf'])
 
