@@ -104,9 +104,11 @@ class AnimatedDisplay(wx.animate.GIFAnimationCtrl):
 
 
     def merge_to_gif(self, fps):
-
-        subprocess.call(['rm', self._gif_path])
-
+        try:
+            subprocess.call(['rm', self._gif_path])
+        except (WindowsError, IOError):
+            if os.path.exists(self._gif_path):
+                os.remove(self._gif_path)
         subprocess.call(['ffmpeg', '-f', 'image2',
                          '-framerate', str(fps),
                          '-i', self._output_frame_base+'_%03d.jpg',
