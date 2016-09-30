@@ -51,7 +51,11 @@ class Artwork(AnimatedDisplay):
 
         # delete the frames that have not been processed
         for i_del in xrange(idx_f + 1, num_frames):
-            subprocess.call(['rm', frames[i_del][0]])
+            try:
+                subprocess.call(['rm', frames[i_del][0]])
+            except WindowsError:
+                if os.path.exists(frames[i_del][0]):
+                    os.remove(frames[i_del][0])
 
         return processed_frames
         
