@@ -12,4 +12,6 @@ https://github.com/gafr/chainer-fast-neuralstyle-models
 
 # Further dependencies
 
-[PDFtk](https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/)
+* openCV
+* [PDFtk](https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/)
+* Latex, e.g [MikTex](http://miktex.org/) under Windows
