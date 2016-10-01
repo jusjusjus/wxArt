@@ -40,7 +40,8 @@ class Artwork(AnimatedDisplay):
 
         processed_frames = []
         for idx_f in xrange(num_frames):
-            self.processor.generate(frames[idx_f][0], frames[idx_f][0])
+            self.processor.generate(frames[idx_f][0],
+                                    frames[idx_f][0])
             processed_frames.append( frames[idx_f] )
             keepGoing = progress.Update(idx_f)
 
@@ -81,9 +82,14 @@ class Artwork(AnimatedDisplay):
         self.Play()
 
 
-    def convert_jpg_to_artwork(self):
-        self.processor.generate(self.path_to_image, self._output_path)
-        super(Artwork, self).load_image(self._output_path)
+    def convert_jpg_to_artwork(self):   # load_image sets input_image
+        self.processor.generate(self.input_image, self._output_path)
+        super(Artwork, self).load_image(self._output_path)  # this only sets path_to_image
+
+
+    def load_image(self, filename):
+        self.input_image = filename
+        super(Artwork, self).load_image(self.input_image)
 
 
     # Methods for archiving
@@ -107,3 +113,6 @@ class Artwork(AnimatedDisplay):
 
         print ' '.join(['cp', self.path_to_image, arxiv_path])  # shows the command
         subprocess.call(['cp', self.path_to_image, arxiv_path])
+
+
+
