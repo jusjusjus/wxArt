@@ -8,3 +8,10 @@ https://github.com/yusuketomoto/chainer-fast-neuralstyle
 and use the great models given by gafr:
 
 https://github.com/gafr/chainer-fast-neuralstyle-models
+
+
+# Further dependencies
+
+* openCV
+* [PDFtk](https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/)
+* Latex, e.g [MikTex](http://miktex.org/) under Windows

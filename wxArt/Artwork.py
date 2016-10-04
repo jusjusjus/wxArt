@@ -52,7 +52,11 @@ class Artwork(AnimatedDisplay):
 
         # delete the frames that have not been processed
         for i_del in xrange(idx_f + 1, num_frames):
-            subprocess.call(['rm', frames[i_del][0]])
+            try:
+                subprocess.call(['rm', frames[i_del][0]])
+            except WindowsError:
+                if os.path.exists(frames[i_del][0]):
+                    os.remove(frames[i_del][0])
 
         return processed_frames
         
@@ -112,7 +116,8 @@ class Artwork(AnimatedDisplay):
             arxiv_path = self.new_arxiv_path()  # Get a random name.
 
         print ' '.join(['cp', self.path_to_image, arxiv_path])  # shows the command
-        subprocess.call(['cp', self.path_to_image, arxiv_path])
-
-
-
+        try:
+            subprocess.call(['cp', self.path_to_image, arxiv_path])
+        except WindowsError:
+            import shutil
+            shutil.copy(self.path_to_image, arxiv_path)

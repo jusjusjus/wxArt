@@ -66,6 +66,10 @@ class Postcard(object):
 
 
     def show_postcard(self, filename='merger.pdf'):
-        subprocess.call(['evince', filename])
+        try:
+            subprocess.call(['evince', filename])
+        except WindowsError:
+            # open with default program
+            os.system('start ' + filename)
 
 
