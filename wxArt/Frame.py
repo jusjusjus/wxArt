@@ -198,7 +198,8 @@ class Frame(wx.Frame):
 
         self.artwork_image.convert_to_artwork(fps = self.fps)
 
-        self.query_save()   # This command issues a save-file to the artwork_image if the user allows us.
+        #self.query_save()   # This command issues a save-file to the artwork_image if the user allows us.
+        self.artwork_image.arxiv()
 
 
     def issue_postcard(self, event):
@@ -214,10 +215,7 @@ class Frame(wx.Frame):
                                style=wx.FD_OPEN)
 
         if dialog.ShowModal() == wx.ID_OK:
-            paths = dialog.GetPaths()
-            for file in paths:
-                self.camera.load_image(file)
-                break
+            self.artwork_image.load_image( dialog.GetPath() )
 
         dialog.Destroy()
 
