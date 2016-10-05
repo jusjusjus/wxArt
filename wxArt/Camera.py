@@ -25,8 +25,9 @@ class Camera(wx.StaticBitmap):
     _frame_base = 'frame'
     _countdown_path = os.path.dirname(__file__) + "/../resources/countdown/"
     _defaultImage_path = os.path.dirname(__file__) + "/../resources/default_picture.jpg"
-    default_kwargs = dict(debug = False,
-                          fps   = 20)
+    default_kwargs = dict(debug    = False,
+                          fps      = 20,
+                          temp_dir = '.')
 
     def __init__(self, *args, **kwargs):
 
@@ -56,7 +57,7 @@ class Camera(wx.StaticBitmap):
         self.recording = False
 
         # set value for path_to_image 
-        self.path_to_image = "./content.jpg"
+        self.path_to_image = self.temp_dir+"/content.jpg"
 
 
     def show_next_frame(self, event):
@@ -118,10 +119,11 @@ class Camera(wx.StaticBitmap):
     def record_image(self, filename=None):
         
         if filename == None:
-            filename = self.path_to_image
+            filename = tempfile.mkstemp(suffix='.jpg', dir=self.temp_dir)[1]
 
+        self.path_to_image = filename
         image = self.cam2bmp.ConvertToImage().Mirror()      # cam2bmp is already mirrored.  That's why we call it again.
-        image.SaveFile(filename, wx.BITMAP_TYPE_JPEG)
+        image.SaveFile(self.path_to_image, wx.BITMAP_TYPE_JPEG)
 
 
     def countdown(self, evt):   # runs down the countdown.

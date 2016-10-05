@@ -87,13 +87,8 @@ class Artwork(AnimatedDisplay):
 
 
     def convert_jpg_to_artwork(self):   # load_image sets input_image
-        self.processor.generate(self.input_image, self._output_path)
+        self.processor.generate(self.path_to_image, self._output_path)
         super(Artwork, self).load_image(self._output_path)  # this only sets path_to_image
-
-
-    def load_image(self, filename):
-        self.input_image = filename
-        super(Artwork, self).load_image(self.input_image)
 
 
     # Methods for archiving

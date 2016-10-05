@@ -84,7 +84,7 @@ class Frame(wx.Frame):
         # self.SetFont(font) # defunc
         dummy_pos = (0,0)
         button_size = (180,80)
-        camera = self.camera = Camera(main_panel,-1, debug=self.debug, fps=self.fps)
+        camera = self.camera = Camera(main_panel,-1, temp_dir=self.temp_dir, debug=self.debug, fps=self.fps)
         style_image   = self.style_image   = StyleButton(main_panel, -1)
         photo_button = self.photo_button   = wx.Button(main_panel, -1, "Foto", dummy_pos, button_size)
         video_button = self.video_button   = wx.Button(main_panel, -1, "Video", dummy_pos, button_size)
@@ -143,6 +143,8 @@ class Frame(wx.Frame):
         camera.Bind(wx.EVT_TIMER,  self.take_video,            camera.rectimer)
 
         self.Bind(wx.EVT_BUTTON,   self.convert_to_artwork,    paint_button)
+
+        self.Bind(wx.EVT_CHAR_HOOK, self.OnKey)
 
         main_panel.Layout()
 
@@ -226,4 +228,16 @@ class Frame(wx.Frame):
             self.artwork_image.load_image( dialog.GetPath() )
 
         dialog.Destroy()
+
+
+    def OnKey(self, evt):
+
+        if evt.GetKeyCode() == 314:
+            self.artwork_image.revert(None)
+
+        elif evt.GetKeyCode() == 316:
+            self.artwork_image.forward(None)
+
+        else:
+            evt.Skip()
 
