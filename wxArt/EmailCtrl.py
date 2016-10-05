@@ -26,20 +26,22 @@ class EmailCtrl(wx.TextCtrl):
         super(EmailCtrl, self).__init__(*args, **kwargs)
         
         # Set the password dynamically when the program starts. (TO DO)
-        self.password = ""  # XXX
+        self.password = ""
         self.SetEditable(False)
         self.query_password()
 
 
-    def send_email(self, attachments=[], recipient=None): # attachments is a list of filenames.
+    def send_email(self, attachments=[], recipients=None): # attachments is a list of filenames.
         #read out the recipient email address
-        if recipient == None:
-            recipient = self.GetValue()
+        if recipients == None:
+            recipients = self.GetValue()
+            recipients = [ recipient.strip(' ') for recipient in recipients.split(',') ]
 
+        print recipients
         # construct the email
         message = MIMEMultipart()
         message['From']    = self.sender
-        message['To']      = recipient
+        message['To']      = ''             # We leave that field empty not to disclose peoples emails.
         message['Subject'] = self.subject
 
         message.attach( MIMEText(self.body) )
@@ -55,19 +57,24 @@ class EmailCtrl(wx.TextCtrl):
                 attachment['Content-Disposition'] = 'attachment; filename="%s"' % os.path.basename(f)
                 message.attach(attachment)
 
-        # Send the email
+        # Log into the email client
         try:
             server = smtplib.SMTP(self.server_name, self.port)
             server.ehlo()
             server.starttls()
             server.login(self.sender, self.password)
-            server.sendmail(self.sender, recipient, message.as_string())
+        except:
+            wx.MessageBox("Login failed.")
+            return False
+        
+        # Send the email
+        try:
+            server.sendmail(self.sender, recipients, message.as_string())
             server.close()
             wx.MessageBox('Successfully sent the mail.')
             return True
-
         except:
-            wx.MessageBox("Failed to send mail")
+            wx.MessageBox("Failed to send one or all mails.")
             return False
 
 
@@ -76,7 +83,7 @@ class EmailCtrl(wx.TextCtrl):
         if self.IsEditable():
             return
         
-        while True:    # XXX
+        while True:
             query_fields = [('server_name', self.server_name),
                             ('sender',      self.sender),
                             ('port',        self.port),
@@ -90,7 +97,7 @@ class EmailCtrl(wx.TextCtrl):
                     if key == 'port':   setattr(self, key, int(dialog.input[key]))      # this has to be an integer.
                     else:               setattr(self, key, dialog.input[key])           # these should be strings.
             
-                if self.send_email(recipient=self.default_recipient):   # Returns true if email successfully sent.
+                if self.send_email(recipients=self.default_recipient):   # Returns true if email successfully sent.
                     self.SetEditable(True)
                     return
 
@@ -99,8 +106,8 @@ class EmailCtrl(wx.TextCtrl):
                 return
 
 
-
-    subject           = "Kunst durch künstliche Intelligenz"
+    # These are now defaults
+    subject = "Kunst durch künstliche Intelligenz"
 
     body = """Hallo!
 
