@@ -11,7 +11,6 @@
 #
 import os
 import wx
-import wx.lib.agw.aui as aui
 import wx.animate
 from .Artwork import Artwork
 from .StyleButton import StyleButton
@@ -19,6 +18,7 @@ from .EmailCtrl import EmailCtrl
 from .Camera import Camera
 from .Postcard import Postcard
 import subprocess
+import tempfile
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -34,6 +34,8 @@ class Frame(wx.Frame):
 
     default_kwargs = dict(debug = False,
                           fps   = 20)
+    
+    temp_dir = tempfile.mkdtemp(suffix='wxArt')
 
     def __init__(self, *args, **kwargs):
 
