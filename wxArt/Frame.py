@@ -55,6 +55,10 @@ class Frame(wx.Frame):
         fileMenu = wx.Menu()
         menu_open = fileMenu.Append(wx.ID_OPEN, "Open File")
         menuBar.Append(fileMenu, "&File")
+        editMenu = wx.Menu()
+        menu_undo = editMenu.Append(wx.ID_ANY, "&Undo")
+        menu_redo = editMenu.Append(wx.ID_ANY, "&Redo")
+        menuBar.Append(editMenu, "&Edit")
         self.SetMenuBar(menuBar)
 
         #
@@ -132,6 +136,8 @@ class Frame(wx.Frame):
         self.Bind(wx.EVT_BUTTON,     self.issue_postcard,   pcard_button)
 
         self.Bind(wx.EVT_MENU, self.OnOpenFile, menu_open)
+        self.Bind(wx.EVT_MENU, self.artwork_image.revert, menu_undo)
+        self.Bind(wx.EVT_MENU, self.artwork_image.forward, menu_redo)
 
         self.Bind(wx.EVT_BUTTON,   camera.take_snapchat,       video_button)
         camera.Bind(wx.EVT_TIMER,  self.take_video,            camera.rectimer)
