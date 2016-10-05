@@ -185,3 +185,12 @@ class AnimatedDisplay(wx.animate.GIFAnimationCtrl):
             image = image.Rescale(dummy_width, height, wx.IMAGE_QUALITY_HIGH)
 
         image.SaveFile(outfile, wx.BITMAP_TYPE_JPEG)
+
+
+    def save_image(self, outfile):
+        path = self.get_path_to_image()
+        image = wx.Image(path, wx.BITMAP_TYPE_ANY)
+        image.SaveFile(outfile, wx.BITMAP_TYPE_JPEG)
+
+
+

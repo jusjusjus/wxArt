@@ -59,7 +59,9 @@ class Frame(wx.Frame):
 
         menuBar = wx.MenuBar()
         fileMenu = wx.Menu()
-        menu_open = fileMenu.Append(wx.ID_OPEN, "Open File")
+        menu_open = fileMenu.Append(wx.ID_OPEN, "Load picture")
+        menu_save = fileMenu.Append(wx.ID_ANY, "Save picture")
+        fileMenu.AppendSeparator()
         menu_email = fileMenu.Append(wx.ID_ANY, "Enable e-mail")
         menuBar.Append(fileMenu, "&File")
         editMenu = wx.Menu()
@@ -125,7 +127,8 @@ class Frame(wx.Frame):
         self.Bind(wx.EVT_BUTTON,     self.take_picture,   photo_button)
         self.Bind(wx.EVT_BUTTON,     self.issue_postcard,   pcard_button)
 
-        self.Bind(wx.EVT_MENU, self.OnOpenFile, menu_open)
+        self.Bind(wx.EVT_MENU, self.OnOpenPicture, menu_open)
+        self.Bind(wx.EVT_MENU, self.OnSavePicture, menu_save)
         self.Bind(wx.EVT_MENU, self.artwork_image.revert, menu_undo)
         self.Bind(wx.EVT_MENU, self.artwork_image.forward, menu_redo)
         self.Bind(wx.EVT_MENU, self.enable_email, menu_email)
@@ -221,15 +224,28 @@ class Frame(wx.Frame):
         pcard_operator.create()
         
 
-    def OnOpenFile(self, event):
-        self.paint_button.Enable()
-        self.pcard_button.Enable()
+    def OnOpenPicture(self, event):
         dialog = wx.FileDialog(self,
                                message="",
                                style=wx.FD_OPEN)
 
         if dialog.ShowModal() == wx.ID_OK:
             self.artwork_image.load_image( dialog.GetPath() )
+            self.paint_button.Enable()
+            self.pcard_button.Enable()
+
+        dialog.Destroy()
+
+
+    def OnSavePicture(self, event):
+        dialog = wx.FileDialog(self,
+                               message = "Save artwork as jpeg",
+                               defaultDir = ".",
+                               wildcard = "jpg files (*.jpg)|*.jpg",
+                               style   = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
+
+        if dialog.ShowModal() == wx.ID_OK:
+            self.artwork_image.save_image( dialog.GetPath() )
 
         dialog.Destroy()
 
