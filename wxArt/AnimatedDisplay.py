@@ -32,6 +32,10 @@ class AnimatedDisplay(wx.animate.GIFAnimationCtrl):
     _defaultImage_path = os.path.dirname(__file__) + "/../resources/default_picture.jpg"
 
     def __init__(self, *args, **kwargs):
+
+        if not kwargs.has_key('filename'):
+            kwargs['filename'] = self._defaultImage_path
+
         super(AnimatedDisplay, self).__init__(*args, **kwargs)
 
         # AnimatedDisplay stores a history of files that have been loaded, and
