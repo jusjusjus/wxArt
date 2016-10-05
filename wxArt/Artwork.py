@@ -10,7 +10,6 @@ import os
 class Artwork(AnimatedDisplay):
 
     _output_path = './artwork.jpg'
-    _arxiv_dir = './arxiv/'
     _pb_style = wx.PD_CAN_ABORT | wx.PD_ELAPSED_TIME | wx.PD_REMAINING_TIME
 
     def __init__(self, *args, **kwargs):
@@ -18,8 +17,6 @@ class Artwork(AnimatedDisplay):
         super(Artwork, self).__init__(*args, **kwargs)
         self.frames = None  # Frames are handles inconsistently among member functions.
         # mkdir for archiving files if it doesn't yet exist.
-        if not os.path.exists(self._arxiv_dir):
-            os.mkdir(self._arxiv_dir)
 
 
     def set_style(self, style):
@@ -91,28 +88,3 @@ class Artwork(AnimatedDisplay):
         super(Artwork, self).load_image(self._output_path)  # this only sets path_to_image
 
 
-    # Methods for archiving
-    def new_arxiv_path(self):
-        suffix = os.path.basename(self.path_to_image).split('.')[1]
-        style = os.path.basename(self.style_path).split('.')[0]
-
-        path  = self._arxiv_dir	                    # ./arxiv/
-        path += style          	                    # ./arxiv/<style>
-        path += '_'            	                    # ./arxiv/<style>_
-        path += str(np.random.randint(10 ** 7))     # ./arxiv/<style>_<random number>
-        path += '.'+suffix                          # ./arxiv/<style>_<random number>.<suffix>
-
-        return path
-
-
-    def arxiv(self):
-        arxiv_path = self._arxiv_dir  # This one definitely exists.
-        while os.path.exists(arxiv_path):  # Was it by chance a name that already exists.
-            arxiv_path = self.new_arxiv_path()  # Get a random name.
-
-        print ' '.join(['cp', self.path_to_image, arxiv_path])  # shows the command
-        try:
-            subprocess.call(['cp', self.path_to_image, arxiv_path])
-        except WindowsError:
-            import shutil
-            shutil.copy(self.path_to_image, arxiv_path)

@@ -35,7 +35,7 @@ class Frame(wx.Frame):
     default_kwargs = dict(debug = False,
                           fps   = 20)
     
-    temp_dir = tempfile.mkdtemp(suffix='wxArt')
+    temp_dir = tempfile.mkdtemp(prefix='wxArt_')
 
     def __init__(self, *args, **kwargs):
 
@@ -149,17 +149,6 @@ class Frame(wx.Frame):
         main_panel.Layout()
 
 
-    def query_save(self):
-
-        dialog = wx.MessageDialog(None, "Erlauben Sie uns Ihr Kunstwerk in unserer Zeitschrift zu benutzen?", "Erlaubniserteilung", wx.YES_NO)  # Change text to Ja/Nein
-        answer = dialog.ShowModal()
-
-        if answer == wx.ID_YES:
-            self.artwork_image.arxiv()
-            
-        dialog.Destroy()
-        #dialog should destroy right away, but doesn't.
-
     def send_as_email(self, event):
 
         if not self.email_field.IsEditable():
@@ -207,9 +196,6 @@ class Frame(wx.Frame):
         self.artwork_image.set_style(style_model_path)
 
         self.artwork_image.convert_to_artwork(fps = self.fps)
-
-        #self.query_save()   # This command issues a save-file to the artwork_image if the user allows us.
-        self.artwork_image.arxiv()
 
 
     def issue_postcard(self, event):
