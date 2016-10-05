@@ -16,7 +16,8 @@ from .Frame import Frame
 class wxArt(wx.App):
 
     default_kwargs = dict(debug = False,
-                          fps   = 20)
+                          fps   = 20,
+                          email = False)
 
     def __init__(self, *args, **kwargs):
         '''
@@ -38,6 +39,8 @@ class wxArt(wx.App):
         '''
         self.frame = Frame(None, size=wx.Size(1500, 800), title='wxArt', debug=self.debug, fps=self.fps)
         self.frame.Show()
+        if self.email:
+            self.frame.enable_email(None)
         return True
 
     def OnExitApp(self, evt):
