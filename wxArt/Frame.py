@@ -39,6 +39,8 @@ class Frame(wx.Frame):
 
     def __init__(self, *args, **kwargs):
 
+        # HANDLE ARGUMENTS
+
         for att in self.default_kwargs.keys():
             if kwargs.has_key(att):
                 setattr(self, att, kwargs.pop(att))
@@ -46,6 +48,10 @@ class Frame(wx.Frame):
                 setattr(self, att, self.default_kwargs[att])
 
         super(Frame, self).__init__(*args, **kwargs)
+
+        # DECLARATIONS
+        self.email_field = None
+
         self.Maximize(True)
 
         # panels
@@ -54,6 +60,7 @@ class Frame(wx.Frame):
         menuBar = wx.MenuBar()
         fileMenu = wx.Menu()
         menu_open = fileMenu.Append(wx.ID_OPEN, "Open File")
+        menu_email = fileMenu.Append(wx.ID_ANY, "Enable e-mail")
         menuBar.Append(fileMenu, "&File")
         editMenu = wx.Menu()
         menu_undo = editMenu.Append(wx.ID_ANY, "&Undo")
@@ -68,7 +75,7 @@ class Frame(wx.Frame):
         # right: output
         main_hsizer = wx.BoxSizer(wx.HORIZONTAL)
         input_vsizer = wx.BoxSizer(wx.VERTICAL)
-        output_vsizer = wx.BoxSizer(wx.VERTICAL)
+        output_vsizer = self.output_vsizer = wx.BoxSizer(wx.VERTICAL)
         button_hsizer = wx.BoxSizer(wx.HORIZONTAL)
 
         main_panel.SetSizer(main_hsizer)
@@ -112,23 +119,6 @@ class Frame(wx.Frame):
 
         output_vsizer.Add(artwork_image, 1, wx.EXPAND | wx.ALL, 10)
 
-        # EMAIL
-        email_field = self.email_field = EmailCtrl(main_panel, -1)
-        email_field.SetHint(u'Zum Verschicken des Bildes bitte eine E-Mail-Adresse angeben.')
-
-        if email_field.IsEditable(): # Add the e-mail stuff only if available.
-            email_button = wx.Button(main_panel, -1, "Senden")
-            email_sizer = wx.BoxSizer(wx.HORIZONTAL)
-            email_sizer.Add(email_field, 1, wx.EXPAND | wx.ALL, 10)
-            email_sizer.Add(email_button, 0, wx.ALL, 10)
-            self.Bind(wx.EVT_BUTTON,     self.send_as_email, email_button)  #
-            self.Bind(wx.EVT_TEXT_ENTER, self.send_as_email, email_field)   # Redundancy.
-
-            output_vsizer.Add(email_sizer, 0, wx.EXPAND | wx.ALL, 10)
-        else: # Destroy!
-            email_field.Destroy()
-
-
         #
         # ~~~~~ bind events to functions ~~~~~
         # main panel
@@ -138,6 +128,7 @@ class Frame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnOpenFile, menu_open)
         self.Bind(wx.EVT_MENU, self.artwork_image.revert, menu_undo)
         self.Bind(wx.EVT_MENU, self.artwork_image.forward, menu_redo)
+        self.Bind(wx.EVT_MENU, self.enable_email, menu_email)
 
         self.Bind(wx.EVT_BUTTON,   camera.take_snapchat,       video_button)
         camera.Bind(wx.EVT_TIMER,  self.take_video,            camera.rectimer)
@@ -147,6 +138,33 @@ class Frame(wx.Frame):
         self.Bind(wx.EVT_CHAR_HOOK, self.OnKey)
 
         main_panel.Layout()
+
+
+    def enable_email(self, evt):
+
+        if not self.email_field == None:    # email client enabled
+            return
+
+        email_field = EmailCtrl(self.main_panel, -1)
+        email_field.SetHint(u'Zum Verschicken des Bildes bitte eine E-Mail-Adresse angeben.')
+
+        if email_field.IsEditable(): # Add the e-mail stuff only if available.
+            email_button = wx.Button(self.main_panel, -1, "Senden")
+            email_sizer = wx.BoxSizer(wx.HORIZONTAL)
+            email_sizer.Add(email_field, 1, wx.EXPAND | wx.ALL, 10)
+            email_sizer.Add(email_button, 0, wx.ALL, 10)
+            self.Bind(wx.EVT_BUTTON,     self.send_as_email, email_button)  #
+            self.Bind(wx.EVT_TEXT_ENTER, self.send_as_email, email_field)   # Redundancy.
+
+            self.output_vsizer.Add(email_sizer, 0, wx.EXPAND | wx.ALL, 10)
+            self.Layout()
+            self.email_field = email_field  # everything went successfully, I suppose.
+
+        else: # Destroy!
+            email_field.Destroy()
+
+
+
 
 
     def send_as_email(self, event):
