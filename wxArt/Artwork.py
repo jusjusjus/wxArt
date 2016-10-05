@@ -1,5 +1,6 @@
 
 import wx
+import tempfile
 from .AnimatedDisplay import AnimatedDisplay
 from .fns.generate import ChainerFNS
 import subprocess
@@ -12,7 +13,16 @@ class Artwork(AnimatedDisplay):
     _output_path = './artwork.jpg'
     _pb_style = wx.PD_CAN_ABORT | wx.PD_ELAPSED_TIME | wx.PD_REMAINING_TIME
 
+    default_kwargs = dict(temp_dir = '.')
+
     def __init__(self, *args, **kwargs):
+
+        for att in self.default_kwargs.keys():
+            if kwargs.has_key(att):
+                setattr(self, att, kwargs.pop(att))
+            else:
+                setattr(self, att, self.default_kwargs[att])
+
         self.processor = ChainerFNS(gpu=-1)
         super(Artwork, self).__init__(*args, **kwargs)
         self.frames = None  # Frames are handles inconsistently among member functions.
@@ -84,7 +94,12 @@ class Artwork(AnimatedDisplay):
 
 
     def convert_jpg_to_artwork(self):   # load_image sets input_image
-        self.processor.generate(self.path_to_image, self._output_path)
-        super(Artwork, self).load_image(self._output_path)  # this only sets path_to_image
+
+        output_path = tempfile.mkstemp(prefix = 'artwork_',
+                                       suffix = '.jpg',
+                                       dir    = self.temp_dir)[1]
+
+        self.processor.generate(self.path_to_image, output_path)
+        super(Artwork, self).load_image(output_path)  # this only sets path_to_image
 
 

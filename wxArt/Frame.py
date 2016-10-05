@@ -108,7 +108,7 @@ class Frame(wx.Frame):
         # top: output image
         # middle: slider to change alpha value
         # bottom: email line, input email address and button to send mail
-        artwork_image = self.artwork_image = Artwork(main_panel, -1)  # Image.slider_vsizer has to be set later!
+        artwork_image = self.artwork_image = Artwork(main_panel, -1, temp_dir=self.temp_dir)  # Image.slider_vsizer has to be set later!
 
         output_vsizer.Add(artwork_image, 1, wx.EXPAND | wx.ALL, 10)
 
