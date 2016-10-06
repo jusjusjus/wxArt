@@ -49,7 +49,7 @@ class PasswordQuery(wx.Dialog):
 
     def OnKey(self, evt):
         evt.Skip()
-        if evt.GetKeyCode() == 27:
+        if evt.GetKeyCode() == wx.WXK_ESCAPE:
             self.Show(False)
 
 

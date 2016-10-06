@@ -252,10 +252,10 @@ class Frame(wx.Frame):
 
     def OnKey(self, evt):
 
-        if evt.GetKeyCode() == 314:
+        if evt.GetKeyCode() == wx.WXK_LEFT:
             self.artwork_image.revert(None)
 
-        elif evt.GetKeyCode() == 316:
+        elif evt.GetKeyCode() == wx.WXK_RIGHT:
             self.artwork_image.forward(None)
 
         else:
