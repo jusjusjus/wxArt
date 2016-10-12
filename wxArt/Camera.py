@@ -8,7 +8,6 @@
 # ==============================================================================
 #
 import wx
-#from .imagebutton import ImageButton
 import cv2
 import tempfile
 
