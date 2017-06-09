@@ -1,3 +1,14 @@
 # ignore compiled python files
 *.pyc
 .idea
+
+# ignoring Emacs' temporary files
+*~
+#~
+
+# ignoring cmake files of capturing script
+/resources/capturing/CMakeCache.txt
+/resources/capturing/CMakeFiles/*
+/resources/capturing/cmake_install.cmake
+/resources/capturing/camera-test
+/resources/capturing/Makefile
