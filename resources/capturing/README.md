@@ -8,7 +8,7 @@ This guide is written for an Ubuntu16.04 machine but should work on all (Debian-
 
 First of all let's check if there is really a problem with the cam.
 
-Under the hood the wxArt project uses the **cv2** module of Python (installed via `pip install opencv-python`).
+Under the hood the wxArt project uses the **cv2** module of Python 2 (installed via `pip install opencv-python`).
 
 Let's open an ipython2 shell and try to capture an image using the (default) cam. (If you have a different device, try a higher integer - the number obtained in the next section).
 
@@ -36,7 +36,7 @@ vlc v4l2:///dev/video0
 
 If you see the video feed of your web cam, then it's a Python issue.
 
-## Check your OpenCV (Open computer vision) configuration
+## Check your OpenCV (Open computer vision) installation
 
 Since Python is not able to capture video but the cam is working, we will check whether the underlying C++ library is working properly.
 
@@ -54,5 +54,53 @@ make
 ./camera-test
 ```
 
-Is it working? Well, then it is an issue of the Python wrapper (package).
+Is it working? Well, then it is an issue of the Python wrapper *opencv-python* (as it was in my case).
+
+## Compile newest OpenCV from source
+
+Since we have a working OpenCV installation and a Python module which refuses to talk with it, there is most probably a lag in time/some major changes between both versions.
+
+To sync those two, first uninstall the *opencv-python* version delivered via pip.
+
+```{bash}
+sudo pip uninstall opencv-python
+```
+
+Now get the latest [OpenCV](https://github.com/opencv/opencv) version (3.2.0 for me right now) and [compile](http://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html) it.
+
+```{bash}
+# Clone the OpenCV package
+git clone https://github.com/opencv/opencv
+
+# Compile the package. See instructions in link above.
+cd opencv
+mkdir build
+cd build
+
+cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local ..
+
+make -j7 # runs 7 jobs in parallel
+sudo make install
+
+# P.S.: I'm not really a C++ or cmake guru. So got an 
+# "error adding symbols: DSO missing from command line" error. 
+# You can circumvent this by commenting first line in the 
+# CMakeLists.txt file and hit 'make' and all following
+# commands in the parent folder. ;)
+```
+
+Afterwards you have a brand new version of *opencv-python* installed.
+
+Test it using one of the OpenCV [example scripts](https://github.com/opencv/opencv/blob/master/samples/python/video.py).
+
+```{bash}
+# At the root of the OpenCV repository tree
+cd samples/python
+
+# Run the sample script with the identifier of your cam
+# (see above) as the first argument
+python video.py 0
+```
+
+Now your should see your cam feed.
 
