@@ -1,10 +1,18 @@
 # Camera capturing troubleshooting
 
+## Wrong camera feed
+
+If you have more than camera available, be sure to address the correct one in the code. Therefore go line 98 in the [wxArt/Camera.py](wxArt/Camera.py) file and enter the correct device number into `cv2.VideoCapture( )`.
+
+The *bash* command `ls /dev | grep video` provides a list of all available cams.
+
+## No camera feed at all
+
 You are just seeing the default picture and no video is captured at all? Here is some little troubleshooting guide to check your cam settings. 
 
 This guide is written for an Ubuntu16.04 machine but should work on all (Debian-)Linux distributions.
 
-## Check the Python API of OpenCV (Open computer vision)
+### Check the Python API of OpenCV (Open computer vision)
 
 First of all let's check if there is really a problem with the cam.
 
@@ -23,7 +31,7 @@ s, img
 
 *s* is *False* and *img* is *None*? Then there is really a problem with the cam.
 
-## Check device
+### Check device
 
 Okay, now that we really now that there is an issue with the cam, let's check if it is working at all. For this you can e.g. use the *VLC* player as following.
 
@@ -36,7 +44,7 @@ vlc v4l2:///dev/video0
 
 If you see the video feed of your web cam, then it's a Python issue.
 
-## Check your OpenCV (Open computer vision) installation
+### Check your OpenCV (Open computer vision) installation
 
 Since Python is not able to capture video but the cam is working, we will check whether the underlying C++ library is working properly.
 
@@ -56,7 +64,7 @@ make
 
 Is it working? Well, then it is an issue of the Python wrapper *opencv-python* (as it was in my case).
 
-## Compile newest OpenCV from source
+### Compile newest OpenCV from source
 
 Since we have a working OpenCV installation and a Python module which refuses to talk with it, there is most probably a lag in time/some major changes between both versions.
 
