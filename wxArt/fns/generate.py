@@ -7,7 +7,7 @@ import time
 
 import chainer
 from chainer import cuda, Variable, serializers
-from .net import FastStyleNet
+from net import FastStyleNet
 
 
 
@@ -39,7 +39,9 @@ class ChainerFNS(FastStyleNet):
         image = np.asarray(PILImage.open(inputpath).convert('RGB'), dtype=np.float32).transpose(2, 0, 1)
         image = image.reshape((1,) + image.shape)
         x = Variable(image)
-        
+
+        # Performs the call defined in the FastStyleNet
+        # class in ./net.py on the input reshaped image
         y = self(x)
         result = cuda.to_cpu(y.data)
         
@@ -63,17 +65,19 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description='Real-time style transfer image generator')
-    parser.add_argument('input')
+    parser.add_argument('input') # image to repaint
     parser.add_argument('--gpu', '-g', default=-1, type=int,
                         help='GPU ID (negative value indicates CPU)')
     parser.add_argument('--model', '-m', default='models/style.model', type=str)
     parser.add_argument('--out', '-o', default='out.jpg', type=str)
     args = parser.parse_args()
 
-
+    # Define an instance of the class holding all the chainer code
     model = ChainerFNS(gpu=args.gpu)
+    # Assign a style model
     model.set_style(args.model)
 
+    # Perform the style transfer on the input image
     image = model.generate(args.input)
 
     image.save(args.out)
