@@ -17,15 +17,15 @@ class ResidualBlock(chainer.Chain):
             b2=L.BatchNormalization(n_out)
         )
 
-    def __call__(self, x, test):
-        h = F.relu(self.b1(self.c1(x), test=test))
-        h = self.b2(self.c2(h), test=test)
+    def __call__(self, x):
+        h = F.relu(self.b1(self.c1(x)))
+        h = self.b2(self.c2(h))
         if x.data.shape != h.data.shape:
             xp = chainer.cuda.get_array_module(x.data)
             n, c, hh, ww = x.data.shape
             pad_c = h.data.shape[1] - c
             p = xp.zeros((n, pad_c, hh, ww), dtype=xp.float32)
-            p = chainer.Variable(p, volatile=test)
+            p = chainer.Variable(p)
             x = F.concat((p, x))
             if x.data.shape[2:] != h.data.shape[2:]:
                 x = F.average_pooling_2d(x, 1, 2)
@@ -53,7 +53,7 @@ class FastStyleNet(chainer.Chain):
             b5=L.BatchNormalization(32),
         )
 
-    def __call__(self, x, test=False):
+    def __call__(self, x):
         h = self.b1(F.elu(self.c1(x)))
         h = self.b2(F.elu(self.c2(h)))
         h = self.b3(F.elu(self.c3(h)))
