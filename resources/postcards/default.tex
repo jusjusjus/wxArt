@@ -10,7 +10,8 @@
 \usepackage[margin=0.0cm]{geometry}
 \usepackage{parskip}
 \usepackage{graphicx}
-
+\usepackage{atbegshi}% http://ctan.org/pkg/atbegshi
+\AtBeginDocument{\AtBeginShipoutNext{\AtBeginShipoutDiscard}}
 \setlength\columnseprule{.4pt}
 
 \begin{document}
