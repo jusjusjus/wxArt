@@ -218,6 +218,14 @@ class Frame(wx.Frame):
 
         self.artwork_image.convert_to_artwork(fps = self.fps)
 
+        # Saving image to hard disk
+        # If already one is present, delete it
+        if os.path.exists( "./artwork.jpg" ):
+            os.system( "rm ./artwork.jpg" )
+        
+        # Save the artwork in order to create the postcard
+        self.artwork_image.save_image( "./artwork.jpg" )
+
 
     def issue_postcard(self, event):
         pcard_operator = Postcard(self)
