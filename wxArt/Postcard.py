@@ -47,6 +47,16 @@ class Postcard(object):
 
 
     def compile_tex(self):
+        # The OpenCV package seems to not set the resolution within
+        # the header of the JPEGs right. Therefore PDFLaTeX doesn't
+        # know the DPI and the corresponding unit and considers the
+        # e.g. 300px x 300px as 300in x 300in, which would be way
+        # to big. Therefore it does include the image in the pdf
+        # (you can still extract it using pdfimages -j default.pdf
+        # extracts-) but does not display it.
+        # Therefore we have to add the correct DPI to the header
+        # ourselves.
+        os.system( "exiftool artwork.jpg -jfif:Xresolution=300 -jfif:Yresolution=300 -jfif:ResolutionUnit=inch" )
         # Copy the artwork file into the postcard folder
         os.system( "cp ./artwork.jpg " + self.tex_dir + "artwork.jpg" )
         subprocess.call(['pdflatex', self.tex_file])
