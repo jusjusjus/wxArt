@@ -14,6 +14,12 @@ artwork.jpg
 default.aux
 default.out
 default.pdf
+doc_data.txt
+merger.*
+page_*
+pg_*
+texput.log
+to_print_4x4.pdf
 
 # ignoring cmake files of capturing script
 /resources/capturing/CMakeCache.txt
