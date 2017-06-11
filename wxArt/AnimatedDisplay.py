@@ -58,6 +58,7 @@ class AnimatedDisplay(wx.animate.GIFAnimationCtrl):
         # get size
         width, height = self.GetSize()
 
+        
         # load image and get aspect ratio
         image_path = self.get_path_to_image()
         image = wx.Image(image_path, wx.BITMAP_TYPE_ANY)
@@ -69,6 +70,7 @@ class AnimatedDisplay(wx.animate.GIFAnimationCtrl):
         dummy_width = height*aspect_ratio
 
         # choose size that fits
+        print "image height and width:", height, width
         if width<dummy_width:
             image = image.Rescale(width, dummy_height, wx.IMAGE_QUALITY_HIGH)
         else:
