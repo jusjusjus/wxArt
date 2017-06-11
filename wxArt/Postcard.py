@@ -30,7 +30,6 @@ class Postcard(object):
 
 
     def init_names(self):
-        print "tex_dir and tex_name", self.tex_dir, self.tex_name
         self.tex_file = self.tex_dir + self.tex_name
         self.mrg_file = self.tex_dir + self.mrg_name
         self.pdf_name = self.tex_name.split('.')[0] + '.pdf'
@@ -48,6 +47,8 @@ class Postcard(object):
 
 
     def compile_tex(self):
+        # Copy the artwork file into the postcard folder
+        os.system( "cp ./artwork.jpg " + self.tex_dir + "artwork.jpg" )
         subprocess.call(['pdflatex', self.tex_file])
 
 
@@ -63,7 +64,7 @@ class Postcard(object):
 
         subprocess.call(['pdflatex', self.mrg_file])
         # Cleanup temporary files.
-        subprocess.call(['rm', 'pg_*pdf', 'page_*.pdf', 'default*'])
+        os.system( 'rm ' + './pg_* ' + './page_* ' + './default*' )
 
 
     def show_postcard(self, filename='merger.pdf'):
