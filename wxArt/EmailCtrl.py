@@ -111,8 +111,9 @@ class EmailCtrl(wx.TextCtrl):
 
     body = """Hallo!
 
-    Wir freuen uns, dass Sie sich am Tag der Deutschen Einheit die Zeit
-    genommen haben unseren Stand im Wissenschaftszelt zu besuchen.
+    Wir freuen uns, dass Sie sich an der Langen Nacht der Wissenschaft die Zeit
+    genommen haben unseren Stand im Max-Planck-Institut für Physik komplexer 
+    Systeme zu besuchen.
 
     Mehrschichtige neuronale Netze werden zunehmend Teil der Technologie, die
     uns in unserem täglichen Leben umgibt.  Die zugrunde liegenden Mechanismen
@@ -120,9 +121,8 @@ class EmailCtrl(wx.TextCtrl):
     erreichen so faszinierende Ergebnisse.  Die Vorstellung ein denkendes Wesen
     in unserem Computer zu simulieren ist natürlich sehr ungewohnt.  Viele
     Menschen machen sich Sorgen, dass wir diese Technik nicht ausreichend
-    beherrschen.  Darum haben wir uns am Stand des Max-Planck-Instituts für die
-    Physik Komplexer Systeme darum bemüht, diese Technik am Beispiel von
-    'Sehen' etwas zu entzaubern.
+    beherrschen.  Darum haben wir uns an unserem darum bemüht, diese Technik 
+    am Beispiel von 'Sehen' etwas zu entzaubern.
 
     Wenn sich ein mehrschichtiges neuronales Netz ein Bild ansieht, dann sieht
     es nicht zuerst auf das große Ganze sondern sucht systematisch nach
@@ -150,6 +150,7 @@ class EmailCtrl(wx.TextCtrl):
     Viele Grüße aus dem sonnigen Sachsen wünschen Ihnen unser Team.
 
     Justus Schwabedal
+    Philipp Müller
     Benedict Lünsmann
     Mehrdad Baghery
     Andre Scholich
