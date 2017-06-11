@@ -26,10 +26,10 @@ or *pip*
 sudo pip install chainer wxPython opencv-python scikit-image
 ```
 
-In order to compile postcards containing the transformed image with LaTeX, be sure to have the following package installed.
+In order to compile postcards containing the transformed image with LaTeX, be sure to have the following packages installed.
 
 ```{bash}
-sudo apt install texlive-lang-german
+sudo apt install texlive-lang-german pdftk
 ```
 
 # Running the application
