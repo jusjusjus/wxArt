@@ -30,6 +30,7 @@ class Postcard(object):
 
 
     def init_names(self):
+        print "tex_dir and tex_name", self.tex_dir, self.tex_name
         self.tex_file = self.tex_dir + self.tex_name
         self.mrg_file = self.tex_dir + self.mrg_name
         self.pdf_name = self.tex_name.split('.')[0] + '.pdf'
@@ -54,15 +55,15 @@ class Postcard(object):
         # Split the .tex-output into separate pages.
         subprocess.call(['pdftk', self.pdf_file, 'burst'])
         # Join the second page 4 times as front of the postcard.
-        subprocess.call(['pdftk', 'pg_0002.pdf', 'pg_0002.pdf', 'pg_0002.pdf', 'pg_0002.pdf', 'cat', 'output', 'page_1.pdf'])
+        subprocess.call(['pdftk', 'pg_0001.pdf', 'pg_0001.pdf', 'pg_0001.pdf', 'pg_0001.pdf', 'cat', 'output', 'page_1.pdf'])
         # Join the third page 4 times as back of the postcard.
-        subprocess.call(['pdftk', 'pg_0003.pdf', 'pg_0003.pdf', 'pg_0003.pdf', 'pg_0003.pdf', 'cat', 'output', 'page_2.pdf'])
+        subprocess.call(['pdftk', 'pg_0002.pdf', 'pg_0002.pdf', 'pg_0002.pdf', 'pg_0002.pdf', 'cat', 'output', 'page_2.pdf'])
         # Join the two results.
         subprocess.call(['pdftk', 'page_1.pdf', 'page_2.pdf', 'cat', 'output', 'to_print_4x4.pdf'])
 
         subprocess.call(['pdflatex', self.mrg_file])
         # Cleanup temporary files.
-        #subprocess.call(['rm', 'pg_*pdf', 'page_*.pdf', 'default*'])
+        subprocess.call(['rm', 'pg_*pdf', 'page_*.pdf', 'default*'])
 
 
     def show_postcard(self, filename='merger.pdf'):
