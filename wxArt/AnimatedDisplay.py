@@ -69,12 +69,17 @@ class AnimatedDisplay(wx.animate.GIFAnimationCtrl):
         dummy_height = float(width)/aspect_ratio
         dummy_width = height*aspect_ratio
 
+        
         # choose size that fits
-        print "image height and width:", height, width
-        if width<dummy_width:
-            image = image.Rescale(width, dummy_height, wx.IMAGE_QUALITY_HIGH)
-        else:
-            image = image.Rescale(dummy_width, height, wx.IMAGE_QUALITY_HIGH)
+        # If the size of the wxArt window is to small, just the camera feed and the artwork will be shown.
+        # But since the height and width will be determined by (and rescaled to) the photograph on the wright
+        # the width will have the value of 1 and the rescaling will fail. In this case just skip the rescaling
+        # and transform the original image (with the height and size of the cam
+        if width > 2:
+            if width<dummy_width:
+                image = image.Rescale(width, dummy_height, wx.IMAGE_QUALITY_HIGH)
+            else:
+                image = image.Rescale(dummy_width, height, wx.IMAGE_QUALITY_HIGH)
         bitmap = image.ConvertToBitmap()
         self.SetInactiveBitmap(bitmap)
         self.GetParent().Layout()
