@@ -10,6 +10,8 @@ import subprocess
 
 class Postcard(object):
 
+    default_kwargs = dict( printer = 'None' )
+
     _artwork_file   = Artwork._output_path
 
     _pdf_dir        = os.path.dirname(sys.argv[0]) + "/"
@@ -17,8 +19,7 @@ class Postcard(object):
     _tex_name       = "default.tex"
     _mrg_name       = "merger.tex"
 
-    def __init__(self, parent):
-        self.parent       = parent
+    def __init__(self, *args, **kwargs):
         self.artwork_file = Artwork._output_path
 
         self.pdf_dir = self._pdf_dir
@@ -27,6 +28,12 @@ class Postcard(object):
         self.mrg_name= self._mrg_name
 
         self.init_names()
+
+        for att in self.default_kwargs.keys():
+            if kwargs.has_key(att):
+                setattr(self, att, kwargs.pop(att))
+            else:
+                setattr(self, att, self.default_kwargs[att])
 
 
     def init_names(self):
@@ -78,10 +85,16 @@ class Postcard(object):
 
 
     def show_postcard(self, filename='merger.pdf'):
-        try:
-            subprocess.call(['evince', filename])
-        except WindowsError:
-            # open with default program
-            os.system('start ' + filename)
-
+        if ( self.printer == "None" ):
+            # No printer name was specified in the command line so open
+            # the PDF with evince instead
+            try:
+                subprocess.call(['evince', filename])
+            except WindowsError:
+                # open with default program
+                os.system('start ' + filename)
+        else:
+            # The user requested the postcard to be printed via a
+            # specific printer
+            os.system( "lp -d " + self.printer + " merger.pdf" ) 
 

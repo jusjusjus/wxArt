@@ -78,6 +78,12 @@ If you want to be able to send the transformed pictures by mail, start the scrip
 python main.py --email
 ```
 
+Per default the generated postcard will be opened with the PDF viewer *evince*. If you want it to be instead send to a printer, just supply the printers name with the input argument `-p`. You can query for all available printers with `lpstat -p`.
+
+```{bash}
+python main.py -p color
+```
+
 # Troubleshooting
 
 You are not able to capture any images with your webcam? See this little [guide](/resources/capturing/README.md) to resolve your problem.

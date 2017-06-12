@@ -34,7 +34,8 @@ class Frame(wx.Frame):
 
     default_kwargs = dict(debug = False,
                           fps   = 20,
-                          video = 0)
+                          video = 0,
+                          printer = 'None')
     
     temp_dir = tempfile.mkdtemp(prefix='wxArt_')
 
@@ -230,7 +231,7 @@ class Frame(wx.Frame):
 
 
     def issue_postcard(self, event):
-        pcard_operator = Postcard(self)
+        pcard_operator = Postcard(self, printer=self.printer)
         pcard_operator.create()
         
 
