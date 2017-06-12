@@ -2,9 +2,16 @@
 
 ## Wrong camera feed
 
-If you have more than camera available, be sure to address the correct one in the code. Therefore go line 98 in the [wxArt/Camera.py](wxArt/Camera.py) file and enter the correct device number into `cv2.VideoCapture( )`.
+If you have more than camera available, be sure to address the correct one.
 
 The *bash* command `ls /dev | grep video` provides a list of all available cams.
+
+Now all you have to do to use another video feed is to provide the last digit of the video device with the flag `-v` in the command line.
+
+```{bash}
+# Use an external USB cam assigned to /dev/video1
+python main.py -v 1
+```
 
 ## No camera feed at all
 

@@ -26,7 +26,8 @@ class Camera(wx.StaticBitmap):
     _defaultImage_path = os.path.dirname(__file__) + "/../resources/default_picture.jpg"
     default_kwargs = dict(debug    = False,
                           fps      = 20,
-                          temp_dir = '.')
+                          temp_dir = '.',
+                          video = 0  )
 
     def __init__(self, *args, **kwargs):
 
@@ -95,7 +96,9 @@ class Camera(wx.StaticBitmap):
         # later, because self.bmp is re-created every time.  However, I don't know
         # how to real with the raw bitmaps.
 
-        self.capture = cv2.VideoCapture(1)
+        # Using the input argument video the user can pick the video device of her
+        # choice. The default one is /dev/video0
+        self.capture = cv2.VideoCapture( self.video )
         ret, cam_frame = self.capture.read()
         if cam_frame is None:
             ret, cam_frame = self.capture_stub()
