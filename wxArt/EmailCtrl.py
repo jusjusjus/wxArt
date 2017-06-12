@@ -7,6 +7,7 @@ import smtplib
 from email.mime.application import MIMEApplication
 from email.mime.text        import MIMEText
 from email.mime.multipart   import MIMEMultipart
+import logging
 
 from .PasswordQuery import PasswordQuery
 
@@ -14,6 +15,7 @@ from .PasswordQuery import PasswordQuery
 
 class EmailCtrl(wx.TextCtrl):
 
+    logger = logging.getLogger(name='EmailCtrl')
     server_name       = "smtp.gmx.ch"
     port              = 587
     sender            = "kevin.clever@gmx.ch"
@@ -33,11 +35,11 @@ class EmailCtrl(wx.TextCtrl):
 
     def send_email(self, attachments=[], recipients=None): # attachments is a list of filenames.
         #read out the recipient email address
-        if recipients == None:
+        if recipients is None:
             recipients = self.GetValue()
             recipients = [ recipient.strip(' ') for recipient in recipients.split(',') ]
 
-        print recipients
+        self.logger.info("Sending mail to {} ..".format(recipients))
         # construct the email
         message = MIMEMultipart()
         message['From']    = self.sender
@@ -49,12 +51,13 @@ class EmailCtrl(wx.TextCtrl):
         for f in attachments:
 
             assert os.path.exists(f), "File '%s' nonexistent." % (f)
+            basename = os.path.basename(f)
 
             with open(f, 'rb') as File:
                 attachment = MIMEApplication( File.read(),
-                                              Name = os.path.basename(f) )
+                                              Name=basename )
 
-                attachment['Content-Disposition'] = 'attachment; filename="%s"' % os.path.basename(f)
+                attachment['Content-Disposition'] = 'attachment; filename="%s"' % basename
                 message.attach(attachment)
 
         # Log into the email client
