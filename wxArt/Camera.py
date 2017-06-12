@@ -95,7 +95,7 @@ class Camera(wx.StaticBitmap):
         # later, because self.bmp is re-created every time.  However, I don't know
         # how to real with the raw bitmaps.
 
-        self.capture = cv2.VideoCapture(1)
+        self.capture = cv2.VideoCapture(0)
         ret, cam_frame = self.capture.read()
         if cam_frame is None:
             ret, cam_frame = self.capture_stub()
