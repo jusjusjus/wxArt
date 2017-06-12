@@ -10,12 +10,14 @@ import subprocess
 
 class Postcard(object):
 
-    default_kwargs = dict( printer = 'None' )
+    default_kwargs = {
+            'printer': 'None'
+    }
 
     _artwork_file   = Artwork._output_path
 
-    _pdf_dir        = os.path.dirname(sys.argv[0]) + "/"
-    _tex_dir        = os.path.dirname(__file__) + "/../resources/postcards/"
+    _pdf_dir        = os.path.dirname(sys.argv[0])
+    _tex_dir        = os.path.join(os.path.dirname(__file__), "/../resources/postcards")
     _tex_name       = "default.tex"
     _mrg_name       = "merger.tex"
 
@@ -29,24 +31,24 @@ class Postcard(object):
 
         self.init_names()
 
-        for att in self.default_kwargs.keys():
-            if kwargs.has_key(att):
-                setattr(self, att, kwargs.pop(att))
-            else:
-                setattr(self, att, self.default_kwargs[att])
+        for att in self.default_kwargs:
+            setattr(self, att, kwargs.pop(att, self.default_kwargs[att]))
 
 
     def init_names(self):
-        self.tex_file = self.tex_dir + self.tex_name
-        self.mrg_file = self.tex_dir + self.mrg_name
+        join = os.path.join
+        self.tex_file = join(self.tex_dir, self.tex_name)
+        self.mrg_file = join(self.tex_dir, self.mrg_name)
         self.pdf_name = self.tex_name.split('.')[0] + '.pdf'
-        self.pdf_file = self.pdf_dir + self.pdf_name
+        self.pdf_file = join(self.pdf_dir, self.pdf_name)
 
 
     def create(self):
+        artfile = self.artwork_file
+        ending = os.path.basename(artfile).split('.')[-1]
 
-        assert os.path.exists(self.artwork_file), "Artwork not present."
-        assert os.path.basename(self.artwork_file).split('.')[1] == 'jpg', "Artwork required to be a jpeg."
+        assert os.path.exists(artfile), "Artwork not present (%s)." % (artfile)
+        assert ending == 'jpg', "Artwork required to be a jpeg (%s)." %(ending)
 
         self.compile_tex()
         self.create_postcard()
