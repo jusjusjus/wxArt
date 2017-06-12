@@ -6,6 +6,7 @@ from PIL import Image as PILImage
 import time
 
 import chainer
+import logging
 from chainer import cuda, Variable, serializers
 from net import FastStyleNet
 
@@ -13,6 +14,8 @@ from net import FastStyleNet
 
 
 class ChainerFNS(FastStyleNet):
+
+    logger = logging.getLogger(name='ChainerFNS')
 
     def __init__(self, gpu=-1):
 
@@ -48,7 +51,7 @@ class ChainerFNS(FastStyleNet):
         result = result.transpose(0, 2, 3, 1)
         result = result.reshape((result.shape[1:]))
         result = np.uint8(result)
-        print(time.time() - start, 'sec')
+        self.logger.info("Elapsed time: %.3g" % (time.time() - start))
 
         if not outputpath == None:
             PILImage.fromarray(result).save(outputpath)

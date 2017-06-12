@@ -11,7 +11,6 @@
 #
 import os
 import wx
-import wx.animate
 from .Artwork import Artwork
 from .StyleButton import StyleButton
 from .EmailCtrl import EmailCtrl

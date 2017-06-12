@@ -10,9 +10,15 @@
 #
 import os
 import wx
-import wx.animate
+import sys
 import subprocess
 from .Camera import Camera
+
+if sys.version_info >= (3, 0):
+    print("To do: Patch wx.animate.GIFAnimationCtrl for python3.")
+    exit(-1)
+else:
+    from wx.animate import GIFAnimationCtrl
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # % AnmiatedDisplay
@@ -24,7 +30,7 @@ from .Camera import Camera
 
 
 
-class AnimatedDisplay(wx.animate.GIFAnimationCtrl):
+class AnimatedDisplay(GIFAnimationCtrl):
 
     _input_frame_base = Camera._frame_base  # = 'frame'
     _output_frame_base = './large_'+_input_frame_base  # = 'large_frame'
