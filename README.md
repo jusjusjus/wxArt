@@ -27,10 +27,11 @@ https://github.com/gafr/chainer-fast-neuralstyle-models
 
 # Installation
 
+## Ubuntu
+
 To run this application you have to install the following Python packages via your operation system's repository (recommended)
 
 ```{bash}
-# In Ubuntu 16
 sudo apt update
 sudo apt install wxPython python-opencv python-skimage
 sudo pip install chainer
@@ -39,15 +40,28 @@ sudo pip install chainer
 or *pip*
 
 ```{bash}
-# In Ubuntu 16
 sudo pip install chainer wxPython opencv-python scikit-image
 ```
 
 In order to compile [postcards](resources/postcard_example.pdf) containing the transformed image with LaTeX, be sure to have the following packages installed.
 
 ```{bash}
-# In Ubuntu 16
 sudo apt install texlive-lang-german pdftk libimage-exiftool-perl
+```
+
+## Suse
+
+In Suse install the following packages from your repositories
+
+```{bash}
+sudo zypper refresh
+sudo zypper python-wxWidgets-3_0 python-opencv python-pip
+```
+
+Afterwards install the remaining packages using *pip*
+
+```{bash}
+sudo pip2 install scikit-image chainer
 ```
 
 # Running the application
