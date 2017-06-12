@@ -9,6 +9,7 @@
 #
 import wx
 import cv2
+import logging
 import tempfile
 
 from skimage import io
@@ -20,6 +21,8 @@ import os
 # % CameraButton class
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 class Camera(wx.StaticBitmap):
+
+    logger = logging.getLogger(name='Camera')
 
     _frame_base = 'frame'
     _countdown_path = os.path.dirname(__file__) + "/../resources/countdown/"
@@ -103,8 +106,7 @@ class Camera(wx.StaticBitmap):
         if cam_frame is None:
             ret, cam_frame = self.capture_stub()
     
-        if self.debug:
-            print cam_frame
+        self.logger.debug(cam_frame)
     
         cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
 
