@@ -17,7 +17,7 @@ class Postcard(object):
     _artwork_file   = Artwork._output_path
 
     _pdf_dir        = os.path.dirname(sys.argv[0])
-    _tex_dir        = os.path.join(os.path.dirname(__file__), "/../resources/postcards")
+    _tex_dir        = os.path.join(os.path.dirname(__file__), "..", "resources", "postcards")
     _tex_name       = "default.tex"
     _mrg_name       = "merger.tex"
 
