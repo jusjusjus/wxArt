@@ -27,3 +27,7 @@ to_print_4x4.pdf
 /resources/capturing/cmake_install.cmake
 /resources/capturing/camera-test
 /resources/capturing/Makefile
+
+# ignore the training resources
+/wxArt/fns/VGG_ILSVRC_16_layers.caffemodel
+/wxArt/fns/vgg16.model
