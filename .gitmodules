@@ -1,3 +1,0 @@
-[submodule "resources/dataset/coco"]
-	path = resources/dataset/coco
-	url = https://github.com/pdollar/coco.git
