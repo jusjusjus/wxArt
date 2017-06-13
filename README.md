@@ -78,6 +78,38 @@ If you want to be able to send the transformed pictures by mail, start the scrip
 python main.py --email
 ```
 
+# Train your own models
+
+The *wxArt* package is not restricted to the 11 styles trained by the authors. You are free to train your own one! But there are a number of requirements you have to fulfill. 
+
+- A powerful Nvidia GPU capable of running [Cuda](https://www.nvidia.com/object/cuda_home_new.html). Of course, in principle you could also train on a CPU but this would last forever. If you don't own one yourself, check out the e.g. the [Amazon compute cloud](https://aws.amazon.com/ec2/).
+- A large training set of photographs
+- The [VGG-16 model](http://www.robots.ox.ac.uk/%7Evgg/research/very_deep/) to start the optimization from
+- A picture you want to learn the style from
+
+## Obtain a training set
+
+We will use the [MSCOCO](http://mscoco.org/dataset/#overview) image set as our default training set. There is also an [API](https://github.com/pdollar/coco) available for automating the download but unfortunately its PythonAPI is, of course, not working and in the LuaAPI a function for downloading the entire data set is not implemented. So you have to download it [directly](http://msvocds.blob.core.windows.net/coco2014/train2014.zip).
+
+## Obtain the VGG-16 model
+
+To download and convert the VGG-16 model, just call the [following](wxArt/fns/setup_model.sh) bash function
+
+```{bash}
+# In /wxArt/fns
+./setup_model.sh
+```
+
+## Train a new model
+
+Now you can train a new model using the following line of code
+
+```{bash}
+# In /wxArt/fns
+python train.py -g 0 -d <PATH_TO_MSCOCO_SET> -s <PATH_TO_YOUR_STYLE_IMAGE> -o new_model
+```
+
+
 # Troubleshooting
 
 You are not able to capture any images with your webcam? See this little [guide](/resources/capturing/README.md) to resolve your problem.
