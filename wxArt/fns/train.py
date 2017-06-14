@@ -17,7 +17,7 @@ def load_image(path, size):
         if h < size:
             image = image.resize((size*w/h, size))
             w, h = image.size
-    image = image.crop(((w-size)*0.5, (h-size)*0.5, (w+size)*0.5, (h+size)*0.5))
+    # image = image.crop(((w-size)*0.5, (h-size)*0.5, (w+size)*0.5, (h+size)*0.5))
     return xp.asarray(image, dtype=np.float32).transpose(2, 0, 1)
 
 def gram_matrix(y):
@@ -107,7 +107,7 @@ style = xp.asarray(style, dtype=xp.float32)
 style_b = xp.zeros((batchsize,) + style.shape, dtype=xp.float32)
 for i in range(batchsize):
     style_b[i] = style
-feature_s = vgg(Variable(style_b, volatile=True))
+feature_s = vgg(Variable(style_b))
 gram_s = [gram_matrix(y) for y in feature_s]
 
 for epoch in range(n_epoch):
@@ -119,9 +119,11 @@ for epoch in range(n_epoch):
         indices = range(i * batchsize, (i+1) * batchsize)
         x = xp.zeros((batchsize, 3, image_size, image_size), dtype=xp.float32)
         for j in range(batchsize):
+            print( "image path: " + str( imagepaths[ i* batchsize + j ] ) )
+            print( "image size: " + str( image_size ) )
             x[j] = load_image(imagepaths[i*batchsize + j], image_size)
 
-        xc = Variable(x.copy(), volatile=True)
+        xc = Variable(x.copy())
         x = Variable(x)
 
         y = model(x)
