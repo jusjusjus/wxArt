@@ -10,7 +10,8 @@
 \usepackage[margin=0.0cm]{geometry}
 \usepackage{parskip}
 \usepackage{graphicx}
-
+\usepackage{atbegshi}% http://ctan.org/pkg/atbegshi
+\AtBeginDocument{\AtBeginShipoutNext{\AtBeginShipoutDiscard}}
 \setlength\columnseprule{.4pt}
 
 \begin{document}
@@ -24,7 +25,7 @@
 \newgeometry{margin=0.5cm}
 
 \begin{multicols}{2}
-    Kunst durch Künstliche Intelligenz, Bürgerfest Dresden, 2016.\\
+    Kunst durch Künstliche Intelligenz, Lange Nacht der Wissenschaft Dresden, 2017.\\
     {\small JCS Research \& Technologies}
     \columnbreak\par
     \hfill\framebox(40,50){\scriptsize Postage}\par

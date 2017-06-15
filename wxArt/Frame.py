@@ -11,7 +11,6 @@
 #
 import os
 import wx
-import wx.animate
 from .Artwork import Artwork
 from .StyleButton import StyleButton
 from .EmailCtrl import EmailCtrl
@@ -33,7 +32,9 @@ class Frame(wx.Frame):
     _min_pane = 0
 
     default_kwargs = dict(debug = False,
-                          fps   = 20)
+                          fps   = 20,
+                          video = 0,
+                          printer = 'None')
     
     temp_dir = tempfile.mkdtemp(prefix='wxArt_')
 
@@ -93,7 +94,8 @@ class Frame(wx.Frame):
         # self.SetFont(font) # defunc
         dummy_pos = (0,0)
         button_size = (180,80)
-        camera = self.camera = Camera(main_panel,-1, temp_dir=self.temp_dir, debug=self.debug, fps=self.fps)
+        camera = self.camera = Camera(main_panel,-1, temp_dir=self.temp_dir, debug=self.debug,
+                                        fps=self.fps, video=self.video)
         style_image   = self.style_image   = StyleButton(main_panel, -1)
         photo_button = self.photo_button   = wx.Button(main_panel, -1, "Foto", dummy_pos, button_size)
         video_button = self.video_button   = wx.Button(main_panel, -1, "Video", dummy_pos, button_size)
@@ -218,9 +220,17 @@ class Frame(wx.Frame):
 
         self.artwork_image.convert_to_artwork(fps = self.fps)
 
+        # Saving image to hard disk
+        # If already one is present, delete it
+        if os.path.exists( "./artwork.jpg" ):
+            os.system( "rm ./artwork.jpg" )
+        
+        # Save the artwork in order to create the postcard
+        self.artwork_image.save_image( "./artwork.jpg" )
+
 
     def issue_postcard(self, event):
-        pcard_operator = Postcard(self)
+        pcard_operator = Postcard(self, printer=self.printer)
         pcard_operator.create()
         
 

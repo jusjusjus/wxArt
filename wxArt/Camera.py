@@ -9,6 +9,7 @@
 #
 import wx
 import cv2
+import logging
 import tempfile
 
 from skimage import io
@@ -21,12 +22,15 @@ import os
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 class Camera(wx.StaticBitmap):
 
+    logger = logging.getLogger(name='Camera')
+
     _frame_base = 'frame'
     _countdown_path = os.path.dirname(__file__) + "/../resources/countdown/"
     _defaultImage_path = os.path.dirname(__file__) + "/../resources/default_picture.jpg"
     default_kwargs = dict(debug    = False,
                           fps      = 20,
-                          temp_dir = '.')
+                          temp_dir = '.',
+                          video = 0  )
 
     def __init__(self, *args, **kwargs):
 
@@ -95,13 +99,14 @@ class Camera(wx.StaticBitmap):
         # later, because self.bmp is re-created every time.  However, I don't know
         # how to real with the raw bitmaps.
 
-        self.capture = cv2.VideoCapture(0)
+        # Using the input argument video the user can pick the video device of her
+        # choice. The default one is /dev/video0
+        self.capture = cv2.VideoCapture( self.video )
         ret, cam_frame = self.capture.read()
         if cam_frame is None:
             ret, cam_frame = self.capture_stub()
     
-        if self.debug:
-            print cam_frame
+        self.logger.debug(cam_frame)
     
         cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
 

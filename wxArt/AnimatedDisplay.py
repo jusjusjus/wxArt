@@ -10,9 +10,15 @@
 #
 import os
 import wx
-import wx.animate
+import sys
 import subprocess
 from .Camera import Camera
+
+if sys.version_info >= (3, 0):
+    print("To do: Patch wx.animate.GIFAnimationCtrl for python3.")
+    exit(-1)
+else:
+    from wx.animate import GIFAnimationCtrl
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # % AnmiatedDisplay
@@ -24,7 +30,7 @@ from .Camera import Camera
 
 
 
-class AnimatedDisplay(wx.animate.GIFAnimationCtrl):
+class AnimatedDisplay(GIFAnimationCtrl):
 
     _input_frame_base = Camera._frame_base  # = 'frame'
     _output_frame_base = './large_'+_input_frame_base  # = 'large_frame'
@@ -58,6 +64,7 @@ class AnimatedDisplay(wx.animate.GIFAnimationCtrl):
         # get size
         width, height = self.GetSize()
 
+        
         # load image and get aspect ratio
         image_path = self.get_path_to_image()
         image = wx.Image(image_path, wx.BITMAP_TYPE_ANY)
@@ -68,11 +75,17 @@ class AnimatedDisplay(wx.animate.GIFAnimationCtrl):
         dummy_height = float(width)/aspect_ratio
         dummy_width = height*aspect_ratio
 
+        
         # choose size that fits
-        if width<dummy_width:
-            image = image.Rescale(width, dummy_height, wx.IMAGE_QUALITY_HIGH)
-        else:
-            image = image.Rescale(dummy_width, height, wx.IMAGE_QUALITY_HIGH)
+        # If the size of the wxArt window is to small, just the camera feed and the artwork will be shown.
+        # But since the height and width will be determined by (and rescaled to) the photograph on the wright
+        # the width will have the value of 1 and the rescaling will fail. In this case just skip the rescaling
+        # and transform the original image (with the height and size of the cam
+        if width > 2:
+            if width<dummy_width:
+                image = image.Rescale(width, dummy_height, wx.IMAGE_QUALITY_HIGH)
+            else:
+                image = image.Rescale(dummy_width, height, wx.IMAGE_QUALITY_HIGH)
         bitmap = image.ConvertToBitmap()
         self.SetInactiveBitmap(bitmap)
         self.GetParent().Layout()
